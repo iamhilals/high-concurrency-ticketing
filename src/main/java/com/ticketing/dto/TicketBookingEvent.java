@@ -5,18 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TicketResponse {
-    private Long ticketId;
+public class TicketBookingEvent implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+
     private Long eventId;
-    private String eventTitle;
     private Long userId;
-    private String username;
     private LocalDateTime purchaseDate;
-    private String status; // Talebin durumu: "SUCCESS", "PENDING" vb.
 }
