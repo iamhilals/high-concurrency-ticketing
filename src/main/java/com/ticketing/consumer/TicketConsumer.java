@@ -51,7 +51,7 @@ public class TicketConsumer {
             Ticket ticket = Ticket.builder()
                     .event(event)
                     .user(user)
-                    .purchaseDate(eventMsg.getPurchaseDate())
+                    .purchaseDate(java.time.LocalDateTime.now())
                     .build();
 
             Ticket savedTicket = ticketRepository.save(ticket);

@@ -17,7 +17,7 @@ Bu ilk aşamada, sistemin en temel bileşenleri ve veritabanı ilişkileri kurul
 
 ### Kullanılan Teknolojiler
 
-- **Java 17**
+- **Java 25**
 - **Spring Boot 3.3.3**
 - **Spring Data JPA**
 - **PostgreSQL**

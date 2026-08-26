@@ -56,7 +56,6 @@ public class TicketService {
         TicketBookingEvent bookingEvent = TicketBookingEvent.builder()
                 .eventId(event.getId())
                 .userId(user.getId())
-                .purchaseDate(LocalDateTime.now())
                 .build();
 
         // 4. Mesajı Kafka kuyruğuna gönderiyoruz
@@ -71,7 +70,7 @@ public class TicketService {
                 .eventTitle(event.getTitle())
                 .userId(user.getId())
                 .username(user.getUsername())
-                .purchaseDate(bookingEvent.getPurchaseDate())
+                .purchaseDate(LocalDateTime.now())
                 .status("PENDING") // Durum beklemede olarak işaretlendi
                 .build();
     }

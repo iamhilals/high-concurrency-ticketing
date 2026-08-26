@@ -18,5 +18,4 @@ public class TicketBookingEvent implements Serializable {
 
     private Long eventId;
     private Long userId;
-    private LocalDateTime purchaseDate;
 }
