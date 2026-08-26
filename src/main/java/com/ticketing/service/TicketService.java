@@ -9,10 +9,13 @@ import com.ticketing.repository.EventRepository;
 import com.ticketing.repository.TicketRepository;
 import com.ticketing.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -21,55 +24,70 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final org.springframework.data.redis.core.StringRedisTemplate redisTemplate; // Redis işlemlerini yöneteceğimiz template
+    private final RedissonClient redissonClient; // Redisson istemcisi (Dağıtık kilitler için)
+    private final TransactionTemplate transactionTemplate; // Programatik transaction yönetimi için
 
-    @Transactional
     public TicketResponse purchaseTicket(TicketRequest request) {
-        String redisKey = "event:" + request.getEventId() + ":capacity";
+        String lockKey = "lock:event:" + request.getEventId();
+        RLock lock = redissonClient.getLock(lockKey);
 
-        // 1. Redis'ten kapasiteyi atomik olarak 1 azaltıyoruz (DECR).
-        // Redis tek iş parçacıklı (single-threaded) çalıştığı için bu işlem tamamen güvenlidir.
-        Long remaining = redisTemplate.opsForValue().decrement(redisKey);
-        
-        if (remaining == null) {
-            throw new IllegalStateException("Redis capacity counter is missing for key: " + redisKey);
+        try {
+            // 1. Dağıtık Kilidi almayı deniyoruz.
+            // waitTime: Kilidi almak için en fazla 5 saniye bekler.
+            // leaseTime: Kilit alındıktan sonra işlem bitmese bile kilit 10 saniye sonra serbest kalır (aşırı yükte kilit kilitlenmesini önler).
+            boolean isLocked = lock.tryLock(5, 10, TimeUnit.SECONDS);
+            if (!isLocked) {
+                throw new IllegalStateException("System is busy, could not acquire lock for event: " + request.getEventId());
+            }
+
+            // 2. Kilit alındıktan SONRA veritabanı transaction'ını başlatıyoruz.
+            // DİKKAT: "Lock -> Transaction -> Commit -> Unlock" sırası hayati önem taşır.
+            // Eğer transaction'ı kilidin dışına çıkarırsak, kilit açıldığında henüz veritabanına commit gitmemiş olabilir
+            // ve sıradaki thread eski veriyi okuyarak çakışmaya (overselling) sebep olur.
+            return transactionTemplate.execute(status -> {
+                // A. Kullanıcıyı ve Etkinliği çekiyoruz (Kilit altında olduğumuz için locksız select yeterlidir)
+                User user = userRepository.findById(request.getUserId())
+                        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + request.getUserId()));
+
+                Event event = eventRepository.findById(request.getEventId())
+                        .orElseThrow(() -> new IllegalArgumentException("Event not found with id: " + request.getEventId()));
+
+                // B. Kapasite doğrulaması
+                if (event.getAvailableCapacity() <= 0) {
+                    throw new IllegalStateException("No available tickets left for event: " + event.getTitle());
+                }
+
+                // C. Kapasiteyi düşürme (JPA üzerinden normal güncelleme)
+                event.setAvailableCapacity(event.getAvailableCapacity() - 1);
+                eventRepository.save(event);
+
+                // D. Bilet kaydı oluşturma
+                Ticket ticket = Ticket.builder()
+                        .event(event)
+                        .user(user)
+                        .purchaseDate(LocalDateTime.now())
+                        .build();
+                Ticket savedTicket = ticketRepository.save(ticket);
+
+                // E. Response DTO
+                return TicketResponse.builder()
+                        .ticketId(savedTicket.getId())
+                        .eventId(event.getId())
+                        .eventTitle(event.getTitle())
+                        .userId(user.getId())
+                        .username(user.getUsername())
+                        .purchaseDate(savedTicket.getPurchaseDate())
+                        .build();
+            }); // TransactionTemplate bloğundan çıkarken otomatik COMMIT olur.
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Transaction interrupted: " + e.getMessage());
+        } finally {
+            // 3. Transaction COMMIT olduktan veya hata oluşup sonlandıktan SONRA kilidi açıyoruz.
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
         }
-
-        // Eğer kapasite sıfırın altına düştüyse bilet tükenmiş demektir.
-        if (remaining < 0) {
-            // Eksiye düşen sayacı eski haline getirmek için 1 arttırıyoruz (Rollback Redis counter).
-            redisTemplate.opsForValue().increment(redisKey);
-            throw new IllegalStateException("No available tickets left in cache for event: " + request.getEventId());
-        }
-
-        // 2. Redis bariyerini geçen istekler için DB işlemleri yapılıyor (Veritabanında kilit kullanılmıyor).
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + request.getUserId()));
-
-        Event event = eventRepository.findById(request.getEventId())
-                .orElseThrow(() -> new IllegalArgumentException("Event not found with id: " + request.getEventId()));
-
-        // 3. Veritabanındaki kapasiteyi atomik UPDATE ile azaltıyoruz.
-        // SQL: UPDATE events SET available_capacity = available_capacity - 1 WHERE id = ?
-        eventRepository.decrementCapacity(event.getId());
-
-        // 4. Bilet kaydı oluşturuluyor.
-        Ticket ticket = Ticket.builder()
-                .event(event)
-                .user(user)
-                .purchaseDate(LocalDateTime.now())
-                .build();
-
-        Ticket savedTicket = ticketRepository.save(ticket);
-
-        // 5. İstemciye (frontend) cevap DTO'su dönülüyor.
-        return TicketResponse.builder()
-                .ticketId(savedTicket.getId())
-                .eventId(event.getId())
-                .eventTitle(event.getTitle())
-                .userId(user.getId())
-                .username(user.getUsername())
-                .purchaseDate(savedTicket.getPurchaseDate())
-                .build();
     }
 }
