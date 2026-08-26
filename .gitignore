@@ -1,0 +1,23 @@
+# Build artifacts
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE specific files
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Private learning notes
+LEARNING_NOTES.md
+
