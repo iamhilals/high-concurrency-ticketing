@@ -32,4 +32,10 @@ public class Event {
 
     @Column(nullable = false)
     private Integer availableCapacity;
+
+    private String category;
+
+    private String venue;
+
+    private String imageUrl;
 }
