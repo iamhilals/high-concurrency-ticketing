@@ -57,6 +57,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            cursor: pointer;
         }
 
         .user-status {
@@ -65,14 +66,131 @@
             gap: 1rem;
         }
 
-        .status-badge {
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid rgba(139, 92, 246, 0.4);
-            color: #c084fc;
-            padding: 0.4rem 0.9rem;
+        .profile-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 0.45rem 1rem;
             border-radius: 9999px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
+            color: #f8fafc;
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .user-profile-badge:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(236, 72, 153, 0.4);
+            box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);
+        }
+
+        .profile-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.6rem);
+            right: 0;
+            width: 240px;
+            background: #131b2e;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1rem;
+            padding: 0.5rem;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(16px);
+            display: none;
+            flex-direction: column;
+            gap: 0.25rem;
+            z-index: 100;
+            animation: fadeInMenu 0.2s ease-out;
+        }
+
+        .profile-dropdown-menu.show {
+            display: flex;
+        }
+
+        @keyframes fadeInMenu {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: 0.6rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(139, 92, 246, 0.15));
+            color: #fff;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 0.25rem 0;
+        }
+
+        .dropdown-item.danger {
+            color: #fca5a5;
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(244, 63, 94, 0.15);
+            color: #f87171;
+        }
+
+        .user-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .btn-auth {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-auth:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-auth.primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
         }
 
         /* Hero Banner */
@@ -156,6 +274,7 @@
             flex-direction: column;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
             position: relative;
+            cursor: pointer;
         }
 
         .card:hover {
@@ -337,7 +456,7 @@
             color: #f87171;
         }
 
-        /* Success Ticket Stub Modal */
+        /* Modals (Auth, Stub, Dashboard, Detail, Seating) */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -358,6 +477,432 @@
         .modal-overlay.active {
             opacity: 1;
             pointer-events: all;
+        }
+
+        /* Bubilet Event Detail Modal */
+        .bubilet-detail-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 1.5rem;
+            width: 92%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .bubilet-detail-card {
+                grid-template-columns: 1fr;
+                max-height: 85vh;
+                overflow-y: auto;
+            }
+        }
+
+        .bubilet-poster-wrap {
+            position: relative;
+            height: 100%;
+            min-height: 380px;
+        }
+
+        .bubilet-poster-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bubilet-detail-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            overflow-y: auto;
+        }
+
+        .bubilet-date-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.75rem;
+            padding: 0.9rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rules-accordion {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            cursor: pointer;
+        }
+
+        /* Seating Map Modal */
+        .seating-map-card {
+            background: #090d16;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 1.5rem;
+            width: 95%;
+            max-width: 880px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 60px -10px rgba(168, 85, 247, 0.4);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stage-indicator {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #000;
+            font-weight: 800;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
+        }
+
+        .zone-pill-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .zone-pill {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .zone-pill.selected, .zone-pill:hover {
+            border-color: #a855f7;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.2));
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .seat-matrix {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: center;
+            max-height: 240px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .seat-row {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+        }
+
+        .seat-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 0.4rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: #1e293b;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .seat-btn:hover {
+            background: #8b5cf6;
+            transform: scale(1.1);
+        }
+
+        .seat-btn.selected {
+            background: #ec4899;
+            border-color: #f43f5e;
+            box-shadow: 0 0 10px #ec4899;
+        }
+
+        .seat-btn.reserved {
+            background: #334155;
+            color: #64748b;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+
+        .dashboard-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 1.5rem;
+            width: 90%;
+            max-width: 760px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .dashboard-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .dashboard-nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .dashboard-tab {
+            padding: 1rem 1.25rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .dashboard-tab.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .dashboard-body {
+            padding: 2rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .ticket-list-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .bubilet-ticket-pass {
+            background: linear-gradient(145deg, #131b2e, #1a102f);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 1.25rem;
+            overflow: hidden;
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .bubilet-ticket-pass:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -10px rgba(168, 85, 247, 0.35);
+            border-color: rgba(236, 72, 153, 0.5);
+        }
+
+        .bubilet-pass-header {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            padding: 1rem 1.25rem;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bubilet-pass-body {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .bubilet-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.6rem 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bubilet-grid-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bubilet-grid-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .bubilet-grid-val {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .perforated-line {
+            width: 100%;
+            height: 1px;
+            border-top: 2px dashed rgba(255, 255, 255, 0.15);
+            margin: 0.5rem 0;
+            position: relative;
+        }
+
+        .mini-ticket-card {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            position: relative;
+        }
+
+        .mini-ticket-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            align-self: flex-start;
+        }
+
+        .mini-ticket-badge.confirmed {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .mini-ticket-badge.pending {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .barcode-strip {
+            background: #fff;
+            height: 36px;
+            border-radius: 0.4rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 3px;
+            font-family: monospace;
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 1.25rem;
+            width: 90%;
+            max-width: 400px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            position: relative;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .auth-tab.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .form-group input {
+            background: #090d16;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            border: none;
+            padding: 0.85rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .auth-error {
+            color: #f87171;
+            font-size: 0.85rem;
+            text-align: center;
+            display: none;
         }
 
         .ticket-stub {
@@ -416,8 +961,7 @@
     <nav>
         <div class="logo">🎟️ PassoLive</div>
         <div class="user-status">
-            <span class="status-badge">⚡ Redis & Kafka Aktif</span>
-            <span style="font-weight:600; font-size:0.9rem;">Hoş geldin, John Doe</span>
+            <div id="navAuthArea"></div>
         </div>
     </nav>
 
@@ -448,6 +992,248 @@
         </div>
     </div>
 
+    <!-- Bubilet Event Detail Modal -->
+    <div class="modal-overlay" id="eventDetailModal">
+        <div class="bubilet-detail-card">
+            <div class="bubilet-poster-wrap">
+                <img src="" id="detailPosterImg" class="bubilet-poster-img" alt="Poster">
+                <span class="card-tag" id="detailCategoryTag">Müzik & Konser</span>
+            </div>
+
+            <div class="bubilet-detail-content">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <h2 style="font-size:1.6rem; font-weight:800; line-height:1.2;" id="detailTitle">Etkinlik Başlığı</h2>
+                        <div style="color:var(--text-muted); font-size:0.9rem; margin-top:0.3rem;" id="detailVenue">📍 Mekan Bilgisi</div>
+                    </div>
+                    <button style="background:none; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer;" onclick="closeEventDetailModal()">✕</button>
+                </div>
+
+                <div class="bubilet-date-box">
+                    <div>
+                        <div style="font-weight:700; font-size:0.95rem;" id="detailDateStr">15 Ekim 2026 - 21:00</div>
+                        <div style="font-size:0.8rem; color:#4ade80;">✅ Kapı Açılışı: 20:00</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="font-size:0.8rem; color:#94a3b8;">Başlayan Fiyatlar</span>
+                        <div style="font-size:1.3rem; font-weight:800; color:#38bdf8;" id="detailBasePrice">₺450</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.4rem;">Etkinlik Hakkında</h4>
+                    <p style="color:var(--text-muted); font-size:0.88rem; line-height:1.5;" id="detailDesc">Etkinlik açıklaması...</p>
+                </div>
+
+                <div class="rules-accordion" onclick="toggleRules()">
+                    <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.88rem;">
+                        <span>📋 Etkinlik Kuralları</span>
+                        <span>▼</span>
+                    </div>
+                    <div id="rulesContent" style="display:none; margin-top:0.6rem; font-size:0.8rem; color:#94a3b8; line-height:1.4;">
+                        • 18 yaş sınırı vardır.<br>
+                        • Etkinlik alanına dışarıdan yiyecek ve içecek sokulması yasaktır.<br>
+                        • Satın alınan biletlerde iade ve değişim yapılmamaktadır.<br>
+                        • Kapı açılış saati etkinlik saatinden 1 saat öncedir.
+                    </div>
+                </div>
+
+                <button class="btn-buy" style="margin-top:auto; padding:1rem; font-size:1.1rem; background:linear-gradient(135deg, #10b981, #059669);" onclick="openSeatingFromDetail()">
+                    🎟️ Bilet Seç & Koltuk Haritasını Aç
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Seating & Proximity Pricing Modal -->
+    <div class="modal-overlay" id="seatingViewModal">
+        <div class="seating-map-card">
+            <div style="padding:1.25rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3 style="font-size:1.2rem; font-weight:800;" id="seatingEventTitle">Etkinlik Başlığı</h3>
+                    <div style="font-size:0.8rem; color:#94a3b8;">Sahneye Yakınlığa Göre Dinamik Fiyatlandırma & Koltuk Haritası</div>
+                </div>
+                <button style="background:none; border:none; color:#94a3b8; font-size:1.25rem; cursor:pointer;" onclick="closeSeatingModal()">✕</button>
+            </div>
+
+            <div style="padding:1.5rem; overflow-y:auto; flex-grow:1; display:flex; flex-direction:column;">
+                <!-- Stage Representation -->
+                <div class="stage-indicator">🎤 SAHNE / STAGE</div>
+
+                <!-- Proximity Zones Selection -->
+                <div class="zone-pill-container">
+                    <div class="zone-pill selected" id="zoneVip" onclick="selectZone('VIP')">
+                        <span style="font-size:0.75rem; color:#fbbf24; font-weight:800;">🌟 SAHNE ÖNÜ VIP</span>
+                        <span style="font-size:1.05rem; font-weight:800; color:#fff;" id="priceVip">₺850</span>
+                        <span style="font-size:0.7rem; color:#94a3b8;">Sahneye 0-5m Mesafe</span>
+                    </div>
+
+                    <div class="zone-pill" id="zoneCat1" onclick="selectZone('CAT1')">
+                        <span style="font-size:0.75rem; color:#c084fc; font-weight:800;">🪑 KATEGORİ 1 (ORTA)</span>
+                        <span style="font-size:1.05rem; font-weight:800; color:#fff;" id="priceCat1">₺450</span>
+                        <span style="font-size:0.7rem; color:#94a3b8;">Sahneye 5-15m Mesafe</span>
+                    </div>
+
+                    <div class="zone-pill" id="zoneCat2" onclick="selectZone('CAT2')">
+                        <span style="font-size:0.75rem; color:#38bdf8; font-weight:800;">🏟️ KATEGORİ 2 (TRİBÜN)</span>
+                        <span style="font-size:1.05rem; font-weight:800; color:#fff;" id="priceCat2">₺250</span>
+                        <span style="font-size:0.7rem; color:#94a3b8;">Sahneye 15m+ Mesafe</span>
+                    </div>
+                </div>
+
+                <!-- Interactive Seat Grid -->
+                <div style="font-size:0.85rem; font-weight:700; margin-bottom:0.5rem; color:#cbd5e1; text-align:center;">Koltuk Seçimi Yapınız:</div>
+                <div class="seat-matrix" id="seatMatrix"></div>
+            </div>
+
+            <!-- Order Summary Bar -->
+            <div style="padding:1.25rem 1.5rem; background:rgba(15,23,42,0.9); border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <div style="font-size:0.8rem; color:#94a3b8;">Seçilen Koltuk & Bölge:</div>
+                    <div style="font-weight:800; font-size:1rem; color:#f8fafc;" id="selectedSeatSummary">Sahne Önü VIP • Sıra A - Koltuk 1</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:1.5rem;">
+                    <div style="text-align:right;">
+                        <div style="font-size:0.75rem; color:#94a3b8;">Toplam Tutar:</div>
+                        <div style="font-size:1.4rem; font-weight:800; color:#4ade80;" id="selectedTotalPrice">₺850,00</div>
+                    </div>
+                    <button class="btn-buy" style="margin:0; padding:0.85rem 1.75rem; width:auto; background:linear-gradient(135deg, #ec4899, #8b5cf6);" onclick="executeSeatingPurchase()">
+                        ⚡ Ödemeyi Tamamla ve Bileti Al
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard Modal -->
+    <div class="modal-overlay" id="userDashboardModal">
+        <div class="dashboard-card">
+            <div class="dashboard-header">
+                <h2 style="font-size:1.25rem; font-weight:800; color:#f8fafc;" id="dashboardTitle">Kullanıcı Paneli</h2>
+                <button style="background:none; border:none; color:#94a3b8; font-size:1.25rem; cursor:pointer;" onclick="closeDashboardModal()">✕</button>
+            </div>
+            
+            <div class="dashboard-nav-tabs">
+                <div class="dashboard-tab active" id="dashTabPending" onclick="switchDashboardTab('pending_tickets')">⏳ Sırada Olduğum Biletler</div>
+                <div class="dashboard-tab" id="dashTabPurchased" onclick="switchDashboardTab('purchased_tickets')">📜 Satın Alınan Biletler</div>
+                <div class="dashboard-tab" id="dashTabEditProfile" onclick="switchDashboardTab('edit_profile')">✏️ Profil Düzenleme</div>
+                <div class="dashboard-tab" id="dashTabSettings" onclick="switchDashboardTab('settings')">⚙️ Ayarlar</div>
+            </div>
+
+            <div class="dashboard-body">
+                <!-- Pending Tickets View -->
+                <div id="viewPendingTickets">
+                    <p style="color:var(--text-muted); margin-bottom:1rem; font-size:0.9rem;">Kafka kuyruğunda işlenmekte olan canlı bilet talepleriniz:</p>
+                    <div class="ticket-list-grid" id="pendingTicketsGrid">
+                        <p style="color:#64748b;">Sırada olan biletiniz bulunmuyor.</p>
+                    </div>
+                </div>
+
+                <!-- Purchased Tickets View -->
+                <div id="viewPurchasedTickets" style="display:none;">
+                    <p style="color:var(--text-muted); margin-bottom:1rem; font-size:0.9rem;">PostgreSQL veritabanında kalıcı olarak kayıtlı onaylanmış biletleriniz:</p>
+                    <div class="ticket-list-grid" id="purchasedTicketsGrid">
+                        <p style="color:#64748b;">Yükleniyor...</p>
+                    </div>
+                </div>
+
+                <!-- Edit Profile View -->
+                <div id="viewEditProfile" style="display:none;">
+                    <form onsubmit="handleProfileUpdate(event)" style="display:flex; flex-direction:column; gap:1.25rem; max-width:400px;">
+                        <div class="form-group">
+                            <label>Kullanıcı Adı</label>
+                            <input type="text" id="editUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label>E-posta Adresi</label>
+                            <input type="email" id="editEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Yeni Şifre (Değiştirmek istemiyorsanız boş bırakın)</label>
+                            <input type="password" id="editPassword" placeholder="••••••••">
+                        </div>
+                        <div id="editProfileMsg" style="font-size:0.85rem; display:none;"></div>
+                        <button type="submit" class="btn-submit" style="align-self:flex-start; padding:0.75rem 2rem;">Değişiklikleri Kaydet</button>
+                    </form>
+                </div>
+
+                <!-- Settings View -->
+                <div id="viewSettings" style="display:none;">
+                    <div style="display:flex; flex-direction:column; gap:1.25rem; max-width:450px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:1rem; background:rgba(15,23,42,0.6); border-radius:0.75rem; border:1px solid rgba(255,255,255,0.08);">
+                            <div>
+                                <div style="font-weight:700; font-size:0.95rem;">📧 E-posta Bilet Bildirimleri</div>
+                                <div style="font-size:0.8rem; color:#94a3b8;">Bilet onaylandığında e-posta al.</div>
+                            </div>
+                            <input type="checkbox" checked style="width:20px; height:20px;">
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:1rem; background:rgba(15,23,42,0.6); border-radius:0.75rem; border:1px solid rgba(255,255,255,0.08);">
+                            <div>
+                                <div style="font-weight:700; font-size:0.95rem;">⚡ Otomatik Canlı Yenileme</div>
+                                <div style="font-size:0.8rem; color:#94a3b8;">Kapasiteleri her 4 saniyede bir güncelle.</div>
+                            </div>
+                            <input type="checkbox" checked style="width:20px; height:20px;">
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:1rem; background:rgba(15,23,42,0.6); border-radius:0.75rem; border:1px solid rgba(255,255,255,0.08);">
+                            <div>
+                                <div style="font-weight:700; font-size:0.95rem;">🌙 Koyu Tema (Dark Mode)</div>
+                                <div style="font-size:0.8rem; color:#94a3b8;">Göz dostu PassoLive koyu teması.</div>
+                            </div>
+                            <input type="checkbox" checked disabled style="width:20px; height:20px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (Login / Register) -->
+    <div class="modal-overlay" id="authModal">
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Giriş Yap</div>
+                <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Kayıt Ol</div>
+            </div>
+
+            <div id="authNotice" style="font-size:0.85rem; color:#f43f5e; text-align:center; display:none;"></div>
+
+            <!-- Login Form -->
+            <form id="formLogin" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Kullanıcı Adı veya E-posta</label>
+                    <input type="text" id="loginInput" placeholder="Örn: johndoe" required>
+                </div>
+                <div class="form-group" style="margin-top:0.75rem;">
+                    <label>Şifre</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit" style="width:100%; margin-top:1.25rem;">Giriş Yap</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="formRegister" onsubmit="handleRegister(event)" style="display:none;">
+                <div class="form-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" id="regUsername" placeholder="Örn: ahmet123" required>
+                </div>
+                <div class="form-group" style="margin-top:0.75rem;">
+                    <label>E-posta</label>
+                    <input type="email" id="regEmail" placeholder="ahmet@example.com" required>
+                </div>
+                <div class="form-group" style="margin-top:0.75rem;">
+                    <label>Şifre</label>
+                    <input type="password" id="regPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit" style="width:100%; margin-top:1.25rem;">Hesap Oluştur</button>
+            </form>
+
+            <div class="auth-error" id="authErrorMsg"></div>
+            <button style="background:none; border:none; color:#64748b; font-size:0.85rem; cursor:pointer;" onclick="closeAuthModal()">Vazgeç</button>
+        </div>
+    </div>
+
     <!-- Ticket Stub Modal -->
     <div class="modal-overlay" id="ticketModal">
         <div class="ticket-stub">
@@ -463,6 +1249,352 @@
     <script>
         const API_BASE = '/api';
         let allEvents = [];
+        let pendingTickets = [];
+        let currentUser = JSON.parse(localStorage.getItem('passo_user')) || null;
+
+        let activeDetailEvent = null;
+        let selectedZone = 'VIP'; // VIP, CAT1, CAT2
+        let selectedRow = 'A';
+        let selectedSeat = 1;
+
+        function updateNavAuth() {
+            const area = document.getElementById('navAuthArea');
+            if (currentUser) {
+                const initial = currentUser.username ? currentUser.username.charAt(0).toUpperCase() : 'U';
+                area.innerHTML = `
+                    <div class="profile-dropdown-container">
+                        <div class="user-profile-badge" onclick="toggleProfileMenu(event)">
+                            <div class="user-avatar">${initial}</div>
+                            <span>${currentUser.username}</span>
+                            <span style="font-size:0.7rem; color:#94a3b8; margin-left:0.2rem;">▼</span>
+                        </div>
+                        <div class="profile-dropdown-menu" id="profileDropdown">
+                            <button class="dropdown-item" onclick="openProfileTab('pending_tickets')">
+                                ⏳ Sırada Olduğum Biletlerim
+                            </button>
+                            <button class="dropdown-item" onclick="openProfileTab('purchased_tickets')">
+                                📜 Önceden Alınmış Biletlerim
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" onclick="openProfileTab('edit_profile')">
+                                ✏️ Profil Düzenleme
+                            </button>
+                            <button class="dropdown-item" onclick="openProfileTab('settings')">
+                                ⚙️ Ayarlar
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item danger" onclick="handleLogout()">
+                                🚪 Çıkış Yap
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                area.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:0.6rem;">
+                        <button class="btn-auth" onclick="openAuthModal('login')">🔑 Giriş Yap</button>
+                        <button class="btn-auth primary" onclick="openAuthModal('register')">✨ Kayıt Ol</button>
+                    </div>
+                `;
+            }
+        }
+
+        function toggleProfileMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('profileDropdown');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+
+        function openProfileTab(tabName) {
+            const menu = document.getElementById('profileDropdown');
+            if (menu) menu.classList.remove('show');
+            
+            if (!currentUser) {
+                openAuthModal('login', 'Lütfen önce giriş yapın.');
+                return;
+            }
+
+            document.getElementById('userDashboardModal').classList.add('active');
+            switchDashboardTab(tabName);
+        }
+
+        function closeDashboardModal() {
+            document.getElementById('userDashboardModal').classList.remove('active');
+        }
+
+        function switchDashboardTab(tabName) {
+            ['dashTabPending', 'dashTabPurchased', 'dashTabEditProfile', 'dashTabSettings'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('active');
+            });
+
+            ['viewPendingTickets', 'viewPurchasedTickets', 'viewEditProfile', 'viewSettings'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+
+            if (tabName === 'pending_tickets') {
+                document.getElementById('dashTabPending').classList.add('active');
+                document.getElementById('viewPendingTickets').style.display = 'block';
+                renderPendingTickets();
+            } else if (tabName === 'purchased_tickets') {
+                document.getElementById('dashTabPurchased').classList.add('active');
+                document.getElementById('viewPurchasedTickets').style.display = 'block';
+                fetchPurchasedTickets();
+            } else if (tabName === 'edit_profile') {
+                document.getElementById('dashTabEditProfile').classList.add('active');
+                document.getElementById('viewEditProfile').style.display = 'block';
+                if (currentUser) {
+                    document.getElementById('editUsername').value = currentUser.username || '';
+                    document.getElementById('editEmail').value = currentUser.email || '';
+                }
+            } else if (tabName === 'settings') {
+                document.getElementById('dashTabSettings').classList.add('active');
+                document.getElementById('viewSettings').style.display = 'block';
+            }
+        }
+
+        function renderPendingTickets() {
+            const grid = document.getElementById('pendingTicketsGrid');
+            grid.innerHTML = '';
+            
+            if (pendingTickets.length === 0) {
+                grid.innerHTML = '<p style="color:#64748b;">Sırada olan biletiniz bulunmuyor.</p>';
+                return;
+            }
+
+            pendingTickets.forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'mini-ticket-card';
+                card.innerHTML = `
+                    <span class="mini-ticket-badge pending">⏳ KAFKA KUYRUĞUNDA</span>
+                    <div style="font-weight:700; font-size:1rem; color:#f8fafc;">${t.title}</div>
+                    <div style="font-size:0.8rem; color:#94a3b8;">Tarih: ${new Date(t.time).toLocaleTimeString()}</div>
+                    <div class="barcode-strip">||| |||| ||| |||</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        async function fetchPurchasedTickets() {
+            const grid = document.getElementById('purchasedTicketsGrid');
+            grid.innerHTML = '<p style="color:#64748b;">Yükleniyor...</p>';
+
+            try {
+                const res = await fetch(`${API_BASE}/tickets/user/${currentUser.id}`);
+                const tickets = await res.json();
+                grid.innerHTML = '';
+
+                if (tickets.length === 0) {
+                    grid.innerHTML = '<p style="color:#64748b;">Henüz onaylanmış biletiniz bulunmuyor.</p>';
+                    return;
+                }
+
+                tickets.forEach(t => {
+                    const card = document.createElement('div');
+                    card.className = 'bubilet-ticket-pass';
+                    const pDate = t.purchaseDate ? new Date(t.purchaseDate).toLocaleString('tr-TR') : 'Şimdi';
+                    const pnr = 'BBLT-' + Math.floor(100000 + Math.random() * 900000);
+                    const seatNum = Math.floor(1 + Math.random() * 80);
+                    const rowNum = Math.floor(1 + Math.random() * 20);
+                    const block = ['A1', 'A2', 'B1', 'B2', 'VIP'][Math.floor(Math.random() * 5)];
+                    const gate = Math.floor(1 + Math.random() * 6);
+
+                    card.innerHTML = `
+                        <div class="bubilet-pass-header">
+                            <div>
+                                <span style="font-size:0.7rem; font-weight:800; letter-spacing:1px; background:rgba(0,0,0,0.25); padding:0.2rem 0.6rem; border-radius:9999px;">🎟️ BUBİLET DİJİTAL PASS</span>
+                                <div style="font-weight:800; font-size:1.1rem; margin-top:0.3rem;">${t.eventTitle || 'Etkinlik'}</div>
+                            </div>
+                            <span class="mini-ticket-badge confirmed">✅ ONAYLANDI</span>
+                        </div>
+
+                        <div class="bubilet-pass-body">
+                            <div class="bubilet-grid">
+                                <div class="bubilet-grid-item">
+                                    <span class="bubilet-grid-label">BİLET SAHİBİ</span>
+                                    <span class="bubilet-grid-val">${t.username || currentUser.username}</span>
+                                </div>
+                                <div class="bubilet-grid-item">
+                                    <span class="bubilet-grid-label">PNR KODU</span>
+                                    <span class="bubilet-grid-val" style="color:#38bdf8;">${pnr}</span>
+                                </div>
+                                <div class="bubilet-grid-item">
+                                    <span class="bubilet-grid-label">KATEGORİ & BLOK</span>
+                                    <span class="bubilet-grid-val">Sahne Önü ${block}</span>
+                                </div>
+                                <div class="bubilet-grid-item">
+                                    <span class="bubilet-grid-label">SIRA / KOLTUK</span>
+                                    <span class="bubilet-grid-val">Sıra ${rowNum} • K:${seatNum}</span>
+                                </div>
+                                <div class="bubilet-grid-item">
+                                    <span class="bubilet-grid-label">GİRİŞ KAPISI</span>
+                                    <span class="bubilet-grid-val">Kapı ${gate} Nolu Giriş</span>
+                                </div>
+                                <div class="bubilet-grid-item">
+                                    <span class="bubilet-grid-label">ALIM TARİHİ</span>
+                                    <span class="bubilet-grid-val">${pDate}</span>
+                                </div>
+                            </div>
+
+                            <div class="perforated-line"></div>
+
+                            <div style="text-align:center;">
+                                <div class="barcode-strip" style="letter-spacing:6px; font-size:0.85rem;">||| | ||||| | |||| ||| |||</div>
+                                <div style="font-size:0.7rem; color:#64748b; margin-top:0.4rem; font-family:monospace;">ETKİNLİK GİRİŞİ İÇİN BU BARKODU / QR KODU OKUTUNUZ</div>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                grid.innerHTML = '<p style="color:#f87171;">Biletler çekilemedi.</p>';
+            }
+        }
+
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            const username = document.getElementById('editUsername').value;
+            const email = document.getElementById('editEmail').value;
+            const password = document.getElementById('editPassword').value;
+            const msgElem = document.getElementById('editProfileMsg');
+
+            try {
+                const res = await fetch(`${API_BASE}/users/${currentUser.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, email: email, password: password })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    currentUser.username = data.username;
+                    currentUser.email = data.email;
+                    localStorage.setItem('passo_user', JSON.stringify(currentUser));
+                    updateNavAuth();
+                    msgElem.style.color = '#4ade80';
+                    msgElem.innerText = data.message || 'Profil güncellendi!';
+                    msgElem.style.display = 'block';
+                } else {
+                    msgElem.style.color = '#f87171';
+                    msgElem.innerText = data.message || 'Güncelleme başarısız.';
+                    msgElem.style.display = 'block';
+                }
+            } catch (err) {
+                msgElem.style.color = '#f87171';
+                msgElem.innerText = 'Sunucu bağlantı hatası.';
+                msgElem.style.display = 'block';
+            }
+        }
+
+        window.addEventListener('click', function() {
+            const menu = document.getElementById('profileDropdown');
+            if (menu && menu.classList.contains('show')) {
+                menu.classList.remove('show');
+            }
+        });
+
+        function openAuthModal(type = 'login', notice = '') {
+            switchAuthTab(type);
+            const noticeElem = document.getElementById('authNotice');
+            if (notice) {
+                noticeElem.innerText = notice;
+                noticeElem.style.display = 'block';
+            } else {
+                noticeElem.style.display = 'none';
+            }
+            document.getElementById('authErrorMsg').style.display = 'none';
+            document.getElementById('authModal').classList.add('active');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.remove('active');
+        }
+
+        function switchAuthTab(type) {
+            document.getElementById('authErrorMsg').style.display = 'none';
+            if (type === 'login') {
+                document.getElementById('tabLogin').classList.add('active');
+                document.getElementById('tabRegister').classList.remove('active');
+                document.getElementById('formLogin').style.display = 'block';
+                document.getElementById('formRegister').style.display = 'none';
+            } else {
+                document.getElementById('tabRegister').classList.add('active');
+                document.getElementById('tabLogin').classList.remove('active');
+                document.getElementById('formRegister').style.display = 'block';
+                document.getElementById('formLogin').style.display = 'none';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const input = document.getElementById('loginInput').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usernameOrEmail: input, password: password })
+                });
+
+                const data = await res.json();
+                if (data && data.success) {
+                    currentUser = { id: data.id, username: data.username, email: data.email };
+                    localStorage.setItem('passo_user', JSON.stringify(currentUser));
+                    updateNavAuth();
+                    closeAuthModal();
+                    addLog(`[GİRİŞ] Hoş geldin ${data.username}! Kullanıcı ID: ${data.id}`);
+                } else {
+                    showAuthError((data && data.message) ? data.message : 'Giriş başarısız.');
+                }
+            } catch (err) {
+                showAuthError('Sunucu bağlantı hatası.');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, email: email, password: password })
+                });
+
+                const data = await res.json();
+                if (data && data.success) {
+                    currentUser = { id: data.id, username: data.username, email: data.email };
+                    localStorage.setItem('passo_user', JSON.stringify(currentUser));
+                    updateNavAuth();
+                    closeAuthModal();
+                    addLog(`[KAYIT] Yeni hesap oluşturuldu: ${data.username} (ID: ${data.id})`);
+                } else {
+                    showAuthError((data && data.message) ? data.message : 'Kayıt olunamadı.');
+                }
+            } catch (err) {
+                showAuthError('Sunucu bağlantı hatası.');
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('passo_user');
+            updateNavAuth();
+            addLog('[ÇIKIŞ] Oturum kapatıldı.');
+        }
+
+        function showAuthError(msg) {
+            const err = document.getElementById('authErrorMsg');
+            err.innerText = msg;
+            err.style.display = 'block';
+        }
 
         async function fetchEvents() {
             try {
@@ -486,6 +1618,7 @@
             events.forEach(evt => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.onclick = () => openEventDetailModal(evt.id);
 
                 const isLow = evt.availableCapacity > 0 && evt.availableCapacity <= 30;
                 const img = evt.imageUrl || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80';
@@ -507,8 +1640,8 @@
                             </div>
                         </div>
 
-                        <button class="btn-buy" ${evt.availableCapacity <= 0 ? 'disabled' : ''} onclick="buyTicket(${evt.id}, '${evt.title.replace(/'/g, "\\'")}')">
-                            ${evt.availableCapacity > 0 ? '⚡ Hemen Bilet Al' : '❌ TÜKENDİ'}
+                        <button class="btn-buy" ${evt.availableCapacity <= 0 ? 'disabled' : ''} onclick="event.stopPropagation(); openEventDetailModal(${evt.id})">
+                            ${evt.availableCapacity > 0 ? '⚡ Detay & Bilet Al' : '❌ TÜKENDİ'}
                         </button>
                     </div>
                 `;
@@ -516,20 +1649,164 @@
             });
         }
 
+        /* Bubilet Event Detail Modal Logic */
+        function openEventDetailModal(eventId) {
+            const evt = allEvents.find(e => e.id === eventId);
+            if (!evt) return;
+            activeDetailEvent = evt;
+
+            document.getElementById('detailPosterImg').src = evt.imageUrl || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80';
+            document.getElementById('detailCategoryTag').innerText = evt.category || 'Müzik & Konser';
+            document.getElementById('detailTitle').innerText = evt.title;
+            document.getElementById('detailVenue').innerText = `📍 ${evt.venue || 'İstanbul'}`;
+            document.getElementById('detailDesc').innerText = evt.description;
+            document.getElementById('detailBasePrice').innerText = `₺${evt.price}`;
+            
+            const dateObj = evt.dateTime ? new Date(evt.dateTime) : new Date();
+            document.getElementById('detailDateStr').innerText = dateObj.toLocaleDateString('tr-TR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+
+            document.getElementById('eventDetailModal').classList.add('active');
+        }
+
+        function closeEventDetailModal() {
+            document.getElementById('eventDetailModal').classList.remove('active');
+        }
+
+        function toggleRules() {
+            const rules = document.getElementById('rulesContent');
+            rules.style.display = rules.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function openSeatingFromDetail() {
+            closeEventDetailModal();
+            if (!activeDetailEvent) return;
+
+            if (!currentUser) {
+                openAuthModal('login', 'Lütfen önce giriş yapın.');
+                return;
+            }
+
+            document.getElementById('seatingEventTitle').innerText = activeDetailEvent.title;
+            
+            const basePrice = parseFloat(activeDetailEvent.price);
+            document.getElementById('priceVip').innerText = `₺${Math.round(basePrice * 1.8)}`;
+            document.getElementById('priceCat1').innerText = `₺${Math.round(basePrice * 1.2)}`;
+            document.getElementById('priceCat2').innerText = `₺${Math.round(basePrice * 0.8)}`;
+
+            selectZone('VIP');
+            document.getElementById('seatingViewModal').classList.add('active');
+        }
+
+        function closeSeatingModal() {
+            document.getElementById('seatingViewModal').classList.remove('active');
+        }
+
+        function selectZone(zone) {
+            selectedZone = zone;
+            ['Vip', 'Cat1', 'Cat2'].forEach(z => {
+                const el = document.getElementById(`zone${z}`);
+                if (el) el.classList.remove('selected');
+            });
+
+            if (zone === 'VIP') document.getElementById('zoneVip').classList.add('selected');
+            if (zone === 'CAT1') document.getElementById('zoneCat1').classList.add('selected');
+            if (zone === 'CAT2') document.getElementById('zoneCat2').classList.add('selected');
+
+            renderSeatMatrix();
+            updateSeatingSummary();
+        }
+
+        function renderSeatMatrix() {
+            const matrix = document.getElementById('seatMatrix');
+            matrix.innerHTML = '';
+
+            const rows = ['A', 'B', 'C', 'D'];
+            rows.forEach((row, rIdx) => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'seat-row';
+                
+                const rowLabel = document.createElement('span');
+                rowLabel.style.fontSize = '0.75rem';
+                rowLabel.style.color = '#94a3b8';
+                rowLabel.style.fontWeight = '700';
+                rowLabel.style.width = '20px';
+                rowLabel.innerText = row;
+                rowDiv.appendChild(rowLabel);
+
+                for (let s = 1; s <= 10; s++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'seat-btn';
+                    btn.innerText = s;
+
+                    // Some random reserved seats
+                    if ((rIdx + s) % 7 === 0) {
+                        btn.classList.add('reserved');
+                        btn.disabled = true;
+                    } else if (selectedRow === row && selectedSeat === s) {
+                        btn.classList.add('selected');
+                    }
+
+                    btn.onclick = () => {
+                        selectedRow = row;
+                        selectedSeat = s;
+                        renderSeatMatrix();
+                        updateSeatingSummary();
+                    };
+
+                    rowDiv.appendChild(btn);
+                }
+                matrix.appendChild(rowDiv);
+            });
+        }
+
+        function updateSeatingSummary() {
+            if (!activeDetailEvent) return;
+            const basePrice = parseFloat(activeDetailEvent.price);
+            let multiplier = 1.0;
+            let zoneName = 'Sahne Önü VIP';
+
+            if (selectedZone === 'VIP') {
+                multiplier = 1.8;
+                zoneName = 'Sahne Önü VIP';
+            } else if (selectedZone === 'CAT1') {
+                multiplier = 1.2;
+                zoneName = 'Kategori 1 (Orta Saha)';
+            } else if (selectedZone === 'CAT2') {
+                multiplier = 0.8;
+                zoneName = 'Kategori 2 (Tribün)';
+            }
+
+            const finalPrice = Math.round(basePrice * multiplier);
+            document.getElementById('selectedSeatSummary').innerText = `${zoneName} • Sıra ${selectedRow} - Koltuk ${selectedSeat}`;
+            document.getElementById('selectedTotalPrice').innerText = `₺${finalPrice},00`;
+        }
+
+        async function executeSeatingPurchase() {
+            if (!activeDetailEvent || !currentUser) return;
+            closeSeatingModal();
+            buyTicket(activeDetailEvent.id, activeDetailEvent.title);
+        }
+
         async function buyTicket(eventId, title) {
-            addLog(`[ISTEK] POST /api/tickets -> EventID: ${eventId}, UserID: 1`, 'pending');
+            if (!currentUser) {
+                openAuthModal('login', 'Bilet satın alabilmek için lütfen önce giriş yapın!');
+                return;
+            }
+
+            addLog(`[ISTEK] POST /api/tickets -> EventID: ${eventId}, UserID: ${currentUser.id} (${currentUser.username})`, 'pending');
+            pendingTickets.push({ title: title, time: new Date() });
 
             try {
                 const res = await fetch(`${API_BASE}/tickets`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ eventId: eventId, userId: 1 })
+                    body: JSON.stringify({ eventId: eventId, userId: currentUser.id })
                 });
 
                 const data = await res.json();
 
                 if (res.ok) {
-                    addLog(`[REDIS & KAFKA SUCCESS] ${title} talebi alındı. Statü: [${data.status}]. Kafka 'ticket-bookings' kanalına aktarıldı!`);
+                    addLog(`[REDIS & KAFKA SUCCESS] ${title} talebi alındı. Kullanıcı: ${currentUser.username}. Statü: [${data.status}]. Kafka 'ticket-bookings' kanalına aktarıldı!`);
                     
                     // Trigger Confetti!
                     confetti({
@@ -549,7 +1826,7 @@
 
                     // Open Success Ticket Modal
                     document.getElementById('modalEventTitle').innerText = title;
-                    document.getElementById('modalStatusMsg').innerText = `Statü: ${data.status} - Kafka kuyruğuna yazıldı. Biletiniz PostgreSQL'e işleniyor.`;
+                    document.getElementById('modalStatusMsg').innerText = `Satın Alan: ${currentUser.username} - Statü: ${data.status} - Kafka kuyruğuna yazıldı. Biletiniz PostgreSQL'e işleniyor.`;
                     document.getElementById('ticketModal').classList.add('active');
 
                     // Refetch from server after 800ms
@@ -588,6 +1865,7 @@
         }
 
         // Initialize
+        updateNavAuth();
         fetchEvents();
         setInterval(fetchEvents, 4000);
     </script>

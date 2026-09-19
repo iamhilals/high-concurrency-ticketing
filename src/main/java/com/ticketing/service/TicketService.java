@@ -6,22 +6,43 @@ import com.ticketing.dto.TicketResponse;
 import com.ticketing.entity.Event;
 import com.ticketing.entity.User;
 import com.ticketing.repository.EventRepository;
+import com.ticketing.repository.TicketRepository;
 import com.ticketing.repository.UserRepository;
+import com.ticketing.entity.Ticket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TicketService {
 
+    private final TicketRepository ticketRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final StringRedisTemplate redisTemplate; // Redis işlemleri için
     private final KafkaTemplate<String, Object> kafkaTemplate; // Kafka mesaj şablonu (Producer)
+
+    @Transactional(readOnly = true)
+    public List<TicketResponse> getUserTickets(Long userId) {
+        return ticketRepository.findByUserId(userId).stream()
+                .map(ticket -> TicketResponse.builder()
+                        .ticketId(ticket.getId())
+                        .eventId(ticket.getEvent().getId())
+                        .eventTitle(ticket.getEvent().getTitle())
+                        .userId(ticket.getUser().getId())
+                        .username(ticket.getUser().getUsername())
+                        .purchaseDate(ticket.getPurchaseDate())
+                        .status("CONFIRMED")
+                        .build())
+                .collect(Collectors.toList());
+    }
 
     /**
      * Bilet satın alma talebini karşılayan metot.
