@@ -1,14 +1,12 @@
 package com.ticketing.service;
 
-import com.ticketing.dto.TicketBookingEvent;
-import com.ticketing.dto.TicketRequest;
-import com.ticketing.dto.TicketResponse;
+import com.ticketing.dto.*;
 import com.ticketing.entity.Event;
+import com.ticketing.entity.Ticket;
 import com.ticketing.entity.User;
 import com.ticketing.repository.EventRepository;
 import com.ticketing.repository.TicketRepository;
 import com.ticketing.repository.UserRepository;
-import com.ticketing.entity.Ticket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -17,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +28,8 @@ public class TicketService {
     private final UserRepository userRepository;
     private final StringRedisTemplate redisTemplate; // Redis işlemleri için
     private final KafkaTemplate<String, Object> kafkaTemplate; // Kafka mesaj şablonu (Producer)
+
+    private static final long SEAT_LOCK_MINUTES = 10;
 
     @Transactional(readOnly = true)
     public List<TicketResponse> getUserTickets(Long userId) {
@@ -45,54 +47,101 @@ public class TicketService {
     }
 
     /**
-     * Bilet satın alma talebini karşılayan metot.
-     * Bu metot veritabanına doğrudan yazmaz veya kilit tutmaz.
-     * Redis ile hızlı kapasite doğrulaması yapar ve talebi asenkron işlenmek üzere Kafka'ya gönderir.
+     * 10 Dakikalık Geçici Koltuk Rejervasyonu (Redis Lock with 10m TTL)
+     */
+    public SeatReserveResponse reserveSeat(SeatReserveRequest request) {
+        String seatLockKey = "seat_lock:event:" + request.getEventId() + ":seat:" + request.getSeatId();
+        String reservationId = "RES-" + UUID.randomUUID().toString().substring(0, 8);
+
+        // Atomik setIfAbsent (NX) ile koltuğu 10 dakikalığına kilitliyoruz
+        Boolean isLocked = redisTemplate.opsForValue().setIfAbsent(seatLockKey, reservationId + ":" + request.getUserId(), SEAT_LOCK_MINUTES, TimeUnit.MINUTES);
+
+        if (Boolean.FALSE.equals(isLocked)) {
+            return SeatReserveResponse.builder()
+                    .success(false)
+                    .message("Bu koltuk şu anda başka bir kullanıcı tarafından 10 dakikalığına rezerve edilmiştir!")
+                    .build();
+        }
+
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(SEAT_LOCK_MINUTES);
+
+        return SeatReserveResponse.builder()
+                .success(true)
+                .reservationId(reservationId)
+                .eventId(request.getEventId())
+                .userId(request.getUserId())
+                .seatId(request.getSeatId())
+                .zoneName(request.getZoneName())
+                .price(request.getPrice())
+                .expiresAt(expiresAt)
+                .message("Koltuk 10 dakikalığına başarıyla rezerve edildi. Lütfen ödemeyi tamamlayın.")
+                .build();
+    }
+
+    /**
+     * Rezerve Edilen Koltuğu Ödeme Sonrası Kesinleştirme (Confirm Reservation)
+     */
+    public TicketResponse confirmSeatReservation(SeatConfirmRequest request) {
+        String seatLockKey = "seat_lock:event:" + request.getEventId() + ":seat:" + request.getSeatId();
+        String lockVal = redisTemplate.opsForValue().get(seatLockKey);
+
+        if (lockVal == null || !lockVal.contains(request.getReservationId())) {
+            throw new IllegalStateException("Koltuk rezervasyon süresi doldu (10 dk) veya geçersiz rezervasyon ID!");
+        }
+
+        // Genel satın alma akışına yönlendir
+        TicketRequest ticketRequest = TicketRequest.builder()
+                .eventId(request.getEventId())
+                .userId(request.getUserId())
+                .build();
+
+        TicketResponse response = purchaseTicket(ticketRequest);
+
+        // Başarılı Kafka kuyruğuna yazım sonrası Redis kilidini serbest bırak
+        redisTemplate.delete(seatLockKey);
+
+        return response;
+    }
+
+    /**
+     * Bilet satın alma talebini karşılayan metot (Redis DECR + Kafka).
      */
     public TicketResponse purchaseTicket(TicketRequest request) {
         String redisKey = "event:" + request.getEventId() + ":capacity";
 
-        // 1. Redis'ten kapasiteyi atomik olarak 1 azaltıyoruz (DECR) - Locksız Hızlı Kontrol
+        // 1. Redis'ten kapasiteyi atomik olarak 1 azaltıyoruz (DECR)
         Long remaining = redisTemplate.opsForValue().decrement(redisKey);
         
         if (remaining == null) {
             throw new IllegalStateException("Redis capacity counter is missing for key: " + redisKey);
         }
 
-        // Eğer kapasite sıfırın altına düştüyse bilet tükenmiştir
         if (remaining < 0) {
-            // Eksiye düşen sayacı eski haline getirmek için 1 arttırıyoruz (Rollback)
             redisTemplate.opsForValue().increment(redisKey);
             throw new IllegalStateException("No available tickets left in cache for event: " + request.getEventId());
         }
 
-        // 2. Redis bariyerini geçen istek için kullanıcı ve etkinlik bilgilerini çekiyoruz (Sadece isim doğrulamak vb. için)
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + request.getUserId()));
 
         Event event = eventRepository.findById(request.getEventId())
                 .orElseThrow(() -> new IllegalArgumentException("Event not found with id: " + request.getEventId()));
 
-        // 3. Asenkron bilet işleme kuyruk mesajını oluşturuyoruz
         TicketBookingEvent bookingEvent = TicketBookingEvent.builder()
                 .eventId(event.getId())
                 .userId(user.getId())
                 .build();
 
-        // 4. Mesajı Kafka kuyruğuna gönderiyoruz
-        // eventId mesaj anahtarı (key) olarak kullanılarak, aynı etkinliğe ait tüm biletlerin
-        // Kafka'da aynı partition'a gidip sıralı işlenmesi garanti edilir.
         kafkaTemplate.send("ticket-bookings", String.valueOf(event.getId()), bookingEvent);
 
-        // 5. Kullanıcıya talebin alındığını (PENDING) bildiren cevabı anında dönüyoruz
         return TicketResponse.builder()
-                .ticketId(null) // Bilet ID'si henüz veritabanına yazılmadığı için null
+                .ticketId(null)
                 .eventId(event.getId())
                 .eventTitle(event.getTitle())
                 .userId(user.getId())
                 .username(user.getUsername())
                 .purchaseDate(LocalDateTime.now())
-                .status("PENDING") // Durum beklemede olarak işaretlendi
+                .status("PENDING")
                 .build();
     }
 }

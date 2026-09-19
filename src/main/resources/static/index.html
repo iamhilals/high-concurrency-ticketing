@@ -1758,7 +1758,12 @@
                         <div style="font-size:0.78rem; color:#4ade80;">256-Bit SSL Şifreli Güvenli Ödeme</div>
                     </div>
                 </div>
-                <button style="background:none; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer;" onclick="closePaymentModal()">✕</button>
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <div style="display:inline-flex; align-items:center; gap:0.4rem; background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.4); padding:0.35rem 0.85rem; border-radius:9999px; font-size:0.8rem; font-weight:800; color:#f87171;">
+                        ⏱️ Kalan Süre: <span id="reservationTimerStr">10:00</span>
+                    </div>
+                    <button style="background:none; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer;" onclick="closePaymentModal()">✕</button>
+                </div>
             </div>
 
             <div class="payment-body-grid">
@@ -2674,9 +2679,51 @@
             document.getElementById('selectedTotalPrice').innerText = `₺${calculatedFinalPrice},00`;
         }
 
+        let activeReservation = null;
+        let reservationTimerInterval = null;
+        let reservationSecondsLeft = 600;
+
         /* Bubilet Payment Checkout Modal Functions */
-        function openPaymentModal() {
-            if (!activeDetailEvent || !currentUser) return;
+        async function openPaymentModal() {
+            if (!activeDetailEvent) return;
+            if (!currentUser) {
+                openAuthModal('login', 'Ödemeye geçebilmek için lütfen önce giriş yapın!');
+                return;
+            }
+
+            const seatIdStr = `${selectedBlockCode}-${selectedRow}${selectedSeat}`;
+
+            // Call Redis Temporary Seat Lock Endpoint (10-Minute Lock)
+            try {
+                const res = await fetch(`${API_BASE}/tickets/reserve`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        eventId: activeDetailEvent.id,
+                        userId: currentUser.id,
+                        seatId: seatIdStr,
+                        zoneName: selectedBlockName,
+                        price: calculatedFinalPrice
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.status === 409 || (data && !data.success)) {
+                    alert(`⚠️ ${data.message || 'Bu koltuk başka bir kullanıcı tarafından 10 dakikalığına rezerve edilmiştir!'}`);
+                    return;
+                }
+
+                if (res.status === 429) {
+                    alert(`⚠️ ${data.message || 'Çok fazla bilet isteğinde bulundunuz. Güvenlik nedeniyle lütfen 1 dakika bekleyin.'}`);
+                    return;
+                }
+
+                activeReservation = data;
+            } catch (err) {
+                console.error("Reserve error:", err);
+            }
+
             closeSeatingModal();
 
             document.getElementById('payEventTitle').innerText = activeDetailEvent.title;
@@ -2695,11 +2742,44 @@
                 document.getElementById('previewCardHolder').innerText = currentUser.username.toUpperCase();
             }
 
+            startReservationTimer();
             document.getElementById('paymentModal').classList.add('active');
         }
 
         function closePaymentModal() {
+            stopReservationTimer();
             document.getElementById('paymentModal').classList.remove('active');
+        }
+
+        function startReservationTimer() {
+            stopReservationTimer();
+            reservationSecondsLeft = 600; // 10 minutes
+            updateTimerDisplay();
+
+            reservationTimerInterval = setInterval(() => {
+                reservationSecondsLeft--;
+                updateTimerDisplay();
+
+                if (reservationSecondsLeft <= 0) {
+                    stopReservationTimer();
+                    closePaymentModal();
+                    alert("⏱️ 10 dakikalık koltuk rezervasyon süreniz doldu! Koltuk kilitleri serbest bırakıldı.");
+                }
+            }, 1000);
+        }
+
+        function stopReservationTimer() {
+            if (reservationTimerInterval) {
+                clearInterval(reservationTimerInterval);
+                reservationTimerInterval = null;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(reservationSecondsLeft / 60).toString().padStart(2, '0');
+            const s = (reservationSecondsLeft % 60).toString().padStart(2, '0');
+            const elem = document.getElementById('reservationTimerStr');
+            if (elem) elem.innerText = `${m}:${s}`;
         }
 
         function updateCardPreview() {
@@ -2757,8 +2837,47 @@
 
         async function handleFinalPayment(e) {
             e.preventDefault();
-            closePaymentModal();
-            buyTicket(activeDetailEvent.id, activeDetailEvent.title);
+            if (!activeReservation || !currentUser) {
+                closePaymentModal();
+                buyTicket(activeDetailEvent.id, activeDetailEvent.title);
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/tickets/confirm`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        reservationId: activeReservation.reservationId,
+                        eventId: activeDetailEvent.id,
+                        userId: currentUser.id,
+                        seatId: activeReservation.seatId
+                    })
+                });
+
+                const data = await res.json();
+                closePaymentModal();
+
+                if (res.ok) {
+                    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                    const capElem = document.getElementById(`cap-${activeDetailEvent.id}`);
+                    if (capElem) {
+                        let currentCap = parseInt(capElem.innerText);
+                        if (currentCap > 0) capElem.innerText = currentCap - 1;
+                    }
+
+                    document.getElementById('modalEventTitle').innerText = activeDetailEvent.title;
+                    document.getElementById('modalStatusMsg').innerText = `Sayın ${currentUser.username}, bilet alma işleminiz ve koltuk rezervasyonunuz başarıyla onaylandı. Biletinizi Profilim -> Biletlerim sekmesinden görüntüleyebilirsiniz.`;
+                    document.getElementById('ticketModal').classList.add('active');
+                    setTimeout(fetchEvents, 800);
+                } else {
+                    alert(`⚠️ ${data.message || 'Ödeme onaylanamadı veya rezervasyon süresi doldu.'}`);
+                }
+            } catch (err) {
+                console.error(err);
+                closePaymentModal();
+                buyTicket(activeDetailEvent.id, activeDetailEvent.title);
+            }
         }
 
         async function buyTicket(eventId, title) {
