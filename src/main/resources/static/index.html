@@ -6,6 +6,7 @@
     <title>PassoLive • Bilet Satış Platformu</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
         :root {
             --bg-main: #090d16;
@@ -1982,15 +1983,53 @@
         </div>
     </div>
 
-    <!-- Ticket Stub Modal -->
+    <!-- 3D Secure SMS OTP Verification Modal -->
+    <div class="modal-overlay" id="otpModal">
+        <div class="auth-card" style="max-width:440px; border:1px solid rgba(59,130,246,0.5); box-shadow:0 25px 60px -10px rgba(59,130,246,0.4);">
+            <div style="text-align:center;">
+                <div style="font-size:2.2rem; margin-bottom:0.4rem;">🔒</div>
+                <h3 style="font-size:1.2rem; font-weight:800; color:#f8fafc;">3D Secure SMS Doğrulama</h3>
+                <p style="font-size:0.85rem; color:#94a3b8; margin-top:0.4rem;">
+                    Banka sisteminize kayıtlı cep telefonunuza (<strong style="color:#60a5fa;">0532 *** ** 88</strong>) gönderilen 6 haneli şifreyi giriniz.
+                </p>
+                <div style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); padding:0.6rem; border-radius:0.75rem; margin:1rem 0; font-size:0.88rem; font-weight:800; color:#93c5fd;">
+                    💬 Simüle Edilen SMS Kodu: <span id="simulatedOtpCode" style="color:#fbbf24; font-size:1.15rem; letter-spacing:2px; font-weight:800;">482 910</span>
+                </div>
+            </div>
+
+            <form id="otpForm" onsubmit="confirm3DSecurePayment(event)" style="display:flex; flex-direction:column; gap:1rem;">
+                <div class="form-group">
+                    <label style="font-size:0.8rem; font-weight:700; color:#cbd5e1; text-align:center;">6 Haneli SMS Doğrulama Kodu</label>
+                    <input type="text" id="otpInput" class="filter-input" maxlength="6" placeholder="482910" style="text-align:center; letter-spacing:8px; font-size:1.35rem; font-weight:bold; font-family:monospace;" required>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.88rem; color:#94a3b8;">
+                    <span>Kalan Süre: <strong id="otpTimerStr" style="color:#ef4444; font-weight:800;">60</strong> sn</span>
+                    <button type="button" style="background:none; border:none; color:#60a5fa; cursor:pointer; font-weight:700;" onclick="regenerateOtp()">Tekrar Kod Gönder</button>
+                </div>
+
+                <div style="display:flex; gap:0.75rem; margin-top:0.5rem;">
+                    <button type="button" class="btn-auth" style="flex:1;" onclick="closeOtpModal()">Vazgeç</button>
+                    <button type="submit" class="btn-auth primary" style="flex:2; background:linear-gradient(135deg, #3b82f6, #1d4ed8);">✅ Doğrula ve Öde</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Ticket Stub Modal with Scannable QR Code -->
     <div class="modal-overlay" id="ticketModal">
         <div class="ticket-stub">
-            <div style="font-size:2rem; margin-bottom:0.5rem;">🎉</div>
-            <div class="stub-header">BİLETİNİZ HAZIRLANIYOR!</div>
-            <p style="color:#cbd5e1; font-size:0.9rem;" id="modalEventTitle">Rock Concert 2026</p>
-            <div class="stub-barcode">||| | ||||| | |||| ||| |||</div>
-            <p style="color:#94a3b8; font-size:0.8rem;" id="modalStatusMsg">Talebiniz Kafka kuyruğuna alındı ve asenkron işleniyor.</p>
-            <button class="btn-close" onclick="closeModal()">Harika!</button>
+            <div style="font-size:2rem; margin-bottom:0.4rem;">🎉</div>
+            <div class="stub-header" style="font-size:1.3rem;">BİLETİNİZ BAŞARIYLA ONAYLANDI!</div>
+            <p style="color:#cbd5e1; font-weight:800; font-size:1rem; margin-bottom:0.75rem;" id="modalEventTitle">Rock Concert 2026</p>
+            
+            <div style="background:#fff; padding:1rem; border-radius:1rem; display:inline-flex; flex-direction:column; align-items:center; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+                <canvas id="modalTicketQrCanvas"></canvas>
+                <div style="font-size:0.75rem; color:#000; font-weight:bold; font-family:monospace; margin-top:0.5rem;" id="modalTicketCodeStr">PASS-2026-TK-9481</div>
+            </div>
+
+            <p style="color:#cbd5e1; font-size:0.85rem; margin-top:1rem;" id="modalStatusMsg">Bilet alma işleminiz ve koltuk rezervasyonunuz onaylandı.</p>
+            <button class="btn-close" onclick="closeModal()">📱 Biletlerime Git</button>
         </div>
     </div>
 
@@ -2189,13 +2228,25 @@
 
                             <div class="perforated-line"></div>
 
-                            <div style="text-align:center;">
-                                <div class="barcode-strip" style="letter-spacing:6px; font-size:0.85rem;">||| | ||||| | |||| ||| |||</div>
-                                <div style="font-size:0.7rem; color:#64748b; margin-top:0.4rem; font-family:monospace;">ETKİNLİK GİRİŞİ İÇİN BU BARKODU / QR KODU OKUTUNUZ</div>
+                            <div style="display:flex; flex-direction:column; align-items:center; background:#fff; padding:0.85rem; border-radius:0.75rem; margin-top:0.4rem;">
+                                <canvas id="pass-qr-${t.ticketId}"></canvas>
+                                <div style="font-size:0.72rem; color:#000; font-weight:bold; font-family:monospace; margin-top:0.3rem;">PASS-2026-TK-${t.ticketId || '901'}-${currentUser.id}</div>
                             </div>
+                            <div style="font-size:0.68rem; color:#94a3b8; margin-top:0.4rem; text-align:center; font-family:monospace;">ETKİNLİK KAPISINDA BU DİJİTAL QR KODU OKUTUNUZ</div>
                         </div>
                     `;
                     grid.appendChild(card);
+
+                    setTimeout(() => {
+                        const canvasElem = document.getElementById(`pass-qr-${t.ticketId}`);
+                        if (canvasElem) {
+                            new QRious({
+                                element: canvasElem,
+                                value: `PASS-2026-TK-${t.ticketId || '901'}-${currentUser.id}`,
+                                size: 110
+                            });
+                        }
+                    }, 50);
                 });
             } catch (err) {
                 grid.innerHTML = '<p style="color:#f87171;">Biletler çekilemedi.</p>';
@@ -2484,6 +2535,12 @@
                         <div class="card-title">${evt.title}</div>
                         <div class="card-venue">📍 ${evt.venue || 'İstanbul Stadyum & Sahne'}</div>
                         <p style="color:var(--text-muted); font-size:0.88rem;">${evt.description}</p>
+
+                        ${isLow ? `
+                        <div style="background:rgba(244,63,94,0.12); border:1px solid rgba(244,63,94,0.3); color:#f43f5e; font-size:0.72rem; font-weight:800; padding:0.25rem 0.65rem; border-radius:9999px; width:fit-content; margin-top:0.25rem;">
+                            🔥 YÜKSEK TALEP • DİNAMİK FİYAT (+%20 Surge)
+                        </div>
+                        ` : ''}
 
                         <!-- Stock Capacity Progress Bar -->
                         <div style="margin-top:0.3rem;">
@@ -2835,10 +2892,70 @@
             }
         }
 
-        async function handleFinalPayment(e) {
+        let currentSimulatedOtp = '482910';
+        let otpTimerInterval = null;
+        let otpSecondsLeft = 60;
+
+        function handleFinalPayment(e) {
             e.preventDefault();
+            if (!currentUser) return;
+            openOtpModal();
+        }
+
+        function openOtpModal() {
+            currentSimulatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            const elem = document.getElementById('simulatedOtpCode');
+            if (elem) elem.innerText = currentSimulatedOtp.substring(0, 3) + ' ' + currentSimulatedOtp.substring(3);
+            document.getElementById('otpInput').value = '';
+            startOtpTimer();
+            document.getElementById('otpModal').classList.add('active');
+        }
+
+        function closeOtpModal() {
+            stopOtpTimer();
+            document.getElementById('otpModal').classList.remove('active');
+        }
+
+        function startOtpTimer() {
+            stopOtpTimer();
+            otpSecondsLeft = 60;
+            const elem = document.getElementById('otpTimerStr');
+            if (elem) elem.innerText = otpSecondsLeft;
+
+            otpTimerInterval = setInterval(() => {
+                otpSecondsLeft--;
+                if (elem) elem.innerText = otpSecondsLeft;
+                if (otpSecondsLeft <= 0) {
+                    stopOtpTimer();
+                    alert("⚠️ SMS Doğrulama kodunun süresi doldu! Yeni kod almak için 'Tekrar Kod Gönder'e tıklayın.");
+                }
+            }, 1000);
+        }
+
+        function stopOtpTimer() {
+            if (otpTimerInterval) {
+                clearInterval(otpTimerInterval);
+                otpTimerInterval = null;
+            }
+        }
+
+        function regenerateOtp() {
+            openOtpModal();
+            alert("💬 Yeni SMS doğrulama kodu gönderildi!");
+        }
+
+        async function confirm3DSecurePayment(e) {
+            e.preventDefault();
+            const inputCode = document.getElementById('otpInput').value.trim();
+            if (inputCode !== currentSimulatedOtp) {
+                alert("❌ Hatalı SMS Kodu! Lütfen simüle edilen 6 haneli kodu eksiksiz giriniz.");
+                return;
+            }
+
+            closeOtpModal();
+            closePaymentModal();
+
             if (!activeReservation || !currentUser) {
-                closePaymentModal();
                 buyTicket(activeDetailEvent.id, activeDetailEvent.title);
                 return;
             }
@@ -2856,10 +2973,9 @@
                 });
 
                 const data = await res.json();
-                closePaymentModal();
 
                 if (res.ok) {
-                    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                    confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
                     const capElem = document.getElementById(`cap-${activeDetailEvent.id}`);
                     if (capElem) {
                         let currentCap = parseInt(capElem.innerText);
@@ -2867,7 +2983,21 @@
                     }
 
                     document.getElementById('modalEventTitle').innerText = activeDetailEvent.title;
-                    document.getElementById('modalStatusMsg').innerText = `Sayın ${currentUser.username}, bilet alma işleminiz ve koltuk rezervasyonunuz başarıyla onaylandı. Biletinizi Profilim -> Biletlerim sekmesinden görüntüleyebilirsiniz.`;
+                    const ticketCodeStr = `PASS-2026-TK-${data.ticketId || Math.floor(1000 + Math.random() * 9000)}-${currentUser.id}`;
+                    document.getElementById('modalTicketCodeStr').innerText = ticketCodeStr;
+
+                    setTimeout(() => {
+                        const qrCanvas = document.getElementById('modalTicketQrCanvas');
+                        if (qrCanvas) {
+                            new QRious({
+                                element: qrCanvas,
+                                value: ticketCodeStr,
+                                size: 130
+                            });
+                        }
+                    }, 100);
+
+                    document.getElementById('modalStatusMsg').innerText = `Sayın ${currentUser.username}, 3D Secure SMS doğrulamanız başarıyla gerçekleşti. Dijital biletiniz QR kodlu olarak hazırlandı!`;
                     document.getElementById('ticketModal').classList.add('active');
                     setTimeout(fetchEvents, 800);
                 } else {
@@ -2875,7 +3005,6 @@
                 }
             } catch (err) {
                 console.error(err);
-                closePaymentModal();
                 buyTicket(activeDetailEvent.id, activeDetailEvent.title);
             }
         }
