@@ -540,70 +540,224 @@
             cursor: pointer;
         }
 
-        /* Seating Map Modal */
+        /* Bubilet Style Spatial Seating Map Modal */
         .seating-map-card {
             background: #090d16;
             border: 1px solid rgba(168, 85, 247, 0.3);
             border-radius: 1.5rem;
             width: 95%;
-            max-width: 880px;
-            max-height: 90vh;
+            max-width: 1100px;
+            max-height: 92vh;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 25px 60px -10px rgba(168, 85, 247, 0.4);
+            box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.9);
             overflow: hidden;
             position: relative;
         }
 
-        .stage-indicator {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #000;
-            font-weight: 800;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            text-align: center;
-            padding: 0.75rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
-        }
-
-        .zone-pill-container {
+        .seating-layout-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            grid-template-columns: 1fr 340px;
+            gap: 1.25rem;
+            padding: 1.25rem;
+            overflow-y: auto;
+            flex-grow: 1;
         }
 
-        .zone-pill {
-            background: rgba(30, 41, 59, 0.8);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.75rem;
-            padding: 0.85rem;
+        @media (max-width: 920px) {
+            .seating-layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Side: Spatial Arena Floor Plan */
+        .arena-floor-plan {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
+            padding: 1.25rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
+            gap: 1.25rem;
         }
 
-        .zone-pill.selected, .zone-pill:hover {
-            border-color: #a855f7;
-            background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.2));
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        .stage-indicator-bar {
+            width: 85%;
+            max-width: 480px;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: #000;
+            font-weight: 800;
+            font-size: 0.95rem;
+            letter-spacing: 3px;
+            text-align: center;
+            padding: 0.6rem 1rem;
+            border-radius: 0 0 1rem 1rem;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+            border: 2px solid #fef08a;
+            border-top: none;
+        }
+
+        .spatial-arena-wrapper {
+            width: 100%;
+            max-width: 580px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        /* Outer Tribune Ring (Kategori 2 - Tribünler) */
+        .tribune-ring-outer {
+            border: 2px dashed rgba(56, 189, 248, 0.4);
+            border-radius: 1.5rem 1.5rem 1rem 1rem;
+            padding: 0.9rem;
+            background: rgba(56, 189, 248, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .zone-tag-label {
+            position: absolute;
+            top: -11px;
+            left: 20px;
+            background: #090d16;
+            padding: 0.1rem 0.6rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            border-radius: 4px;
+        }
+        .zone-tag-label.vip { color: #fbbf24; border: 1px solid #f59e0b; }
+        .zone-tag-label.cat1 { color: #c084fc; border: 1px solid #a855f7; }
+        .zone-tag-label.cat2 { color: #38bdf8; border: 1px solid #0284c7; }
+
+        .arena-middle-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.85rem;
+        }
+
+        .arena-side-tribune {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            width: 100px;
+        }
+
+        .arena-center-field {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        /* Block Card Box */
+        .block-card {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 0.65rem;
+            padding: 0.55rem 0.4rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.15rem;
+        }
+
+        .block-card:hover {
+            transform: scale(1.04);
+        }
+
+        /* VIP Zone Blocks (Sahne Önü) */
+        .block-card.vip-zone {
+            border-color: rgba(251, 191, 36, 0.6);
+            background: rgba(245, 158, 11, 0.12);
+            color: #fef08a;
+        }
+        .block-card.vip-zone.selected, .block-card.vip-zone:hover {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+            border-color: #fef08a;
+        }
+
+        /* Cat 1 Zone Blocks (Saha İçi Orta) */
+        .block-card.cat1-zone {
+            border-color: rgba(192, 132, 252, 0.6);
+            background: rgba(168, 85, 247, 0.12);
+            color: #e9d5ff;
+        }
+        .block-card.cat1-zone.selected, .block-card.cat1-zone:hover {
+            background: linear-gradient(135deg, #a855f7, #7e22ce);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.8);
+            border-color: #f0abfc;
+        }
+
+        /* Cat 2 Zone Blocks (Tribünler) */
+        .block-card.cat2-zone {
+            border-color: rgba(56, 189, 248, 0.6);
+            background: rgba(14, 165, 233, 0.12);
+            color: #bae6fd;
+        }
+        .block-card.cat2-zone.selected, .block-card.cat2-zone:hover {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+            border-color: #7dd3fc;
+        }
+
+        .block-card.soldout {
+            opacity: 0.45;
+            background: rgba(51, 65, 85, 0.3) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            color: #94a3b8 !important;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .block-title {
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .block-sub {
+            font-size: 0.62rem;
+            font-weight: 600;
+            opacity: 0.95;
+        }
+
+        .block-sub.sold {
+            color: #f87171;
+            font-weight: 700;
+        }
+
+        /* Dynamic Seat Matrix under Floor Plan */
+        .seat-matrix-wrapper {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .seat-matrix {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.4rem;
             align-items: center;
-            max-height: 240px;
+            max-height: 180px;
             overflow-y: auto;
-            padding: 1rem;
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            width: 100%;
         }
 
         .seat-row {
@@ -626,21 +780,78 @@
         }
 
         .seat-btn:hover {
-            background: #8b5cf6;
-            transform: scale(1.1);
+            transform: scale(1.15);
         }
 
+        .seat-btn.vip-seat { border-color: #fbbf24; color: #fbbf24; }
+        .seat-btn.cat1-seat { border-color: #c084fc; color: #c084fc; }
+        .seat-btn.cat2-seat { border-color: #38bdf8; color: #38bdf8; }
+
         .seat-btn.selected {
-            background: #ec4899;
-            border-color: #f43f5e;
-            box-shadow: 0 0 10px #ec4899;
+            background: #ec4899 !important;
+            color: #fff !important;
+            border-color: #f43f5e !important;
+            box-shadow: 0 0 12px #ec4899 !important;
         }
 
         .seat-btn.reserved {
-            background: #334155;
-            color: #64748b;
-            cursor: not-allowed;
-            border-color: transparent;
+            background: #334155 !important;
+            color: #64748b !important;
+            cursor: not-allowed !important;
+            border-color: transparent !important;
+        }
+
+        /* Right Sidebar: Categories & Checkout */
+        .seating-sidebar {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            justify-content: space-between;
+        }
+
+        .category-selector-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.85rem;
+            padding: 0.9rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-selector-card:hover, .category-selector-card.active {
+            border-color: #a855f7;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(139, 92, 246, 0.2));
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.25);
+        }
+
+        .legend-bar {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: #94a3b8;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
         }
 
         .dashboard-card {
@@ -1045,61 +1256,200 @@
         </div>
     </div>
 
-    <!-- Interactive Seating & Proximity Pricing Modal -->
+    <!-- Bubilet Spatial Seating & Proximity Pricing Modal -->
     <div class="modal-overlay" id="seatingViewModal">
         <div class="seating-map-card">
-            <div style="padding:1.25rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+            <!-- Modal Header -->
+            <div style="padding:1.25rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.6);">
                 <div>
-                    <h3 style="font-size:1.2rem; font-weight:800;" id="seatingEventTitle">Etkinlik Başlığı</h3>
-                    <div style="font-size:0.8rem; color:#94a3b8;">Sahneye Yakınlığa Göre Dinamik Fiyatlandırma & Koltuk Haritası</div>
+                    <h3 style="font-size:1.2rem; font-weight:800; color:#f8fafc;" id="seatingEventTitle">Etkinlik Başlığı</h3>
+                    <div style="font-size:0.8rem; color:#94a3b8;">Saha İçi & Tribün Konum Haritası (Bubilet Oturma Planı)</div>
                 </div>
-                <button style="background:none; border:none; color:#94a3b8; font-size:1.25rem; cursor:pointer;" onclick="closeSeatingModal()">✕</button>
+                <button style="background:none; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer;" onclick="closeSeatingModal()">✕</button>
             </div>
 
-            <div style="padding:1.5rem; overflow-y:auto; flex-grow:1; display:flex; flex-direction:column;">
-                <!-- Stage Representation -->
-                <div class="stage-indicator">🎤 SAHNE / STAGE</div>
+            <div class="seating-layout-grid">
+                <!-- Left Column: Arena Floor Plan & Seat Matrix -->
+                <div class="arena-floor-plan">
+                    <!-- Stage Bar -->
+                    <div class="stage-indicator-bar">🎤 SAHNE / STAGE</div>
 
-                <!-- Proximity Zones Selection -->
-                <div class="zone-pill-container">
-                    <div class="zone-pill selected" id="zoneVip" onclick="selectZone('VIP')">
-                        <span style="font-size:0.75rem; color:#fbbf24; font-weight:800;">🌟 SAHNE ÖNÜ VIP</span>
-                        <span style="font-size:1.05rem; font-weight:800; color:#fff;" id="priceVip">₺850</span>
-                        <span style="font-size:0.7rem; color:#94a3b8;">Sahneye 0-5m Mesafe</span>
+                    <!-- Spatial Arena Blocks Layout -->
+                    <div class="spatial-arena-wrapper">
+                        <!-- Outer Horseshoe Tribune Ring (Kategori 2) -->
+                        <div class="tribune-ring-outer">
+                            <span class="zone-tag-label cat2">🏟️ TRİBÜNLER (2. KATEGORİ)</span>
+                            
+                            <!-- Upper Tribune Blocks (Sol, Arka, Sağ) -->
+                            <div class="arena-middle-row">
+                                <!-- Sol Tribün -->
+                                <div class="arena-side-tribune">
+                                    <div class="block-card cat2-zone" id="block201" onclick="selectBlock('201', 'CAT2', 'Sol Tribün')">
+                                        <span class="block-title">201</span>
+                                        <span class="block-sub">Sol Tribün</span>
+                                    </div>
+                                    <div class="block-card soldout">
+                                        <span class="block-title">202</span>
+                                        <span class="block-sub sold">Tükendi</span>
+                                    </div>
+                                    <div class="block-card cat2-zone" id="block203" onclick="selectBlock('203', 'CAT2', 'Sol Tribün')">
+                                        <span class="block-title">203</span>
+                                        <span class="block-sub">Sol Tribün</span>
+                                    </div>
+                                </div>
+
+                                <!-- Center Field (VIP + Cat 1) -->
+                                <div class="arena-center-field">
+                                    <!-- Sahne Önü VIP Blocks -->
+                                    <div style="border:1px dashed rgba(251,191,36,0.4); border-radius:0.75rem; padding:0.6rem; background:rgba(245,158,11,0.03); position:relative;">
+                                        <span class="zone-tag-label vip">🌟 SAHNE ÖNÜ VIP</span>
+                                        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem; margin-top:0.3rem;">
+                                            <div class="block-card vip-zone selected" id="block001" onclick="selectBlock('001', 'VIP', 'Sahne Önü VIP')">
+                                                <span class="block-title">001</span>
+                                                <span class="block-sub">VIP</span>
+                                            </div>
+                                            <div class="block-card soldout">
+                                                <span class="block-title">002</span>
+                                                <span class="block-sub sold">Tükendi</span>
+                                            </div>
+                                            <div class="block-card vip-zone" id="block003" onclick="selectBlock('003', 'VIP', 'Sahne Önü VIP')">
+                                                <span class="block-title">003</span>
+                                                <span class="block-sub">VIP</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Saha İçi 1. Kategori Blocks -->
+                                    <div style="border:1px dashed rgba(192,132,252,0.4); border-radius:0.75rem; padding:0.6rem; background:rgba(168,85,247,0.03); position:relative;">
+                                        <span class="zone-tag-label cat1">🟣 SAHA İÇİ (1. KATEGORİ)</span>
+                                        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem; margin-top:0.3rem;">
+                                            <div class="block-card cat1-zone" id="block004" onclick="selectBlock('004', 'CAT1', 'Saha İçi')">
+                                                <span class="block-title">004</span>
+                                                <span class="block-sub">Saha İçi</span>
+                                            </div>
+                                            <div class="block-card cat1-zone" id="block005" onclick="selectBlock('005', 'CAT1', 'Saha İçi')">
+                                                <span class="block-title">005</span>
+                                                <span class="block-sub">Saha İçi</span>
+                                            </div>
+                                            <div class="block-card cat1-zone" id="block006" onclick="selectBlock('006', 'CAT1', 'Saha İçi')">
+                                                <span class="block-title">006</span>
+                                                <span class="block-sub">Saha İçi</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sağ Tribün -->
+                                <div class="arena-side-tribune">
+                                    <div class="block-card cat2-zone" id="block207" onclick="selectBlock('207', 'CAT2', 'Sağ Tribün')">
+                                        <span class="block-title">207</span>
+                                        <span class="block-sub">Sağ Tribün</span>
+                                    </div>
+                                    <div class="block-card soldout">
+                                        <span class="block-title">208</span>
+                                        <span class="block-sub sold">Tükendi</span>
+                                    </div>
+                                    <div class="block-card cat2-zone" id="block209" onclick="selectBlock('209', 'CAT2', 'Sağ Tribün')">
+                                        <span class="block-title">209</span>
+                                        <span class="block-sub">Sağ Tribün</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Arka Tribün Bottom Row -->
+                            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.6rem; width:100%;">
+                                <div class="block-card cat2-zone" id="block204" onclick="selectBlock('204', 'CAT2', 'Arka Tribün')">
+                                    <span class="block-title">204</span>
+                                    <span class="block-sub">Arka Tribün</span>
+                                </div>
+                                <div class="block-card cat2-zone" id="block205" onclick="selectBlock('205', 'CAT2', 'Arka Tribün')">
+                                    <span class="block-title">205</span>
+                                    <span class="block-sub">Arka Tribün</span>
+                                </div>
+                                <div class="block-card cat2-zone" id="block206" onclick="selectBlock('206', 'CAT2', 'Arka Tribün')">
+                                    <span class="block-title">206</span>
+                                    <span class="block-sub">Arka Tribün</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="zone-pill" id="zoneCat1" onclick="selectZone('CAT1')">
-                        <span style="font-size:0.75rem; color:#c084fc; font-weight:800;">🪑 KATEGORİ 1 (ORTA)</span>
-                        <span style="font-size:1.05rem; font-weight:800; color:#fff;" id="priceCat1">₺450</span>
-                        <span style="font-size:0.7rem; color:#94a3b8;">Sahneye 5-15m Mesafe</span>
-                    </div>
-
-                    <div class="zone-pill" id="zoneCat2" onclick="selectZone('CAT2')">
-                        <span style="font-size:0.75rem; color:#38bdf8; font-weight:800;">🏟️ KATEGORİ 2 (TRİBÜN)</span>
-                        <span style="font-size:1.05rem; font-weight:800; color:#fff;" id="priceCat2">₺250</span>
-                        <span style="font-size:0.7rem; color:#94a3b8;">Sahneye 15m+ Mesafe</span>
+                    <!-- Dynamic Seat Grid Selection -->
+                    <div class="seat-matrix-wrapper">
+                        <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+                            <span style="font-size:0.85rem; font-weight:800; color:#f8fafc;" id="activeBlockTitle">📍 Seçilen Blok: 001 - Sahne Önü VIP</span>
+                            <span style="font-size:0.75rem; color:#94a3b8;">Koltuk Seçiniz:</span>
+                        </div>
+                        <div class="seat-matrix" id="seatMatrix"></div>
                     </div>
                 </div>
 
-                <!-- Interactive Seat Grid -->
-                <div style="font-size:0.85rem; font-weight:700; margin-bottom:0.5rem; color:#cbd5e1; text-align:center;">Koltuk Seçimi Yapınız:</div>
-                <div class="seat-matrix" id="seatMatrix"></div>
-            </div>
+                <!-- Right Column: Categories, Legend & Checkout Sidebar -->
+                <div class="seating-sidebar">
+                    <div style="display:flex; flex-direction:column; gap:1rem;">
+                        <h4 style="font-size:1rem; font-weight:800; color:#f8fafc;">Kategori & Fiyat Listesi</h4>
+                        
+                        <!-- VIP Category Selector Card -->
+                        <div class="category-selector-card active" id="catCardVip" onclick="selectCategoryFromSidebar('VIP')">
+                            <div>
+                                <div style="font-weight:800; font-size:0.9rem; color:#fbbf24;">🌟 Sahne Önü VIP</div>
+                                <div style="font-size:0.75rem; color:#94a3b8;">Sahneye 0-5m (Blok 001, 003)</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:1.1rem; font-weight:800; color:#fff;" id="sidebarPriceVip">₺850</div>
+                                <div style="font-size:0.7rem; color:#4ade80;">2 Blok Açık</div>
+                            </div>
+                        </div>
 
-            <!-- Order Summary Bar -->
-            <div style="padding:1.25rem 1.5rem; background:rgba(15,23,42,0.9); border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <div style="font-size:0.8rem; color:#94a3b8;">Seçilen Koltuk & Bölge:</div>
-                    <div style="font-weight:800; font-size:1rem; color:#f8fafc;" id="selectedSeatSummary">Sahne Önü VIP • Sıra A - Koltuk 1</div>
-                </div>
-                <div style="display:flex; align-items:center; gap:1.5rem;">
-                    <div style="text-align:right;">
-                        <div style="font-size:0.75rem; color:#94a3b8;">Toplam Tutar:</div>
-                        <div style="font-size:1.4rem; font-weight:800; color:#4ade80;" id="selectedTotalPrice">₺850,00</div>
+                        <!-- Cat 1 Category Selector Card -->
+                        <div class="category-selector-card" id="catCardCat1" onclick="selectCategoryFromSidebar('CAT1')">
+                            <div>
+                                <div style="font-weight:800; font-size:0.9rem; color:#c084fc;">🟣 Saha İçi (1. Kategori)</div>
+                                <div style="font-size:0.75rem; color:#94a3b8;">Sahneye 5-15m (Blok 004-006)</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:1.1rem; font-weight:800; color:#fff;" id="sidebarPriceCat1">₺540</div>
+                                <div style="font-size:0.7rem; color:#4ade80;">3 Blok Açık</div>
+                            </div>
+                        </div>
+
+                        <!-- Cat 2 Category Selector Card -->
+                        <div class="category-selector-card" id="catCardCat2" onclick="selectCategoryFromSidebar('CAT2')">
+                            <div>
+                                <div style="font-weight:800; font-size:0.9rem; color:#38bdf8;">🏟️ Tribün (2. Kategori)</div>
+                                <div style="font-size:0.75rem; color:#94a3b8;">Üst & Arka Tribün (Blok 201-209)</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:1.1rem; font-weight:800; color:#fff;" id="sidebarPriceCat2">₺360</div>
+                                <div style="font-size:0.7rem; color:#4ade80;">7 Blok Açık</div>
+                            </div>
+                        </div>
+
+                        <!-- Legend Bar -->
+                        <div class="legend-bar">
+                            <div class="legend-item"><div class="legend-dot" style="background:#fbbf24;"></div> VIP</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:#c084fc;"></div> Saha İçi</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:#38bdf8;"></div> Tribün</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:#f87171;"></div> Dolu</div>
+                        </div>
                     </div>
-                    <button class="btn-buy" style="margin:0; padding:0.85rem 1.75rem; width:auto; background:linear-gradient(135deg, #ec4899, #8b5cf6);" onclick="executeSeatingPurchase()">
-                        ⚡ Ödemeyi Tamamla ve Bileti Al
-                    </button>
+
+                    <!-- Selected Ticket Details & Primary Checkout Button -->
+                    <div style="background:rgba(30,41,59,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1.25rem; display:flex; flex-direction:column; gap:1rem;">
+                        <div>
+                            <div style="font-size:0.75rem; color:#94a3b8; font-weight:600;">SEÇİLEN BİLET BİLGİSİ:</div>
+                            <div style="font-weight:800; font-size:0.95rem; color:#f8fafc; margin-top:0.2rem;" id="selectedSeatSummary">Sahne Önü VIP • Blok 001 • Sıra A - Koltuk 1</div>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:0.75rem;">
+                            <span style="font-size:0.85rem; color:#cbd5e1; font-weight:700;">Toplam Tutar:</span>
+                            <span style="font-size:1.4rem; font-weight:800; color:#4ade80;" id="selectedTotalPrice">₺850,00</span>
+                        </div>
+
+                        <button class="btn-buy" style="width:100%; margin:0; padding:1rem; font-size:1rem; background:linear-gradient(135deg, #10b981, #059669); border-radius:0.75rem; box-shadow:0 4px 20px rgba(16,185,129,0.4);" onclick="executeSeatingPurchase()">
+                            ⚡ Ödemeye Geç ve Bileti Al
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1677,6 +2027,9 @@
             rules.style.display = rules.style.display === 'none' ? 'block' : 'none';
         }
 
+        let selectedBlockCode = '001';
+        let selectedBlockName = 'Sahne Önü VIP';
+
         function openSeatingFromDetail() {
             closeEventDetailModal();
             if (!activeDetailEvent) return;
@@ -1689,11 +2042,15 @@
             document.getElementById('seatingEventTitle').innerText = activeDetailEvent.title;
             
             const basePrice = parseFloat(activeDetailEvent.price);
-            document.getElementById('priceVip').innerText = `₺${Math.round(basePrice * 1.8)}`;
-            document.getElementById('priceCat1').innerText = `₺${Math.round(basePrice * 1.2)}`;
-            document.getElementById('priceCat2').innerText = `₺${Math.round(basePrice * 0.8)}`;
+            const priceVip = Math.round(basePrice * 1.8);
+            const priceCat1 = Math.round(basePrice * 1.2);
+            const priceCat2 = Math.round(basePrice * 0.8);
 
-            selectZone('VIP');
+            document.getElementById('sidebarPriceVip').innerText = `₺${priceVip}`;
+            document.getElementById('sidebarPriceCat1').innerText = `₺${priceCat1}`;
+            document.getElementById('sidebarPriceCat2').innerText = `₺${priceCat2}`;
+
+            selectBlock('001', 'VIP', 'Sahne Önü VIP');
             document.getElementById('seatingViewModal').classList.add('active');
         }
 
@@ -1701,26 +2058,56 @@
             document.getElementById('seatingViewModal').classList.remove('active');
         }
 
-        function selectZone(zone) {
+        function selectBlock(blockCode, zone, blockLabel) {
+            selectedBlockCode = blockCode;
+            selectedBlockName = blockLabel;
             selectedZone = zone;
+
+            // Clear selected class from all block cards
+            document.querySelectorAll('.block-card').forEach(card => card.classList.remove('selected'));
+            
+            const activeCard = document.getElementById(`block${blockCode}`);
+            if (activeCard) activeCard.classList.add('selected');
+
+            // Sync Category Sidebar Cards
             ['Vip', 'Cat1', 'Cat2'].forEach(z => {
-                const el = document.getElementById(`zone${z}`);
-                if (el) el.classList.remove('selected');
+                const el = document.getElementById(`catCard${z}`);
+                if (el) el.classList.remove('active');
             });
 
-            if (zone === 'VIP') document.getElementById('zoneVip').classList.add('selected');
-            if (zone === 'CAT1') document.getElementById('zoneCat1').classList.add('selected');
-            if (zone === 'CAT2') document.getElementById('zoneCat2').classList.add('selected');
+            if (zone === 'VIP') document.getElementById('catCardVip').classList.add('active');
+            if (zone === 'CAT1') document.getElementById('catCardCat1').classList.add('active');
+            if (zone === 'CAT2') document.getElementById('catCardCat2').classList.add('active');
+
+            const titleElem = document.getElementById('activeBlockTitle');
+            if (titleElem) {
+                titleElem.innerText = `📍 Seçilen Blok: ${blockCode} - ${blockLabel}`;
+            }
 
             renderSeatMatrix();
             updateSeatingSummary();
         }
 
+        function selectCategoryFromSidebar(zone) {
+            if (zone === 'VIP') {
+                selectBlock('001', 'VIP', 'Sahne Önü VIP');
+            } else if (zone === 'CAT1') {
+                selectBlock('004', 'CAT1', 'Saha İçi');
+            } else if (zone === 'CAT2') {
+                selectBlock('201', 'CAT2', 'Sol Tribün');
+            }
+        }
+
         function renderSeatMatrix() {
             const matrix = document.getElementById('seatMatrix');
+            if (!matrix) return;
             matrix.innerHTML = '';
 
             const rows = ['A', 'B', 'C', 'D'];
+            let seatClass = 'vip-seat';
+            if (selectedZone === 'CAT1') seatClass = 'cat1-seat';
+            if (selectedZone === 'CAT2') seatClass = 'cat2-seat';
+
             rows.forEach((row, rIdx) => {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'seat-row';
@@ -1729,17 +2116,17 @@
                 rowLabel.style.fontSize = '0.75rem';
                 rowLabel.style.color = '#94a3b8';
                 rowLabel.style.fontWeight = '700';
-                rowLabel.style.width = '20px';
+                rowLabel.style.width = '24px';
                 rowLabel.innerText = row;
                 rowDiv.appendChild(rowLabel);
 
                 for (let s = 1; s <= 10; s++) {
                     const btn = document.createElement('button');
-                    btn.className = 'seat-btn';
+                    btn.className = `seat-btn ${seatClass}`;
                     btn.innerText = s;
 
-                    // Some random reserved seats
-                    if ((rIdx + s) % 7 === 0) {
+                    // Some realistic reserved seats
+                    if ((rIdx + s + parseInt(selectedBlockCode)) % 6 === 0) {
                         btn.classList.add('reserved');
                         btn.disabled = true;
                     } else if (selectedRow === row && selectedSeat === s) {
@@ -1763,21 +2150,17 @@
             if (!activeDetailEvent) return;
             const basePrice = parseFloat(activeDetailEvent.price);
             let multiplier = 1.0;
-            let zoneName = 'Sahne Önü VIP';
 
             if (selectedZone === 'VIP') {
                 multiplier = 1.8;
-                zoneName = 'Sahne Önü VIP';
             } else if (selectedZone === 'CAT1') {
                 multiplier = 1.2;
-                zoneName = 'Kategori 1 (Orta Saha)';
             } else if (selectedZone === 'CAT2') {
                 multiplier = 0.8;
-                zoneName = 'Kategori 2 (Tribün)';
             }
 
             const finalPrice = Math.round(basePrice * multiplier);
-            document.getElementById('selectedSeatSummary').innerText = `${zoneName} • Sıra ${selectedRow} - Koltuk ${selectedSeat}`;
+            document.getElementById('selectedSeatSummary').innerText = `${selectedBlockName} • Blok ${selectedBlockCode} • Sıra ${selectedRow} - Koltuk ${selectedSeat}`;
             document.getElementById('selectedTotalPrice').innerText = `₺${finalPrice},00`;
         }
 
