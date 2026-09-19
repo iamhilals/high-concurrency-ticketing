@@ -31,4 +31,18 @@ public class EventService {
         }
         return events;
     }
+
+    @Transactional
+    public Event createEvent(Event event) {
+        if (event.getTotalCapacity() == null || event.getTotalCapacity() <= 0) {
+            event.setTotalCapacity(500);
+        }
+        if (event.getAvailableCapacity() == null || event.getAvailableCapacity() <= 0) {
+            event.setAvailableCapacity(event.getTotalCapacity());
+        }
+        Event saved = eventRepository.save(event);
+        String redisKey = "event:" + saved.getId() + ":capacity";
+        redisTemplate.opsForValue().set(redisKey, String.valueOf(saved.getAvailableCapacity()));
+        return saved;
+    }
 }
