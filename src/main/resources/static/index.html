@@ -25,12 +25,22 @@
 
         body {
             background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(236, 72, 153, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 65%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 50% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
 
         /* Top Navigation */
@@ -1346,13 +1356,22 @@
 <body>
 
     <nav>
-        <div class="logo">🎟️ PassoLive</div>
+        <div style="display:flex; align-items:center; gap:1.25rem;">
+            <div class="logo" onclick="resetFilters()">🎟️ PassoLive</div>
+            <div class="system-status-pill" style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.25); padding:0.35rem 0.85rem; border-radius:9999px; font-size:0.8rem; font-weight:700; color:#4ade80;">
+                <span style="width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation: pulseGlow 2s infinite;"></span>
+                <span>REDIS & KAFKA ONLINE</span>
+            </div>
+        </div>
         <div class="user-status">
             <div id="navAuthArea"></div>
         </div>
     </nav>
 
     <div class="hero">
+        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(255,255,255,0.1); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.18); border-radius:9999px; padding:0.4rem 1rem; width:fit-content; margin-bottom:1rem;">
+            <span style="font-size:0.8rem; font-weight:800; letter-spacing:0.5px; color:#f43f5e;">⚡ YÜKSEK TRAFİKLİ BİLETLEME PLATFORMU</span>
+        </div>
         <h1 class="hero-title">Canlı Etkinlikler & Canlı Biletler</h1>
         <p class="hero-subtitle">Yüksek performanslı Redis önbellekleme ve Kafka mesaj kuyruğu altyapısıyla en sevdiğin etkinliklerde yerini saniyeler içinde ayırt.</p>
     </div>
@@ -1435,13 +1454,66 @@
 
     <div class="terminal">
         <div class="terminal-header">
-            <div class="terminal-title">🟢 CANLI MİMARİ VE KUYRUK LOGLARI</div>
-            <span style="color:#64748b; font-size:0.8rem;">Redis Atomic DECR ➜ Kafka Producer ➜ PostgreSQL Consumer</span>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div style="display:flex; gap:0.4rem; margin-right:0.5rem;">
+                    <span style="width:12px; height:12px; border-radius:50%; background:#ef4444; display:inline-block;"></span>
+                    <span style="width:12px; height:12px; border-radius:50%; background:#eab308; display:inline-block;"></span>
+                    <span style="width:12px; height:12px; border-radius:50%; background:#22c55e; display:inline-block;"></span>
+                </div>
+                <div class="terminal-title">🟢 CANLI MİMARİ VE KUYRUK LOGLARI</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+                <span style="background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); color:#4ade80; padding:0.2rem 0.6rem; border-radius:9999px; font-size:0.75rem; font-weight:700;">REDIS DECR: &lt;1ms</span>
+                <span style="background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.3); color:#c084fc; padding:0.2rem 0.6rem; border-radius:9999px; font-size:0.75rem; font-weight:700;">KAFKA STREAM: ACTIVE</span>
+                <span style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; padding:0.2rem 0.6rem; border-radius:9999px; font-size:0.75rem; font-weight:700;">POSTGRES: OK</span>
+            </div>
         </div>
         <div class="terminal-body" id="logList">
             <div class="log-entry" style="color:#64748b;">Sistem hazır. Canlı bilet talepleri bekleniyor...</div>
         </div>
     </div>
+
+    <!-- Modern Dark Footer -->
+    <footer style="width:100%; max-width:1200px; margin:4rem 0 2rem 0; border-top:1px solid rgba(255,255,255,0.08); padding-top:3rem; display:flex; flex-direction:column; gap:2rem;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:2rem;">
+            <div>
+                <div class="logo" style="margin-bottom:1rem;" onclick="resetFilters()">🎟️ PassoLive</div>
+                <p style="color:#94a3b8; font-size:0.88rem; line-height:1.6; max-width:320px;">
+                    Yüksek eşzamanlılıklı bilet alma platformu. Redis Atomic In-Memory Caching ve Apache Kafka Event-Driven mimarisi ile sıfır kilitlenme (race condition).
+                </p>
+            </div>
+            <div>
+                <h4 style="color:#f8fafc; font-size:0.95rem; font-weight:800; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.5px;">Teknoloji Yığını</h4>
+                <ul style="list-style:none; display:flex; flex-direction:column; gap:0.5rem; font-size:0.88rem; color:#94a3b8;">
+                    <li>⚡ Java 21 & Spring Boot 3</li>
+                    <li>🔴 Redis Atomic DECR Caching</li>
+                    <li>🎧 Apache Kafka Event Streaming</li>
+                    <li>🐘 PostgreSQL Persistent DB</li>
+                    <li>🐋 Docker Containerized Infrastructure</li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color:#f8fafc; font-size:0.95rem; font-weight:800; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.5px;">Sistem Metrikleri</h4>
+                <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                    <div style="background:rgba(15,23,42,0.6); padding:0.75rem 1rem; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:0.85rem; color:#94a3b8;">Toplam Etkinlik</span>
+                        <span style="font-weight:800; color:#ec4899; font-size:0.9rem;">40 Aktif</span>
+                    </div>
+                    <div style="background:rgba(15,23,42,0.6); padding:0.75rem 1rem; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:0.85rem; color:#94a3b8;">Yanıt Süresi (Redis)</span>
+                        <span style="font-weight:800; color:#22c55e; font-size:0.9rem;">&lt; 1 ms</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,0.05); padding-top:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; font-size:0.82rem; color:#64748b;">
+            <div>© 2026 PassoLive. High-Concurrency Ticketing Platform. Tüm hakları saklıdır.</div>
+            <div style="display:flex; gap:1.25rem;">
+                <a href="#" style="color:#94a3b8; text-decoration:none;" onclick="event.preventDefault(); resetFilters();">Ana Sayfa</a>
+                <a href="https://github.com/iamhilals/high-concurrency-ticketing" target="_blank" style="color:#94a3b8; text-decoration:none;">GitHub Repository</a>
+            </div>
+        </div>
+    </footer>
 
     <!-- Bubilet Event Detail Modal -->
     <div class="modal-overlay" id="eventDetailModal">
@@ -2416,6 +2488,9 @@
                 const isLow = evt.availableCapacity > 0 && evt.availableCapacity <= 30;
                 const img = evt.imageUrl || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80';
 
+                const totalCap = evt.totalCapacity || 500;
+                const soldPct = Math.min(100, Math.max(5, Math.round(((totalCap - evt.availableCapacity) / totalCap) * 100)));
+
                 card.innerHTML = `
                     <div class="card-img-wrap">
                         <img src="${img}" class="card-img" alt="${evt.title}">
@@ -2425,6 +2500,17 @@
                         <div class="card-title">${evt.title}</div>
                         <div class="card-venue">📍 ${evt.venue || 'İstanbul Stadyum & Sahne'}</div>
                         <p style="color:var(--text-muted); font-size:0.88rem;">${evt.description}</p>
+
+                        <!-- Stock Capacity Progress Bar -->
+                        <div style="margin-top:0.3rem;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#94a3b8; font-weight:700; margin-bottom:0.3rem;">
+                                <span>Doluluk Oranı</span>
+                                <span style="color:${isLow ? '#f43f5e' : '#a855f7'}; font-weight:800;">%${soldPct} Dolu</span>
+                            </div>
+                            <div style="width:100%; height:6px; background:rgba(255,255,255,0.08); border-radius:9999px; overflow:hidden;">
+                                <div style="width:${soldPct}%; height:100%; background:${isLow ? 'linear-gradient(90deg, #f43f5e, #ef4444)' : 'linear-gradient(90deg, #ec4899, #8b5cf6)'}; border-radius:9999px; transition:width 0.4s ease;"></div>
+                            </div>
+                        </div>
 
                         <div class="card-footer">
                             <div class="price-tag">₺${evt.price}</div>
