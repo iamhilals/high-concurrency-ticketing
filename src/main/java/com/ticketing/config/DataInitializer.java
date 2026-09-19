@@ -349,7 +349,7 @@ public class DataInitializer implements CommandLineRunner {
             events.add(Event.builder()
                     .title("Istanbul Marathon 2026 Halk Koşusu")
                     .description("Kıtalararası tek maratonda Asya'dan Avrupa'ya koşma heyecanına ortak olun!")
-                    .dateTime(LocalDateTime.of(2026, 11, 1, 09, 0))
+                    .dateTime(LocalDateTime.of(2026, 11, 1, 9, 0))
                     .price(new BigDecimal("150.00"))
                     .availableCapacity(200)
                     .category("Spor")
