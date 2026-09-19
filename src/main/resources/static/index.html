@@ -229,10 +229,12 @@
         .category-bar {
             display: flex;
             gap: 0.75rem;
-            margin-bottom: 2.5rem;
-            width: 100%;
-            max-width: 1200px;
             overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .category-bar::-webkit-scrollbar {
+            display: none;
         }
 
         .cat-pill {
@@ -253,6 +255,116 @@
             color: #fff;
             border-color: transparent;
             box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
+        }
+
+        /* Filter Section & Control Panel */
+        .filter-section-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .category-filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .btn-reset-filter {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            padding: 0.4rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-reset-filter:hover {
+            background: #ef4444;
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .filter-controls-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr;
+            gap: 0.85rem;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            width: 100%;
+        }
+
+        @media (max-width: 960px) {
+            .filter-controls-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .filter-controls-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .filter-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-input {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 0.75rem;
+            padding: 0.65rem 0.9rem;
+            color: #f8fafc;
+            font-size: 0.88rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .filter-input:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+            background: rgba(30, 41, 59, 1);
+        }
+
+        .filter-select {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 0.75rem;
+            padding: 0.65rem 0.9rem;
+            color: #f8fafc;
+            font-size: 0.88rem;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-select option {
+            background: #0f172a;
+            color: #f8fafc;
+        }
+
+        .filter-select:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
         }
 
         /* Events Grid */
@@ -1181,12 +1293,76 @@
         <p class="hero-subtitle">Yüksek performanslı Redis önbellekleme ve Kafka mesaj kuyruğu altyapısıyla en sevdiğin etkinliklerde yerini saniyeler içinde ayırt.</p>
     </div>
 
-    <div class="category-bar">
-        <button class="cat-pill active" onclick="filterCat('all')">🔥 Tüm Etkinlikler</button>
-        <button class="cat-pill" onclick="filterCat('Müzik & Konser')">🎸 Müzik & Konser</button>
-        <button class="cat-pill" onclick="filterCat('Festival & DJ')">🎧 Festival & DJ</button>
-        <button class="cat-pill" onclick="filterCat('Spor')">⚽ Spor</button>
-        <button class="cat-pill" onclick="filterCat('Komedi & Tiyatro')">🎭 Komedi & Tiyatro</button>
+    <div class="filter-section-container">
+        <!-- Category Pills & Count Header -->
+        <div class="category-filter-header">
+            <div class="category-bar">
+                <button class="cat-pill active" id="pillAll" onclick="filterCat('all')">🔥 Tüm Etkinlikler</button>
+                <button class="cat-pill" id="pillMusic" onclick="filterCat('Müzik & Konser')">🎸 Müzik & Konser</button>
+                <button class="cat-pill" id="pillFest" onclick="filterCat('Festival & DJ')">🎧 Festival & DJ</button>
+                <button class="cat-pill" id="pillSports" onclick="filterCat('Spor')">⚽ Spor</button>
+                <button class="cat-pill" id="pillComedy" onclick="filterCat('Komedi & Tiyatro')">🎭 Komedi & Tiyatro</button>
+            </div>
+            
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+                <span style="font-size:0.85rem; color:#94a3b8; font-weight:700;" id="filterResultsCount">⚡ 40 Etkinlik Listeleniyor</span>
+                <button class="btn-reset-filter" onclick="resetFilters()">🧹 Filtreleri Sıfırla</button>
+            </div>
+        </div>
+
+        <!-- Advanced Filters Control Grid -->
+        <div class="filter-controls-row">
+            <!-- 1. Text Search Input -->
+            <div class="filter-input-wrap">
+                <input type="text" id="searchInput" class="filter-input" placeholder="🔍 Etkinlik, Sanatçı veya Mekan Ara..." oninput="applyFilters()">
+            </div>
+
+            <!-- 2. City Dropdown -->
+            <div>
+                <select id="citySelect" class="filter-select" onchange="applyFilters()">
+                    <option value="all">📍 Tüm Şehirler</option>
+                    <option value="İstanbul">İstanbul</option>
+                    <option value="Ankara">Ankara</option>
+                    <option value="İzmir">İzmir</option>
+                    <option value="Antalya">Antalya</option>
+                    <option value="Bursa">Bursa</option>
+                    <option value="Eskişehir">Eskişehir</option>
+                </select>
+            </div>
+
+            <!-- 3. Date / Month Dropdown -->
+            <div>
+                <select id="monthSelect" class="filter-select" onchange="applyFilters()">
+                    <option value="all">📅 Tüm Tarihler</option>
+                    <option value="9">Eylül 2026</option>
+                    <option value="10">Ekim 2026</option>
+                    <option value="11">Kasım 2026</option>
+                    <option value="12">Aralık 2026</option>
+                </select>
+            </div>
+
+            <!-- 4. Max Price Dropdown -->
+            <div>
+                <select id="priceSelect" class="filter-select" onchange="applyFilters()">
+                    <option value="all">💰 Tüm Fiyatlar</option>
+                    <option value="400">₺400 ve Altı</option>
+                    <option value="600">₺600 ve Altı</option>
+                    <option value="800">₺800 ve Altı</option>
+                    <option value="1200">₺1200 ve Altı</option>
+                </select>
+            </div>
+
+            <!-- 5. Sort Dropdown -->
+            <div>
+                <select id="sortSelect" class="filter-select" onchange="applyFilters()">
+                    <option value="default">🔃 Sıralama: Önerilen</option>
+                    <option value="price_asc">Fiyat: Düşükten Yükseğe</option>
+                    <option value="price_desc">Fiyat: Yüksekten Düşüğe</option>
+                    <option value="capacity_desc">En Çok Stok Kalan</option>
+                    <option value="date_asc">Tarihe Göre (Yakından Uzağa)</option>
+                </select>
+            </div>
+        </div>
     </div>
 
     <div class="events-grid" id="eventsGrid">
@@ -1946,14 +2122,108 @@
             err.style.display = 'block';
         }
 
+        let activeCategory = 'all';
+
         async function fetchEvents() {
             try {
                 const res = await fetch(`${API_BASE}/events`);
                 allEvents = await res.json();
-                renderEvents(allEvents);
+                applyFilters();
             } catch (err) {
                 addLog('Etkinlikler çekilemedi. Sunucu bağlantısını kontrol edin.', 'error');
             }
+        }
+
+        function filterCat(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+            
+            if (cat === 'all') document.getElementById('pillAll').classList.add('active');
+            if (cat === 'Müzik & Konser') document.getElementById('pillMusic').classList.add('active');
+            if (cat === 'Festival & DJ') document.getElementById('pillFest').classList.add('active');
+            if (cat === 'Spor') document.getElementById('pillSports').classList.add('active');
+            if (cat === 'Komedi & Tiyatro') document.getElementById('pillComedy').classList.add('active');
+
+            applyFilters();
+        }
+
+        function applyFilters() {
+            if (!allEvents || allEvents.length === 0) return;
+
+            const searchQuery = document.getElementById('searchInput') ? document.getElementById('searchInput').value.trim().toLowerCase() : '';
+            const selectedCity = document.getElementById('citySelect') ? document.getElementById('citySelect').value : 'all';
+            const selectedMonth = document.getElementById('monthSelect') ? document.getElementById('monthSelect').value : 'all';
+            const maxPrice = document.getElementById('priceSelect') ? document.getElementById('priceSelect').value : 'all';
+            const sortBy = document.getElementById('sortSelect') ? document.getElementById('sortSelect').value : 'default';
+
+            let result = [...allEvents];
+
+            // 1. Category Filter
+            if (activeCategory !== 'all') {
+                result = result.filter(e => e.category === activeCategory);
+            }
+
+            // 2. Search Query (Title, Description, Venue)
+            if (searchQuery !== '') {
+                result = result.filter(e => 
+                    (e.title && e.title.toLowerCase().includes(searchQuery)) ||
+                    (e.description && e.description.toLowerCase().includes(searchQuery)) ||
+                    (e.venue && e.venue.toLowerCase().includes(searchQuery))
+                );
+            }
+
+            // 3. City Filter
+            if (selectedCity !== 'all') {
+                result = result.filter(e => e.venue && e.venue.toLowerCase().includes(selectedCity.toLowerCase()));
+            }
+
+            // 4. Date / Month Filter
+            if (selectedMonth !== 'all') {
+                result = result.filter(e => {
+                    if (!e.dateTime) return false;
+                    const d = new Date(e.dateTime);
+                    const m = d.getMonth() + 1; // 1-12
+                    return m === parseInt(selectedMonth);
+                });
+            }
+
+            // 5. Max Price Filter
+            if (maxPrice !== 'all') {
+                const limit = parseFloat(maxPrice);
+                result = result.filter(e => parseFloat(e.price) <= limit);
+            }
+
+            // 6. Sorting
+            if (sortBy === 'price_asc') {
+                result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+            } else if (sortBy === 'price_desc') {
+                result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            } else if (sortBy === 'capacity_desc') {
+                result.sort((a, b) => b.availableCapacity - a.availableCapacity);
+            } else if (sortBy === 'date_asc') {
+                result.sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
+            }
+
+            renderEvents(result);
+
+            const countElem = document.getElementById('filterResultsCount');
+            if (countElem) {
+                countElem.innerText = `⚡ ${result.length} Etkinlik Listeleniyor`;
+            }
+        }
+
+        function resetFilters() {
+            activeCategory = 'all';
+            document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+            document.getElementById('pillAll').classList.add('active');
+
+            if (document.getElementById('searchInput')) document.getElementById('searchInput').value = '';
+            if (document.getElementById('citySelect')) document.getElementById('citySelect').value = 'all';
+            if (document.getElementById('monthSelect')) document.getElementById('monthSelect').value = 'all';
+            if (document.getElementById('priceSelect')) document.getElementById('priceSelect').value = 'all';
+            if (document.getElementById('sortSelect')) document.getElementById('sortSelect').value = 'default';
+
+            applyFilters();
         }
 
         function renderEvents(events) {
@@ -1961,7 +2231,14 @@
             grid.innerHTML = '';
 
             if (events.length === 0) {
-                grid.innerHTML = '<p style="color:var(--text-muted);">Bu kategoride etkinlik bulunmuyor.</p>';
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: rgba(15, 23, 42, 0.6); border-radius: 1.25rem; border: 1px dashed rgba(255, 255, 255, 0.1);">
+                        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; color: #f8fafc; margin-bottom: 0.4rem;">Aradığınız Kriterlere Uygun Etkinlik Bulunamadı</h3>
+                        <p style="color: #94a3b8; font-size: 0.88rem; margin-bottom: 1.25rem;">Filtreleri sıfırlayarak tüm etkinliklere göz atabilirsiniz.</p>
+                        <button class="btn-reset-filter" style="padding: 0.6rem 1.5rem; font-size: 0.9rem;" onclick="resetFilters()">🧹 Tüm Filtreleri Temizle</button>
+                    </div>
+                `;
                 return;
             }
 
@@ -2224,18 +2501,6 @@
 
         function closeModal() {
             document.getElementById('ticketModal').classList.remove('active');
-        }
-
-        function filterCat(cat) {
-            document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
-            event.target.classList.add('active');
-
-            if (cat === 'all') {
-                renderEvents(allEvents);
-            } else {
-                const filtered = allEvents.filter(e => e.category === cat);
-                renderEvents(filtered);
-            }
         }
 
         function addLog(msg, type = '') {
