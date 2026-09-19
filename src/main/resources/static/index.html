@@ -1360,7 +1360,7 @@
             <div class="logo" onclick="resetFilters()">🎟️ PassoLive</div>
             <div class="system-status-pill" style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.25); padding:0.35rem 0.85rem; border-radius:9999px; font-size:0.8rem; font-weight:700; color:#4ade80;">
                 <span style="width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation: pulseGlow 2s infinite;"></span>
-                <span>REDIS & KAFKA ONLINE</span>
+                <span>CANLI BİLET SATIŞI AKTİF</span>
             </div>
         </div>
         <div class="user-status">
@@ -1370,10 +1370,10 @@
 
     <div class="hero">
         <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(255,255,255,0.1); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.18); border-radius:9999px; padding:0.4rem 1rem; width:fit-content; margin-bottom:1rem;">
-            <span style="font-size:0.8rem; font-weight:800; letter-spacing:0.5px; color:#f43f5e;">⚡ YÜKSEK TRAFİKLİ BİLETLEME PLATFORMU</span>
+            <span style="font-size:0.8rem; font-weight:800; letter-spacing:0.5px; color:#f43f5e;">⚡ TÜRKİYE'NİN LİDER BİLET PLATFORMU</span>
         </div>
         <h1 class="hero-title">Canlı Etkinlikler & Canlı Biletler</h1>
-        <p class="hero-subtitle">Yüksek performanslı Redis önbellekleme ve Kafka mesaj kuyruğu altyapısıyla en sevdiğin etkinliklerde yerini saniyeler içinde ayırt.</p>
+        <p class="hero-subtitle">En sevdiğin konserler, tiyatrolar, gösteriler ve spor etkinlikleri için biletini saniyeler içinde güvenle ayırt.</p>
     </div>
 
     <div class="filter-section-container">
@@ -1452,65 +1452,44 @@
         <p style="color:var(--text-muted);">Etkinlikler yükleniyor...</p>
     </div>
 
-    <div class="terminal">
-        <div class="terminal-header">
-            <div style="display:flex; align-items:center; gap:0.5rem;">
-                <div style="display:flex; gap:0.4rem; margin-right:0.5rem;">
-                    <span style="width:12px; height:12px; border-radius:50%; background:#ef4444; display:inline-block;"></span>
-                    <span style="width:12px; height:12px; border-radius:50%; background:#eab308; display:inline-block;"></span>
-                    <span style="width:12px; height:12px; border-radius:50%; background:#22c55e; display:inline-block;"></span>
-                </div>
-                <div class="terminal-title">🟢 CANLI MİMARİ VE KUYRUK LOGLARI</div>
-            </div>
-            <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
-                <span style="background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); color:#4ade80; padding:0.2rem 0.6rem; border-radius:9999px; font-size:0.75rem; font-weight:700;">REDIS DECR: &lt;1ms</span>
-                <span style="background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.3); color:#c084fc; padding:0.2rem 0.6rem; border-radius:9999px; font-size:0.75rem; font-weight:700;">KAFKA STREAM: ACTIVE</span>
-                <span style="background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; padding:0.2rem 0.6rem; border-radius:9999px; font-size:0.75rem; font-weight:700;">POSTGRES: OK</span>
-            </div>
-        </div>
-        <div class="terminal-body" id="logList">
-            <div class="log-entry" style="color:#64748b;">Sistem hazır. Canlı bilet talepleri bekleniyor...</div>
-        </div>
-    </div>
-
-    <!-- Modern Dark Footer -->
+    <!-- Modern User-Facing Footer -->
     <footer style="width:100%; max-width:1200px; margin:4rem 0 2rem 0; border-top:1px solid rgba(255,255,255,0.08); padding-top:3rem; display:flex; flex-direction:column; gap:2rem;">
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:2rem;">
             <div>
                 <div class="logo" style="margin-bottom:1rem;" onclick="resetFilters()">🎟️ PassoLive</div>
                 <p style="color:#94a3b8; font-size:0.88rem; line-height:1.6; max-width:320px;">
-                    Yüksek eşzamanlılıklı bilet alma platformu. Redis Atomic In-Memory Caching ve Apache Kafka Event-Driven mimarisi ile sıfır kilitlenme (race condition).
+                    Türkiye'nin dijital biletleme platformu. En sevdiğiniz konser, tiyatro, festival ve spor etkinliklerine saniyeler içinde bilet alın.
                 </p>
             </div>
             <div>
-                <h4 style="color:#f8fafc; font-size:0.95rem; font-weight:800; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.5px;">Teknoloji Yığını</h4>
+                <h4 style="color:#f8fafc; font-size:0.95rem; font-weight:800; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.5px;">Etkinlik Kategorileri</h4>
                 <ul style="list-style:none; display:flex; flex-direction:column; gap:0.5rem; font-size:0.88rem; color:#94a3b8;">
-                    <li>⚡ Java 21 & Spring Boot 3</li>
-                    <li>🔴 Redis Atomic DECR Caching</li>
-                    <li>🎧 Apache Kafka Event Streaming</li>
-                    <li>🐘 PostgreSQL Persistent DB</li>
-                    <li>🐋 Docker Containerized Infrastructure</li>
+                    <li><a href="#" style="color:#94a3b8; text-decoration:none;" onclick="event.preventDefault(); filterCat('Müzik & Konser');">🎸 Müzik & Konser</a></li>
+                    <li><a href="#" style="color:#94a3b8; text-decoration:none;" onclick="event.preventDefault(); filterCat('Festival & DJ');">🎧 Festival & DJ</a></li>
+                    <li><a href="#" style="color:#94a3b8; text-decoration:none;" onclick="event.preventDefault(); filterCat('Spor');">⚽ Spor Etkinlikleri</a></li>
+                    <li><a href="#" style="color:#94a3b8; text-decoration:none;" onclick="event.preventDefault(); filterCat('Komedi & Tiyatro');">🎭 Komedi & Tiyatro</a></li>
                 </ul>
             </div>
             <div>
-                <h4 style="color:#f8fafc; font-size:0.95rem; font-weight:800; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.5px;">Sistem Metrikleri</h4>
+                <h4 style="color:#f8fafc; font-size:0.95rem; font-weight:800; margin-bottom:1rem; text-transform:uppercase; letter-spacing:0.5px;">Müşteri Hizmetleri</h4>
                 <div style="display:flex; flex-direction:column; gap:0.75rem;">
                     <div style="background:rgba(15,23,42,0.6); padding:0.75rem 1rem; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:0.85rem; color:#94a3b8;">Toplam Etkinlik</span>
-                        <span style="font-weight:800; color:#ec4899; font-size:0.9rem;">40 Aktif</span>
+                        <span style="font-size:0.85rem; color:#94a3b8;">🚀 Hızlı Teslimat</span>
+                        <span style="font-weight:800; color:#4ade80; font-size:0.85rem;">Anında Dijital Bilet</span>
                     </div>
                     <div style="background:rgba(15,23,42,0.6); padding:0.75rem 1rem; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:0.85rem; color:#94a3b8;">Yanıt Süresi (Redis)</span>
-                        <span style="font-weight:800; color:#22c55e; font-size:0.9rem;">&lt; 1 ms</span>
+                        <span style="font-size:0.85rem; color:#94a3b8;">🔒 Güvenli Ödeme</span>
+                        <span style="font-weight:800; color:#ec4899; font-size:0.85rem;">256-Bit SSL Koruması</span>
                     </div>
                 </div>
             </div>
         </div>
         <div style="border-top:1px solid rgba(255,255,255,0.05); padding-top:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; font-size:0.82rem; color:#64748b;">
-            <div>© 2026 PassoLive. High-Concurrency Ticketing Platform. Tüm hakları saklıdır.</div>
+            <div>© 2026 PassoLive Bilet Satış Hizmetleri A.Ş. Tüm hakları saklıdır.</div>
             <div style="display:flex; gap:1.25rem;">
                 <a href="#" style="color:#94a3b8; text-decoration:none;" onclick="event.preventDefault(); resetFilters();">Ana Sayfa</a>
-                <a href="https://github.com/iamhilals/high-concurrency-ticketing" target="_blank" style="color:#94a3b8; text-decoration:none;">GitHub Repository</a>
+                <a href="#" style="color:#94a3b8; text-decoration:none;" onclick="event.preventDefault(); alert('Kullanım Koşulları & Gizlilik Politikası');">Gizlilik & Güvenlik</a>
+                <a href="#" style="color:#94a3b8; text-decoration:none;" onclick="event.preventDefault(); alert('Destek Hattı: 0850 123 45 67\nE-Posta: destek@passolive.com');">İletişim & Destek</a>
             </div>
         </div>
     </footer>
@@ -2821,13 +2800,13 @@
 
                     // Open Success Ticket Modal
                     document.getElementById('modalEventTitle').innerText = title;
-                    document.getElementById('modalStatusMsg').innerText = `Satın Alan: ${currentUser.username} - Statü: ${data.status} - Kafka kuyruğuna yazıldı. Biletiniz PostgreSQL'e işleniyor.`;
+                    document.getElementById('modalStatusMsg').innerText = `Sayın ${currentUser.username}, bilet alma işleminiz başarıyla onaylandı. Biletinizi Profilim -> Biletlerim sekmesinden görüntüleyebilirsiniz.`;
                     document.getElementById('ticketModal').classList.add('active');
 
                     // Refetch from server after 800ms
                     setTimeout(fetchEvents, 800);
                 } else {
-                    addLog(`[REDIS BAŞARISIZ] ${data.message || 'Biletler tükendi!'}`, 'error');
+                    addLog(`[BAŞARISIZ] ${data.message || 'Biletler tükendi!'}`, 'error');
                 }
             } catch (err) {
                 addLog(`[HATA] İstek atılamadı: ${err.message}`, 'error');
@@ -2840,6 +2819,7 @@
 
         function addLog(msg, type = '') {
             const list = document.getElementById('logList');
+            if (!list) return;
             const entry = document.createElement('div');
             entry.className = `log-entry ${type}`;
             const time = new Date().toLocaleTimeString();
