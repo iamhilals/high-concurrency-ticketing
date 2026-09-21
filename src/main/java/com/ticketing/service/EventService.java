@@ -34,11 +34,8 @@ public class EventService {
 
     @Transactional
     public Event createEvent(Event event) {
-        if (event.getTotalCapacity() == null || event.getTotalCapacity() <= 0) {
-            event.setTotalCapacity(500);
-        }
         if (event.getAvailableCapacity() == null || event.getAvailableCapacity() <= 0) {
-            event.setAvailableCapacity(event.getTotalCapacity());
+            event.setAvailableCapacity(500);
         }
         Event saved = eventRepository.save(event);
         String redisKey = "event:" + saved.getId() + ":capacity";
