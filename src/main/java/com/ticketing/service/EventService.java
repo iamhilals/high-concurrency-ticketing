@@ -34,7 +34,8 @@ public class EventService {
 
     @Transactional
     public Event createEvent(Event event) {
-        if (event.getAvailableCapacity() == null || event.getAvailableCapacity() <= 0) {
+        if (event.getAvailableCapacity() == null
+            || ((Number) event.getAvailableCapacity()).intValue() <= 0) {
             event.setAvailableCapacity(500);
         }
         Event saved = eventRepository.save(event);

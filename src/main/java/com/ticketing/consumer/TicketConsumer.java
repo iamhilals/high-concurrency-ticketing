@@ -32,10 +32,10 @@ public class TicketConsumer {
 
         try {
             // 1. Veritabanından Kullanıcı ve Etkinlik bilgilerini sorguluyoruz.
-            User user = userRepository.findById(eventMsg.getUserId())
+                User user = userRepository.findById(eventMsg.getUserId())
                     .orElseThrow(() -> new IllegalArgumentException("User not found: " + eventMsg.getUserId()));
 
-            Event event = eventRepository.findById(eventMsg.getEventId())
+                Event event = eventRepository.findById(eventMsg.getEventId())
                     .orElseThrow(() -> new IllegalArgumentException("Event not found: " + eventMsg.getEventId()));
 
             // 2. Veritabanı seviyesinde son bir kapasite kontrolü (Çift güvenlik bariyeri)

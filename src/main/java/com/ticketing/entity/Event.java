@@ -38,4 +38,8 @@ public class Event {
     private String venue;
 
     private String imageUrl;
+
+    public Object getAvailableCapacity() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
