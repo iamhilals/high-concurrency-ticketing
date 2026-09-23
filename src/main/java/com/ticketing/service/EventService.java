@@ -2,7 +2,6 @@ package com.ticketing.service;
 
 import com.ticketing.entity.Event;
 import com.ticketing.repository.EventRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

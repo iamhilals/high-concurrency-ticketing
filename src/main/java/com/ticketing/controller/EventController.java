@@ -2,7 +2,6 @@ package com.ticketing.controller;
 
 import com.ticketing.entity.Event;
 import com.ticketing.service.EventService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

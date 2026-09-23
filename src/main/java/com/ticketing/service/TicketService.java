@@ -2,12 +2,10 @@ package com.ticketing.service;
 
 import com.ticketing.dto.*;
 import com.ticketing.entity.Event;
-import com.ticketing.entity.Ticket;
 import com.ticketing.entity.User;
 import com.ticketing.repository.EventRepository;
 import com.ticketing.repository.TicketRepository;
 import com.ticketing.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

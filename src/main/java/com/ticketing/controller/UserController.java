@@ -3,7 +3,6 @@ package com.ticketing.controller;
 import com.ticketing.dto.AuthResponse;
 import com.ticketing.dto.RegisterRequest;
 import com.ticketing.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

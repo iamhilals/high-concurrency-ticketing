@@ -4,7 +4,6 @@ import com.ticketing.dto.AuthResponse;
 import com.ticketing.dto.RegisterRequest;
 import com.ticketing.entity.User;
 import com.ticketing.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

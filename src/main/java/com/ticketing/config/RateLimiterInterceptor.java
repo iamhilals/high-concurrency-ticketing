@@ -2,7 +2,6 @@ package com.ticketing.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,7 @@ public class RateLimiterInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(org.springframework.lang.NonNull HttpServletRequest request, org.springframework.lang.NonNull HttpServletResponse response, org.springframework.lang.NonNull Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String clientIp = getClientIp(request);
         String key = "rate_limit:ip:" + clientIp;
 

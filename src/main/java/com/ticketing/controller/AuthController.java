@@ -4,7 +4,6 @@ import com.ticketing.dto.AuthResponse;
 import com.ticketing.dto.LoginRequest;
 import com.ticketing.dto.RegisterRequest;
 import com.ticketing.service.AuthService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

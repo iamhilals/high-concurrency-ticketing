@@ -25,7 +25,6 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
     private List<Ticket> tickets = new ArrayList<>();
 
     public User() {}

@@ -5,7 +5,6 @@ import com.ticketing.entity.User;
 import com.ticketing.repository.EventRepository;
 import com.ticketing.repository.TicketRepository;
 import com.ticketing.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.data.redis.core.StringRedisTemplate;
