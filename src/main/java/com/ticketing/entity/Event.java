@@ -10,9 +10,6 @@ import java.time.LocalDateTime;
 @Table(name = "events")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Event {
 
     @Id
@@ -34,6 +31,8 @@ public class Event {
     private Integer availableCapacity;
 
     private String category;
+
+    private String venue;
 
     private String imageUrl;
 

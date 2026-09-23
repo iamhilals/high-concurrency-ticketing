@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class TicketService {
 
     private final TicketRepository ticketRepository;

@@ -9,9 +9,6 @@ import java.time.LocalDateTime;
 @Table(name = "tickets")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Ticket {
 
     @Id

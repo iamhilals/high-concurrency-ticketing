@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class TicketResponse {
     private Long ticketId;
     private Long eventId;

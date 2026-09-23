@@ -11,14 +11,17 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@RequiredArgsConstructor
 public class RateLimiterInterceptor implements HandlerInterceptor {
 
     private final StringRedisTemplate redisTemplate;
     private static final int MAX_REQUESTS_PER_MINUTE = 10;
 
+    public RateLimiterInterceptor(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(org.springframework.lang.NonNull HttpServletRequest request, org.springframework.lang.NonNull HttpServletResponse response, org.springframework.lang.NonNull Object handler) throws Exception {
         String clientIp = getClientIp(request);
         String key = "rate_limit:ip:" + clientIp;
 
