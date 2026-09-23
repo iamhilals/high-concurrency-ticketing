@@ -16,6 +16,11 @@ public class EventService {
     private final EventRepository eventRepository;
     private final StringRedisTemplate redisTemplate;
 
+    public EventService(EventRepository eventRepository, StringRedisTemplate redisTemplate) {
+        this.eventRepository = eventRepository;
+        this.redisTemplate = redisTemplate;
+    }
+
     @Transactional(readOnly = true)
     public List<Event> getAllEvents() {
         List<Event> events = eventRepository.findAll();

@@ -24,6 +24,13 @@ public class DataInitializer implements CommandLineRunner {
     private final TicketRepository ticketRepository;
     private final StringRedisTemplate redisTemplate;
 
+    public DataInitializer(UserRepository userRepository, EventRepository eventRepository, TicketRepository ticketRepository, StringRedisTemplate redisTemplate) {
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+        this.ticketRepository = ticketRepository;
+        this.redisTemplate = redisTemplate;
+    }
+
     @Override
     public void run(String... args) throws Exception {
         // 1. Test kullanıcısını oluştur

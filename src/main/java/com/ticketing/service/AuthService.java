@@ -17,6 +17,10 @@ public class AuthService {
 
     private final UserRepository userRepository;
 
+    public AuthService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (request.getUsername() == null || request.getUsername().isBlank()) {

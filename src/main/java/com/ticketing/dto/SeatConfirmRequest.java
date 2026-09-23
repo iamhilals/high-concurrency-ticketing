@@ -15,6 +15,35 @@ public class SeatConfirmRequest {
     private Long userId;
     private String seatId;
 
+    public SeatConfirmRequest() {}
+
+    public SeatConfirmRequest(String reservationId, Long eventId, Long userId, String seatId) {
+        this.reservationId = reservationId;
+        this.eventId = eventId;
+        this.userId = userId;
+        this.seatId = seatId;
+    }
+
+    public static SeatConfirmRequestBuilder builder() {
+        return new SeatConfirmRequestBuilder();
+    }
+
+    public static class SeatConfirmRequestBuilder {
+        private String reservationId;
+        private Long eventId;
+        private Long userId;
+        private String seatId;
+
+        public SeatConfirmRequestBuilder reservationId(String reservationId) { this.reservationId = reservationId; return this; }
+        public SeatConfirmRequestBuilder eventId(Long eventId) { this.eventId = eventId; return this; }
+        public SeatConfirmRequestBuilder userId(Long userId) { this.userId = userId; return this; }
+        public SeatConfirmRequestBuilder seatId(String seatId) { this.seatId = seatId; return this; }
+
+        public SeatConfirmRequest build() {
+            return new SeatConfirmRequest(reservationId, eventId, userId, seatId);
+        }
+    }
+
     public String getReservationId() {
         return reservationId;
     }

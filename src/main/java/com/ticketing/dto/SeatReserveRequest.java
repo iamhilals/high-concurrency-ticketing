@@ -16,6 +16,38 @@ public class SeatReserveRequest {
     private String zoneName;
     private Double price;
 
+    public SeatReserveRequest() {}
+
+    public SeatReserveRequest(Long eventId, Long userId, String seatId, String zoneName, Double price) {
+        this.eventId = eventId;
+        this.userId = userId;
+        this.seatId = seatId;
+        this.zoneName = zoneName;
+        this.price = price;
+    }
+
+    public static SeatReserveRequestBuilder builder() {
+        return new SeatReserveRequestBuilder();
+    }
+
+    public static class SeatReserveRequestBuilder {
+        private Long eventId;
+        private Long userId;
+        private String seatId;
+        private String zoneName;
+        private Double price;
+
+        public SeatReserveRequestBuilder eventId(Long eventId) { this.eventId = eventId; return this; }
+        public SeatReserveRequestBuilder userId(Long userId) { this.userId = userId; return this; }
+        public SeatReserveRequestBuilder seatId(String seatId) { this.seatId = seatId; return this; }
+        public SeatReserveRequestBuilder zoneName(String zoneName) { this.zoneName = zoneName; return this; }
+        public SeatReserveRequestBuilder price(Double price) { this.price = price; return this; }
+
+        public SeatReserveRequest build() {
+            return new SeatReserveRequest(eventId, userId, seatId, zoneName, price);
+        }
+    }
+
     public Long getEventId() {
         return eventId;
     }

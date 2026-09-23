@@ -22,6 +22,50 @@ public class SeatReserveResponse {
     private LocalDateTime expiresAt;
     private String message;
 
+    public SeatReserveResponse() {}
+
+    public SeatReserveResponse(boolean success, String reservationId, Long eventId, Long userId, String seatId, String zoneName, Double price, LocalDateTime expiresAt, String message) {
+        this.success = success;
+        this.reservationId = reservationId;
+        this.eventId = eventId;
+        this.userId = userId;
+        this.seatId = seatId;
+        this.zoneName = zoneName;
+        this.price = price;
+        this.expiresAt = expiresAt;
+        this.message = message;
+    }
+
+    public static SeatReserveResponseBuilder builder() {
+        return new SeatReserveResponseBuilder();
+    }
+
+    public static class SeatReserveResponseBuilder {
+        private boolean success;
+        private String reservationId;
+        private Long eventId;
+        private Long userId;
+        private String seatId;
+        private String zoneName;
+        private Double price;
+        private LocalDateTime expiresAt;
+        private String message;
+
+        public SeatReserveResponseBuilder success(boolean success) { this.success = success; return this; }
+        public SeatReserveResponseBuilder reservationId(String reservationId) { this.reservationId = reservationId; return this; }
+        public SeatReserveResponseBuilder eventId(Long eventId) { this.eventId = eventId; return this; }
+        public SeatReserveResponseBuilder userId(Long userId) { this.userId = userId; return this; }
+        public SeatReserveResponseBuilder seatId(String seatId) { this.seatId = seatId; return this; }
+        public SeatReserveResponseBuilder zoneName(String zoneName) { this.zoneName = zoneName; return this; }
+        public SeatReserveResponseBuilder price(Double price) { this.price = price; return this; }
+        public SeatReserveResponseBuilder expiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; return this; }
+        public SeatReserveResponseBuilder message(String message) { this.message = message; return this; }
+
+        public SeatReserveResponse build() {
+            return new SeatReserveResponse(success, reservationId, eventId, userId, seatId, zoneName, price, expiresAt, message);
+        }
+    }
+
     public boolean isSuccess() {
         return success;
     }

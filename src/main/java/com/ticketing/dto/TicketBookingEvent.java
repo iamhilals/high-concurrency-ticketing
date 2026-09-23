@@ -19,6 +19,29 @@ public class TicketBookingEvent implements Serializable {
     private Long eventId;
     private Long userId;
 
+    public TicketBookingEvent() {}
+
+    public TicketBookingEvent(Long eventId, Long userId) {
+        this.eventId = eventId;
+        this.userId = userId;
+    }
+
+    public static TicketBookingEventBuilder builder() {
+        return new TicketBookingEventBuilder();
+    }
+
+    public static class TicketBookingEventBuilder {
+        private Long eventId;
+        private Long userId;
+
+        public TicketBookingEventBuilder eventId(Long eventId) { this.eventId = eventId; return this; }
+        public TicketBookingEventBuilder userId(Long userId) { this.userId = userId; return this; }
+
+        public TicketBookingEvent build() {
+            return new TicketBookingEvent(eventId, userId);
+        }
+    }
+
     public Long getEventId() {
         return eventId;
     }

@@ -26,8 +26,16 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final StringRedisTemplate redisTemplate; // Redis işlemleri için
-    private final KafkaTemplate<String, Object> kafkaTemplate; // Kafka mesaj şablonu (Producer)
+    private final StringRedisTemplate redisTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    public TicketService(TicketRepository ticketRepository, EventRepository eventRepository, UserRepository userRepository, StringRedisTemplate redisTemplate, KafkaTemplate<String, Object> kafkaTemplate) {
+        this.ticketRepository = ticketRepository;
+        this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
+        this.redisTemplate = redisTemplate;
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     private static final long SEAT_LOCK_MINUTES = 10;
 

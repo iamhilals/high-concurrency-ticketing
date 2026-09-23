@@ -20,6 +20,44 @@ public class TicketResponse {
     private LocalDateTime purchaseDate;
     private String status;
 
+    public TicketResponse() {}
+
+    public TicketResponse(Long ticketId, Long eventId, String eventTitle, Long userId, String username, LocalDateTime purchaseDate, String status) {
+        this.ticketId = ticketId;
+        this.eventId = eventId;
+        this.eventTitle = eventTitle;
+        this.userId = userId;
+        this.username = username;
+        this.purchaseDate = purchaseDate;
+        this.status = status;
+    }
+
+    public static TicketResponseBuilder builder() {
+        return new TicketResponseBuilder();
+    }
+
+    public static class TicketResponseBuilder {
+        private Long ticketId;
+        private Long eventId;
+        private String eventTitle;
+        private Long userId;
+        private String username;
+        private LocalDateTime purchaseDate;
+        private String status;
+
+        public TicketResponseBuilder ticketId(Long ticketId) { this.ticketId = ticketId; return this; }
+        public TicketResponseBuilder eventId(Long eventId) { this.eventId = eventId; return this; }
+        public TicketResponseBuilder eventTitle(String eventTitle) { this.eventTitle = eventTitle; return this; }
+        public TicketResponseBuilder userId(Long userId) { this.userId = userId; return this; }
+        public TicketResponseBuilder username(String username) { this.username = username; return this; }
+        public TicketResponseBuilder purchaseDate(LocalDateTime purchaseDate) { this.purchaseDate = purchaseDate; return this; }
+        public TicketResponseBuilder status(String status) { this.status = status; return this; }
+
+        public TicketResponse build() {
+            return new TicketResponse(ticketId, eventId, eventTitle, userId, username, purchaseDate, status);
+        }
+    }
+
     public Long getTicketId() {
         return ticketId;
     }

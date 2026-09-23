@@ -29,6 +29,35 @@ public class Ticket {
     @Column(nullable = false)
     private LocalDateTime purchaseDate;
 
+    public Ticket() {}
+
+    public Ticket(Long id, Event event, User user, LocalDateTime purchaseDate) {
+        this.id = id;
+        this.event = event;
+        this.user = user;
+        this.purchaseDate = purchaseDate;
+    }
+
+    public static TicketBuilder builder() {
+        return new TicketBuilder();
+    }
+
+    public static class TicketBuilder {
+        private Long id;
+        private Event event;
+        private User user;
+        private LocalDateTime purchaseDate;
+
+        public TicketBuilder id(Long id) { this.id = id; return this; }
+        public TicketBuilder event(Event event) { this.event = event; return this; }
+        public TicketBuilder user(User user) { this.user = user; return this; }
+        public TicketBuilder purchaseDate(LocalDateTime purchaseDate) { this.purchaseDate = purchaseDate; return this; }
+
+        public Ticket build() {
+            return new Ticket(id, event, user, purchaseDate);
+        }
+    }
+
     public Long getId() {
         return id;
     }

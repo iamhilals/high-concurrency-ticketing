@@ -15,6 +15,10 @@ public class TicketController {
 
     private final TicketService ticketService;
 
+    public TicketController(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
+
     @PostMapping
     public ResponseEntity<TicketResponse> purchaseTicket(@RequestBody TicketRequest request) {
         TicketResponse response = ticketService.purchaseTicket(request);

@@ -31,6 +31,38 @@ public class User {
     @Builder.Default
     private List<Ticket> tickets = new ArrayList<>();
 
+    public User() {}
+
+    public User(Long id, String username, String email, String password, List<Ticket> tickets) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.tickets = tickets != null ? tickets : new ArrayList<>();
+    }
+
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+
+    public static class UserBuilder {
+        private Long id;
+        private String username;
+        private String email;
+        private String password;
+        private List<Ticket> tickets = new ArrayList<>();
+
+        public UserBuilder id(Long id) { this.id = id; return this; }
+        public UserBuilder username(String username) { this.username = username; return this; }
+        public UserBuilder email(String email) { this.email = email; return this; }
+        public UserBuilder password(String password) { this.password = password; return this; }
+        public UserBuilder tickets(List<Ticket> tickets) { this.tickets = tickets; return this; }
+
+        public User build() {
+            return new User(id, username, email, password, tickets);
+        }
+    }
+
     public Long getId() {
         return id;
     }

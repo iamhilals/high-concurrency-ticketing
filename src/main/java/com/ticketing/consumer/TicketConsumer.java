@@ -20,6 +20,12 @@ public class TicketConsumer {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
+    public TicketConsumer(TicketRepository ticketRepository, EventRepository eventRepository, UserRepository userRepository) {
+        this.ticketRepository = ticketRepository;
+        this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
+    }
+
     /**
      * Kafka kuyruğundan bilet taleplerini asenkron olarak dinleyen tüketici metot.
      * topics: Dinlenecek kanal adı ("ticket-bookings")
