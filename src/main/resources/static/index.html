@@ -3414,22 +3414,27 @@
 
         async function fetchEvents() {
             try {
-                const res = await fetch(`${API_BASE}/events`);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const data = await res.json();
-                if (Array.isArray(data) && data.length > 0) {
-                    allEvents = data;
-                } else {
-                    allEvents = getFallbackEvents();
+                const controller = new AbortController();
+                const timerId = setTimeout(() => controller.abort(), 1200);
+
+                const res = await fetch(`${API_BASE}/events`, { signal: controller.signal });
+                clearTimeout(timerId);
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        allEvents = data;
+                        renderNetflixCarousel();
+                        applyFilters();
+                    }
                 }
             } catch (err) {
-                console.warn('Sunucu bağlantısı sağlanamadı, hazır demo etkinlik listesi yükleniyor.', err);
+                // If backend is unreachable or times out, fallback events are already displayed instantly
                 if (!allEvents || allEvents.length === 0) {
                     allEvents = getFallbackEvents();
+                    renderNetflixCarousel();
+                    applyFilters();
                 }
-            } finally {
-                renderNetflixCarousel();
-                applyFilters();
             }
         }
 
@@ -4835,6 +4840,9 @@
 
         // Initialize
         updateNavAuth();
+        allEvents = getFallbackEvents();
+        renderNetflixCarousel();
+        applyFilters();
         fetchEvents();
         setInterval(fetchEvents, 4000);
     </script>
