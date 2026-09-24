@@ -2496,6 +2496,58 @@
         </div>
     </div>
 
+    <!-- PassoBot Floating AI Assistant Trigger Button -->
+    <div class="passobot-trigger" id="passobotTrigger" onclick="togglePassoBot()">
+        <span style="font-size:1.3rem;">🤖</span>
+        <span>PassoBot AI</span>
+    </div>
+
+    <!-- PassoBot Floating Chat Window -->
+    <div class="passobot-window" id="passobotWindow">
+        <div class="passobot-header">
+            <div class="passobot-title">
+                <span style="font-size:1.2rem;">🤖</span>
+                <div>
+                    <div>PassoBot AI Asistanı</div>
+                    <div style="font-size:0.7rem; color:#94a3b8; font-weight:normal;" id="botEngineLabel">✨ Powered by Google Gemini AI</div>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+                <button style="background:none; border:none; color:#94a3b8; cursor:pointer; font-size:1rem;" title="Gemini API Key Ayarları" onclick="toggleApiKeyInput()">🔑</button>
+                <button class="passobot-close" onclick="togglePassoBot()">✕</button>
+            </div>
+        </div>
+
+        <!-- Optional API Key Input drawer -->
+        <div id="geminiKeyDrawer" style="display:none; background:rgba(15,23,42,0.95); border-bottom:1px solid rgba(255,255,255,0.08); padding:0.6rem 0.85rem;">
+            <div style="font-size:0.75rem; color:#cbd5e1; font-weight:700; margin-bottom:0.3rem;">🔑 Google Gemini API Key (İsteğe Bağlı)</div>
+            <div style="display:flex; gap:0.4rem;">
+                <input type="password" id="geminiApiKeyInput" class="filter-input" placeholder="AIzaSy..." style="font-size:0.78rem; padding:0.35rem 0.6rem;">
+                <button type="button" class="btn-buy" style="padding:0.35rem 0.65rem; font-size:0.75rem; background:#8b5cf6;" onclick="saveGeminiApiKey()">Kaydet</button>
+            </div>
+            <div style="font-size:0.68rem; color:#94a3b8; margin-top:0.25rem;">Key girilmezse sunucudaki key veya hızlı yerel NLP motoru kullanılır.</div>
+        </div>
+
+        <div class="passobot-messages" id="passobotMessages">
+            <div class="ai-msg">
+                👋 Merhaba! Ben <strong>PassoBot AI</strong>. Canlı konserler, maçlar, tiyatro ve festivaller hakkında benden öneri isteyebilirsin!<br><br>
+                <i>"500 TL altı Rock konserleri"</i> veya <i>"Romantik bir çift etkinliği öner"</i> gibi sorular sorabilirsin 🎟️
+            </div>
+        </div>
+
+        <div class="passobot-chips">
+            <button class="chip-btn" onclick="sendQuickChip('🎸 500 TL altı Rock konserleri')">🎸 Rock & 500 TL Altı</button>
+            <button class="chip-btn" onclick="sendQuickChip('🎭 Tiyatro ve Komedi gösterileri')">🎭 Komedi & Tiyatro</button>
+            <button class="chip-btn" onclick="sendQuickChip('🎧 Hafta sonu festival ve DJ etkinlikleri')">🎧 Festival & DJ</button>
+            <button class="chip-btn" onclick="sendQuickChip('⚽ Büyük Spor Derbileri ve Maçlar')">⚽ Spor & Derbi</button>
+        </div>
+
+        <div class="passobot-footer">
+            <input type="text" id="passobotInput" class="passobot-input" placeholder="PassoBot'a bir şey sor..." onkeydown="if(event.key==='Enter') sendAiMessage()">
+            <button class="passobot-send" onclick="sendAiMessage()">Gönder</button>
+        </div>
+    </div>
+
     <script>
         const API_BASE = '/api';
         let allEvents = [];
@@ -3148,6 +3200,120 @@
                 dist.innerText = 'Mesafe: 25-50m (Panoramik)';
                 badge.innerText = '🏟️ Tribün Görüş Açısı';
             }
+        }
+
+        let userGeminiApiKey = localStorage.getItem('passo_gemini_key') || '';
+
+        function togglePassoBot() {
+            const win = document.getElementById('passobotWindow');
+            if (win) win.classList.toggle('active');
+        }
+
+        function toggleApiKeyInput() {
+            const drawer = document.getElementById('geminiKeyDrawer');
+            if (drawer) drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+            const input = document.getElementById('geminiApiKeyInput');
+            if (input && userGeminiApiKey) input.value = userGeminiApiKey;
+        }
+
+        function saveGeminiApiKey() {
+            const input = document.getElementById('geminiApiKeyInput');
+            if (input) {
+                userGeminiApiKey = input.value.trim();
+                localStorage.setItem('passo_gemini_key', userGeminiApiKey);
+                alert("✅ Gemini API Key tarayıcınıza başarıyla kaydedildi! Artık tüm yanıtlar doğrudan Google Gemini 1.5 Flash tarafından üretilecektir.");
+                toggleApiKeyInput();
+            }
+        }
+
+        function sendQuickChip(text) {
+            const input = document.getElementById('passobotInput');
+            if (input) {
+                input.value = text;
+                sendAiMessage();
+            }
+        }
+
+        async function sendAiMessage() {
+            const input = document.getElementById('passobotInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const chatContainer = document.getElementById('passobotMessages');
+
+            // Append User Message
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-msg';
+            userDiv.innerText = msg;
+            chatContainer.appendChild(userDiv);
+
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Typing Indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'ai-msg';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = '🤖 <i>PassoBot düşünüyor...</i>';
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            try {
+                const res = await fetch(`${API_BASE}/ai/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: msg,
+                        userId: currentUser ? currentUser.id : 1,
+                        apiKey: userGeminiApiKey
+                    })
+                });
+
+                const data = await res.json();
+                
+                const typNode = document.getElementById('typingIndicator');
+                if (typNode) typNode.remove();
+
+                // Append AI Reply
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'ai-msg';
+                
+                const engineBadge = data.usedEngine ? `<div style="font-size:0.68rem; color:#a855f7; font-weight:700; margin-bottom:0.4rem;">✨ Engine: ${data.usedEngine}</div>` : '';
+                aiDiv.innerHTML = `${engineBadge}${data.reply.replace(/\n/g, '<br>')}`;
+
+                // Append Suggested Events Cards
+                if (data.suggestedEvents && data.suggestedEvents.length > 0) {
+                    data.suggestedEvents.forEach(evt => {
+                        const card = document.createElement('div');
+                        card.className = 'ai-event-card';
+                        card.innerHTML = `
+                            <div>
+                                <div class="ai-event-title">${evt.title}</div>
+                                <div class="ai-event-sub">📍 ${evt.venue || 'İstanbul'} • ₺${evt.price}</div>
+                            </div>
+                            <button class="ai-event-btn" onclick="openEventDetailFromAi(${evt.id})">🎟️ Bilet Al</button>
+                        `;
+                        aiDiv.appendChild(card);
+                    });
+                }
+
+                chatContainer.appendChild(aiDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            } catch (err) {
+                console.error(err);
+                const typNode = document.getElementById('typingIndicator');
+                if (typNode) typNode.remove();
+                
+                const errDiv = document.createElement('div');
+                errDiv.className = 'ai-msg';
+                errDiv.innerHTML = '⚠️ Sunucu bağlantı hatası oluştu.';
+                chatContainer.appendChild(errDiv);
+            }
+        }
+
+        function openEventDetailFromAi(eventId) {
+            togglePassoBot();
+            openEventDetailModal(eventId);
         }
 
         let isAudioPlaying = false;

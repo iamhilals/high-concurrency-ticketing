@@ -1,21 +1,21 @@
 package com.ticketing.dto;
 
 import com.ticketing.entity.Event;
-import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 public class AiChatResponse {
     private String reply;
     private List<Event> suggestedEvents = new ArrayList<>();
+    private String usedEngine;
 
     public AiChatResponse() {}
 
-    public AiChatResponse(String reply, List<Event> suggestedEvents) {
+    public AiChatResponse(String reply, List<Event> suggestedEvents, String usedEngine) {
         this.reply = reply;
         this.suggestedEvents = suggestedEvents != null ? suggestedEvents : new ArrayList<>();
+        this.usedEngine = usedEngine;
     }
 
     public static AiChatResponseBuilder builder() {
@@ -25,12 +25,14 @@ public class AiChatResponse {
     public static class AiChatResponseBuilder {
         private String reply;
         private List<Event> suggestedEvents = new ArrayList<>();
+        private String usedEngine;
 
         public AiChatResponseBuilder reply(String reply) { this.reply = reply; return this; }
         public AiChatResponseBuilder suggestedEvents(List<Event> suggestedEvents) { this.suggestedEvents = suggestedEvents; return this; }
+        public AiChatResponseBuilder usedEngine(String usedEngine) { this.usedEngine = usedEngine; return this; }
 
         public AiChatResponse build() {
-            return new AiChatResponse(reply, suggestedEvents);
+            return new AiChatResponse(reply, suggestedEvents, usedEngine);
         }
     }
 
@@ -48,5 +50,13 @@ public class AiChatResponse {
 
     public void setSuggestedEvents(List<Event> suggestedEvents) {
         this.suggestedEvents = suggestedEvents;
+    }
+
+    public String getUsedEngine() {
+        return usedEngine;
+    }
+
+    public void setUsedEngine(String usedEngine) {
+        this.usedEngine = usedEngine;
     }
 }
