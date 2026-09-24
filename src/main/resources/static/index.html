@@ -24,6 +24,227 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
+        /* PassoBot Floating AI Assistant Widget Styles */
+        .passobot-trigger {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: #fff;
+            padding: 0.85rem 1.4rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.5);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .passobot-trigger:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 15px 35px -5px rgba(236, 72, 153, 0.7);
+        }
+
+        .passobot-window {
+            position: fixed;
+            bottom: 5.5rem;
+            right: 2rem;
+            width: 400px;
+            height: 560px;
+            max-width: calc(100vw - 2.5rem);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            animation: slideUpFade 0.3s ease-out forwards;
+        }
+
+        .passobot-window.active {
+            display: flex;
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .passobot-header {
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(139, 92, 246, 0.15));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .passobot-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #f8fafc;
+        }
+
+        .passobot-status {
+            width: 9px;
+            height: 9px;
+            background-color: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .passobot-close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .passobot-close:hover { color: #fff; }
+
+        .passobot-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .ai-msg, .user-msg {
+            max-width: 85%;
+            padding: 0.75rem 1rem;
+            border-radius: 14px;
+            font-size: 0.88rem;
+            line-height: 1.45;
+        }
+
+        .ai-msg {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            align-self: flex-start;
+            color: #e2e8f0;
+            border-bottom-left-radius: 2px;
+        }
+
+        .user-msg {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .passobot-chips {
+            padding: 0.5rem 1rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .chip-btn {
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip-btn:hover {
+            background: rgba(236, 72, 153, 0.2);
+            border-color: #ec4899;
+            color: #fff;
+        }
+
+        .passobot-footer {
+            padding: 0.85rem 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .passobot-input {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 0.6rem 0.9rem;
+            color: #fff;
+            font-size: 0.88rem;
+            outline: none;
+        }
+
+        .passobot-input:focus {
+            border-color: #8b5cf6;
+        }
+
+        .passobot-send {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            border: none;
+            color: #fff;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .passobot-send:hover { opacity: 0.9; }
+
+        .ai-event-card {
+            margin-top: 0.6rem;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            padding: 0.6rem 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .ai-event-title {
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: #f8fafc;
+        }
+
+        .ai-event-sub {
+            font-size: 0.72rem;
+            color: #94a3b8;
+        }
+
+        .ai-event-btn {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
         body {
             background-color: var(--bg-main);
             background-image: 
@@ -2204,6 +2425,73 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 3. Anti-Scalper AI Bot Protection Section -->
+                <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(239,68,68,0.3); padding:1.25rem; border-radius:1rem; margin-top:0.5rem; display:flex; flex-direction:column; gap:1rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; align-items:center; gap:0.6rem;">
+                            <span style="font-size:1.3rem;">🛡️</span>
+                            <div>
+                                <h4 style="font-size:1rem; font-weight:800; color:#f8fafc;">Karaborsacı Bot Algılama Katmanı (Anti-Scalper AI Defense)</h4>
+                                <div style="font-size:0.75rem; color:#94a3b8;">Gerçek zamanlı milisaniye frekans ve insanüstü bilet alma davranışı analitiği</div>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.75rem;">
+                            <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; color:#cbd5e1; cursor:pointer;">
+                                <input type="checkbox" id="strictDefenseToggle" checked onchange="toggleStrictDefense()" style="width:16px; height:16px;">
+                                <span>⚡ Sıkı Bot Koruması (Strict Mode)</span>
+                            </label>
+                            <button type="button" class="btn-buy" style="padding:0.45rem 0.85rem; font-size:0.8rem; background:linear-gradient(135deg, #ef4444, #dc2626);" onclick="simulateBotAttackLive()">
+                                🤖 Bot Saldırısı Simüle Et
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Anti-Scalper Stats Cards -->
+                    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:0.75rem;">
+                        <div style="background:rgba(30,41,59,0.6); padding:0.75rem; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.05); text-align:center;">
+                            <div style="font-size:0.7rem; color:#94a3b8;">TOPLAM ANALİZ</div>
+                            <div style="font-size:1.15rem; font-weight:800; color:#f8fafc; margin-top:0.2rem;" id="botTotalScanned">1,420</div>
+                        </div>
+                        <div style="background:rgba(239,68,68,0.1); padding:0.75rem; border-radius:0.75rem; border:1px solid rgba(239,68,68,0.3); text-align:center;">
+                            <div style="font-size:0.7rem; color:#f87171;">ENGELLENEN BOTLAR</div>
+                            <div style="font-size:1.15rem; font-weight:800; color:#ef4444; margin-top:0.2rem;" id="botBlockedCount">38 Adet</div>
+                        </div>
+                        <div style="background:rgba(234,179,8,0.1); padding:0.75rem; border-radius:0.75rem; border:1px solid rgba(234,179,8,0.3); text-align:center;">
+                            <div style="font-size:0.7rem; color:#facc15;">ŞÜPHELİ UYARILAR</div>
+                            <div style="font-size:1.15rem; font-weight:800; color:#eab308; margin-top:0.2rem;" id="botSuspiciousCount">112</div>
+                        </div>
+                        <div style="background:rgba(59,130,246,0.1); padding:0.75rem; border-radius:0.75rem; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                            <div style="font-size:0.7rem; color:#60a5fa;">ORT. RİSK PUANI</div>
+                            <div style="font-size:1.15rem; font-weight:800; color:#3b82f6; margin-top:0.2rem;" id="botAvgRiskScore">14.2 / 100</div>
+                        </div>
+                    </div>
+
+                    <!-- Live Threat Logs Table -->
+                    <div>
+                        <div style="font-size:0.85rem; font-weight:700; color:#cbd5e1; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
+                            <span>🚨 Son Tespit Edilen Karaborsacı & Bot Tehditleri (Live Stream)</span>
+                            <span style="font-size:0.75rem; color:#94a3b8;" id="botThreatCountStr">3 Kayıt</span>
+                        </div>
+                        <div style="max-height:180px; overflow-y:auto; border-radius:0.75rem; border:1px solid rgba(255,255,255,0.08); background:rgba(15,23,42,0.9);">
+                            <table style="width:100%; border-collapse:collapse; font-size:0.78rem; text-align:left;">
+                                <thead>
+                                    <tr style="background:rgba(30,41,59,0.8); color:#94a3b8; border-bottom:1px solid rgba(255,255,255,0.08);">
+                                        <th style="padding:0.6rem;">Tehdit ID</th>
+                                        <th style="padding:0.6rem;">User / IP</th>
+                                        <th style="padding:0.6rem;">Etkinlik & Koltuk</th>
+                                        <th style="padding:0.6rem;">AI Risk Puanı</th>
+                                        <th style="padding:0.6rem;">Durum</th>
+                                        <th style="padding:0.6rem;">Tespit Nedeni</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="botThreatTableBody">
+                                    <!-- Populated dynamically via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2245,6 +2533,9 @@
                                 ⚙️ Ayarlar
                             </button>
                             <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" style="color:#ef4444;" onclick="openAdminDashboard()">
+                                🛡️ Anti-Scalper Bot Koruması
+                            </button>
                             <button class="dropdown-item" style="color:#a855f7;" onclick="openAdminDashboard()">
                                 👑 Yönetici Paneli & Analizler
                             </button>
@@ -2904,11 +3195,88 @@
             const countElem = document.getElementById('adminActiveEventCount');
             if (countElem) countElem.innerText = `${(allEvents ? allEvents.length : 40)} Etkinlik`;
 
+            fetchAntiScalperStats();
+
             document.getElementById('adminDashboardModal').classList.add('active');
         }
 
         function closeAdminDashboard() {
             document.getElementById('adminDashboardModal').classList.remove('active');
+        }
+
+        async function fetchAntiScalperStats() {
+            try {
+                const res = await fetch(`${API_BASE}/ai/anti-scalper/stats`);
+                if (!res.ok) return;
+                const data = await res.json();
+                
+                const totElem = document.getElementById('botTotalScanned');
+                if (totElem) totElem.innerText = data.totalAnalyzedRequests.toLocaleString('tr-TR');
+
+                const blkElem = document.getElementById('botBlockedCount');
+                if (blkElem) blkElem.innerText = `${data.blockedBotsCount} Adet`;
+
+                const susElem = document.getElementById('botSuspiciousCount');
+                if (susElem) susElem.innerText = data.suspiciousFlagCount;
+
+                const avgElem = document.getElementById('botAvgRiskScore');
+                if (avgElem) avgElem.innerText = `${data.averageRiskScore} / 100`;
+
+                const togElem = document.getElementById('strictDefenseToggle');
+                if (togElem) togElem.checked = data.defenseModeActive;
+
+                const tbody = document.getElementById('botThreatTableBody');
+                if (tbody && data.recentThreats) {
+                    tbody.innerHTML = '';
+                    const cntElem = document.getElementById('botThreatCountStr');
+                    if (cntElem) cntElem.innerText = `${data.recentThreats.length} Kayıt`;
+
+                    data.recentThreats.forEach(t => {
+                        const tr = document.createElement('tr');
+                        tr.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+                        
+                        const isBlocked = t.actionTaken === 'BLOCKED';
+                        const badgeColor = isBlocked ? '#ef4444' : '#eab308';
+                        const badgeBg = isBlocked ? 'rgba(239,68,68,0.15)' : 'rgba(234,179,8,0.15)';
+                        const badgeText = isBlocked ? '🚫 ENGELLENDİ' : '⚠️ ŞÜPHELİ';
+
+                        const factors = (t.riskFactors && t.riskFactors.length > 0) ? t.riskFactors.join(', ') : 'Yüksek İstek Frekansı';
+
+                        tr.innerHTML = `
+                            <td style="padding:0.6rem; font-weight:bold; color:#fbbf24;">${t.threatId}</td>
+                            <td style="padding:0.6rem; color:#e2e8f0;">User #${t.userId || 'N/A'}<br><span style="font-size:0.7rem; color:#94a3b8;">${t.ipAddress}</span></td>
+                            <td style="padding:0.6rem; color:#cbd5e1;">Evt #${t.eventId} • ${t.seatId}</td>
+                            <td style="padding:0.6rem;"><span style="font-weight:800; color:${badgeColor};">${t.riskScore}/100</span></td>
+                            <td style="padding:0.6rem;"><span style="background:${badgeBg}; color:${badgeColor}; font-weight:800; font-size:0.7rem; padding:0.2rem 0.5rem; border-radius:4px;">${badgeText}</span></td>
+                            <td style="padding:0.6rem; color:#94a3b8; font-size:0.72rem; max-width:220px;">${factors}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error("AntiScalper stats error:", err);
+            }
+        }
+
+        async function simulateBotAttackLive() {
+            try {
+                const res = await fetch(`${API_BASE}/ai/anti-scalper/simulate-attack`, { method: 'POST' });
+                if (res.ok) {
+                    await fetchAntiScalperStats();
+                    alert("🚨 Karaborsacı Bot Saldırısı Simüle Edildi! AI Güvenlik Katmanı 5 insansı olmayan hızlı bot bilet alma isteğini anında tespit edip engelledi!");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function toggleStrictDefense() {
+            try {
+                await fetch(`${API_BASE}/ai/anti-scalper/toggle-defense`, { method: 'POST' });
+                await fetchAntiScalperStats();
+            } catch (err) {
+                console.error(err);
+            }
         }
 
         async function handleAdminCreateEvent(e) {
@@ -3371,6 +3739,128 @@
         updateNavAuth();
         fetchEvents();
         setInterval(fetchEvents, 4000);
+    </script>
+
+    <!-- PassoBot Floating AI Widget & Window -->
+    <div class="passobot-trigger" onclick="togglePassoBot()">
+        <span>🤖</span> PassoBot AI
+    </div>
+
+    <div class="passobot-window" id="passoBotWindow">
+        <div class="passobot-header">
+            <div class="passobot-title">
+                <span>🤖</span> PassoBot Akıllı Asistan
+                <span class="passobot-status" title="Çevrimiçi"></span>
+            </div>
+            <button class="passobot-close" onclick="togglePassoBot()">✕</button>
+        </div>
+        <div class="passobot-messages" id="passoBotMessages">
+            <div class="ai-msg">
+                Merhaba! Ben PassoBot 🤖. Aradığınız konser, tiyatro, spor veya festival biletini bulmanızda size yardımcı olabilirim. Nasıl bir etkinlik arıyorsunuz?
+            </div>
+        </div>
+        <div class="passobot-chips">
+            <button class="chip-btn" onclick="sendQuickChip('Rock konserleri var mı?')">🎸 Rock Konserleri</button>
+            <button class="chip-btn" onclick="sendQuickChip('500 TL altı etkinlikler')">💰 500 TL Altı</button>
+            <button class="chip-btn" onclick="sendQuickChip('Tiyatro ve komedi gösterileri')">🎭 Tiyatro & Komedi</button>
+            <button class="chip-btn" onclick="sendQuickChip('Derbi ve spor maçları')">🏆 Spor & Derbi</button>
+        </div>
+        <div class="passobot-footer">
+            <input type="text" class="passobot-input" id="passoBotInput" placeholder="Mesajınızı yazın..." onkeypress="handlePassoBotKey(event)">
+            <button class="passobot-send" onclick="sendPassoBotMessage()">Gönder</button>
+        </div>
+    </div>
+
+    <script>
+        function togglePassoBot() {
+            const win = document.getElementById('passoBotWindow');
+            if (win) {
+                win.classList.toggle('active');
+            }
+        }
+
+        function sendQuickChip(text) {
+            document.getElementById('passoBotInput').value = text;
+            sendPassoBotMessage();
+        }
+
+        function handlePassoBotKey(e) {
+            if (e.key === 'Enter') {
+                sendPassoBotMessage();
+            }
+        }
+
+        async function sendPassoBotMessage() {
+            const input = document.getElementById('passoBotInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const container = document.getElementById('passoBotMessages');
+
+            // Render User Message
+            const userBubble = document.createElement('div');
+            userBubble.className = 'user-msg';
+            userBubble.textContent = msg;
+            container.appendChild(userBubble);
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+
+            // Render Typing Indicator
+            const typingBubble = document.createElement('div');
+            typingBubble.className = 'ai-msg';
+            typingBubble.id = 'typingIndicator';
+            typingBubble.innerHTML = '🤖 PassoBot düşünüyor...';
+            container.appendChild(typingBubble);
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const userId = typeof currentUser !== 'undefined' && currentUser ? currentUser.id : null;
+                const res = await fetch(`${API_BASE}/ai/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg, userId: userId })
+                });
+
+                const data = await res.json();
+                
+                // Remove Typing Indicator
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) indicator.remove();
+
+                // Render Bot Reply
+                const aiBubble = document.createElement('div');
+                aiBubble.className = 'ai-msg';
+                aiBubble.innerHTML = data.reply ? data.reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') : 'İstek işlenirken bir sorun oluştu.';
+
+                // Render Event Cards if any suggestedEvents
+                if (data.suggestedEvents && data.suggestedEvents.length > 0) {
+                    data.suggestedEvents.forEach(ev => {
+                        const card = document.createElement('div');
+                        card.className = 'ai-event-card';
+                        card.innerHTML = `
+                            <div>
+                                <div class="ai-event-title">${ev.title}</div>
+                                <div class="ai-event-sub">📍 ${ev.venue || 'Mekan'} • 💵 ${ev.price} TL</div>
+                            </div>
+                            <button class="ai-event-btn" onclick="openSeatingView(${ev.id})">Koltuk Seç</button>
+                        `;
+                        aiBubble.appendChild(card);
+                    });
+                }
+
+                container.appendChild(aiBubble);
+                container.scrollTop = container.scrollHeight;
+            } catch (err) {
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) indicator.remove();
+
+                const errBubble = document.createElement('div');
+                errBubble.className = 'ai-msg';
+                errBubble.textContent = 'Üzgünüm, şu anda yanıt alamıyorum. Lütfen bağlantınızı kontrol edin.';
+                container.appendChild(errBubble);
+                container.scrollTop = container.scrollHeight;
+            }
+        }
     </script>
 </body>
 </html>

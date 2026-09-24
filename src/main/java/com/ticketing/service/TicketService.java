@@ -25,13 +25,15 @@ public class TicketService {
     private final UserRepository userRepository;
     private final StringRedisTemplate redisTemplate;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final AntiScalperService antiScalperService;
 
-    public TicketService(TicketRepository ticketRepository, EventRepository eventRepository, UserRepository userRepository, StringRedisTemplate redisTemplate, KafkaTemplate<String, Object> kafkaTemplate) {
+    public TicketService(TicketRepository ticketRepository, EventRepository eventRepository, UserRepository userRepository, StringRedisTemplate redisTemplate, KafkaTemplate<String, Object> kafkaTemplate, AntiScalperService antiScalperService) {
         this.ticketRepository = ticketRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.redisTemplate = redisTemplate;
         this.kafkaTemplate = kafkaTemplate;
+        this.antiScalperService = antiScalperService;
     }
 
     private static final long SEAT_LOCK_MINUTES = 10;
@@ -52,9 +54,26 @@ public class TicketService {
     }
 
     /**
-     * 10 Dakikalık Geçici Koltuk Rejervasyonu (Redis Lock with 10m TTL)
+     * 10 Dakikalık Geçici Koltuk Rezervasyonu (Anti-Scalper AI Bot Kontrolü + Redis Lock with 10m TTL)
      */
     public SeatReserveResponse reserveSeat(SeatReserveRequest request) {
+        // 1. Karaborsacı / Bot Algılama AI Analizi
+        BotDetectionResult botResult = antiScalperService.analyzeReservationAttempt(
+                request.getUserId(),
+                "127.0.0.1", // Client IP
+                request.getEventId(),
+                request.getSeatId()
+        );
+
+        if (botResult.isBlocked()) {
+            return SeatReserveResponse.builder()
+                    .success(false)
+                    .riskScore(botResult.getRiskScore())
+                    .riskLevel(botResult.getRiskLevel())
+                    .message("🚨 Karaborsacı / Bot Algılama Koruması: Şüpheli ve otomatik bilet alma davranışı tespit edildi. İşleminiz engellendi! (Risk Puanı: " + botResult.getRiskScore() + "/100)")
+                    .build();
+        }
+
         String seatLockKey = "seat_lock:event:" + request.getEventId() + ":seat:" + request.getSeatId();
         String reservationId = "RES-" + UUID.randomUUID().toString().substring(0, 8);
 
@@ -64,6 +83,8 @@ public class TicketService {
         if (Boolean.FALSE.equals(isLocked)) {
             return SeatReserveResponse.builder()
                     .success(false)
+                    .riskScore(botResult.getRiskScore())
+                    .riskLevel(botResult.getRiskLevel())
                     .message("Bu koltuk şu anda başka bir kullanıcı tarafından 10 dakikalığına rezerve edilmiştir!")
                     .build();
         }
@@ -79,7 +100,9 @@ public class TicketService {
                 .zoneName(request.getZoneName())
                 .price(request.getPrice())
                 .expiresAt(expiresAt)
-                .message("Koltuk 10 dakikalığına başarıyla rezerve edildi. Lütfen ödemeyi tamamlayın.")
+                .riskScore(botResult.getRiskScore())
+                .riskLevel(botResult.getRiskLevel())
+                .message("Koltuk 10 dakikalığına başarıyla rezerve edildi. Lütfen ödemeyi tamamlayın. (AI Risk Puanı: " + botResult.getRiskScore() + "/100 - " + botResult.getRiskLevel() + ")")
                 .build();
     }
 

@@ -1,10 +1,7 @@
 package com.ticketing.dto;
 
-import lombok.Data;
-
 import java.time.LocalDateTime;
 
-@Data
 public class SeatReserveResponse {
     private boolean success;
     private String reservationId;
@@ -15,10 +12,12 @@ public class SeatReserveResponse {
     private Double price;
     private LocalDateTime expiresAt;
     private String message;
+    private int riskScore;
+    private String riskLevel;
 
     public SeatReserveResponse() {}
 
-    public SeatReserveResponse(boolean success, String reservationId, Long eventId, Long userId, String seatId, String zoneName, Double price, LocalDateTime expiresAt, String message) {
+    public SeatReserveResponse(boolean success, String reservationId, Long eventId, Long userId, String seatId, String zoneName, Double price, LocalDateTime expiresAt, String message, int riskScore, String riskLevel) {
         this.success = success;
         this.reservationId = reservationId;
         this.eventId = eventId;
@@ -28,6 +27,8 @@ public class SeatReserveResponse {
         this.price = price;
         this.expiresAt = expiresAt;
         this.message = message;
+        this.riskScore = riskScore;
+        this.riskLevel = riskLevel;
     }
 
     public static SeatReserveResponseBuilder builder() {
@@ -44,6 +45,8 @@ public class SeatReserveResponse {
         private Double price;
         private LocalDateTime expiresAt;
         private String message;
+        private int riskScore;
+        private String riskLevel;
 
         public SeatReserveResponseBuilder success(boolean success) { this.success = success; return this; }
         public SeatReserveResponseBuilder reservationId(String reservationId) { this.reservationId = reservationId; return this; }
@@ -54,81 +57,44 @@ public class SeatReserveResponse {
         public SeatReserveResponseBuilder price(Double price) { this.price = price; return this; }
         public SeatReserveResponseBuilder expiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; return this; }
         public SeatReserveResponseBuilder message(String message) { this.message = message; return this; }
+        public SeatReserveResponseBuilder riskScore(int riskScore) { this.riskScore = riskScore; return this; }
+        public SeatReserveResponseBuilder riskLevel(String riskLevel) { this.riskLevel = riskLevel; return this; }
 
         public SeatReserveResponse build() {
-            return new SeatReserveResponse(success, reservationId, eventId, userId, seatId, zoneName, price, expiresAt, message);
+            return new SeatReserveResponse(success, reservationId, eventId, userId, seatId, zoneName, price, expiresAt, message, riskScore, riskLevel);
         }
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
+    public boolean isSuccess() { return success; }
+    public void setSuccess(boolean success) { this.success = success; }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
+    public String getReservationId() { return reservationId; }
+    public void setReservationId(String reservationId) { this.reservationId = reservationId; }
 
-    public String getReservationId() {
-        return reservationId;
-    }
+    public Long getEventId() { return eventId; }
+    public void setEventId(Long eventId) { this.eventId = eventId; }
 
-    public void setReservationId(String reservationId) {
-        this.reservationId = reservationId;
-    }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    public Long getEventId() {
-        return eventId;
-    }
+    public String getSeatId() { return seatId; }
+    public void setSeatId(String seatId) { this.seatId = seatId; }
 
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
-    }
+    public String getZoneName() { return zoneName; }
+    public void setZoneName(String zoneName) { this.zoneName = zoneName; }
 
-    public Long getUserId() {
-        return userId;
-    }
+    public Double getPrice() { return price; }
+    public void setPrice(Double price) { this.price = price; }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    public LocalDateTime getExpiresAt() { return expiresAt; }
+    public void setExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
 
-    public String getSeatId() {
-        return seatId;
-    }
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
 
-    public void setSeatId(String seatId) {
-        this.seatId = seatId;
-    }
+    public int getRiskScore() { return riskScore; }
+    public void setRiskScore(int riskScore) { this.riskScore = riskScore; }
 
-    public String getZoneName() {
-        return zoneName;
-    }
-
-    public void setZoneName(String zoneName) {
-        this.zoneName = zoneName;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public LocalDateTime getExpiresAt() {
-        return expiresAt;
-    }
-
-    public void setExpiresAt(LocalDateTime expiresAt) {
-        this.expiresAt = expiresAt;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    public String getRiskLevel() { return riskLevel; }
+    public void setRiskLevel(String riskLevel) { this.riskLevel = riskLevel; }
 }
