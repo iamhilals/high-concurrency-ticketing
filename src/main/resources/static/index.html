@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>PassoLive • Bilet Satış Platformu</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -2110,7 +2113,10 @@
     </div>
 
     <div class="events-grid" id="eventsGrid">
-        <p style="color:var(--text-muted);">Etkinlikler yükleniyor...</p>
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
+            <p style="color:var(--text-muted); font-size:1.1rem; margin-bottom:1rem;">Etkinlikler yükleniyor...</p>
+            <button class="btn-buy" style="padding:0.6rem 1.5rem; font-size:0.9rem;" onclick="if(typeof initApp==='function'){ initApp(); } else { location.reload(true); }">⚡ Etkinlikleri Göster / Yenile</button>
+        </div>
     </div>
 
     <!-- Modern User-Facing Footer -->
@@ -3998,7 +4004,6 @@
             openEventDetailModal(eventId);
         }
 
-        let isAudioPlaying = false;
         function toggleAudioPreview() {
             isAudioPlaying = !isAudioPlaying;
             const icon = document.getElementById('spotifyPlayIcon');
@@ -4838,12 +4843,20 @@
             list.prepend(entry);
         }
 
-        // Initialize
-        updateNavAuth();
-        allEvents = getFallbackEvents();
-        renderNetflixCarousel();
-        applyFilters();
-        fetchEvents();
+        function initApp() {
+            updateNavAuth();
+            if (!allEvents || allEvents.length === 0) {
+                allEvents = getFallbackEvents();
+            }
+            renderNetflixCarousel();
+            applyFilters();
+            fetchEvents();
+        }
+
+        // Initialize immediately & on DOM events
+        initApp();
+        document.addEventListener('DOMContentLoaded', initApp);
+        window.addEventListener('load', initApp);
         setInterval(fetchEvents, 4000);
     </script>
 
