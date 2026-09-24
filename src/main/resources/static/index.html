@@ -9,12 +9,69 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
         :root {
-            --bg-main: #090d16;
-            --bg-card: #131b2e;
-            --accent-primary: #ec4899;
-            --accent-secondary: #8b5cf6;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            /* WARM DARK THEME (Warm Rosewood, Burgundy & Terracotta - Image 2 Right inspired) */
+            --bg-main: #180d11;
+            --bg-card: #27141b;
+            --bg-card-hover: #331923;
+            --bg-nav: rgba(24, 13, 17, 0.88);
+            --bg-modal: #221117;
+            --bg-input: rgba(46, 23, 31, 0.7);
+            --accent-primary: #e07a5f;
+            --accent-secondary: #b5485d;
+            --accent-gold: #f4a261;
+            --gradient-hero: linear-gradient(135deg, rgba(224, 122, 95, 0.25), rgba(181, 72, 93, 0.25));
+            --gradient-btn: linear-gradient(135deg, #e07a5f, #b5485d);
+            --gradient-btn-hover: linear-gradient(135deg, #f4a261, #e07a5f);
+            --gradient-logo: linear-gradient(135deg, #e07a5f, #f4a261);
+            --text-main: #faf0e6;
+            --text-muted: #d4b2b6;
+            --border-color: rgba(224, 122, 95, 0.22);
+            --border-color-subtle: rgba(255, 255, 255, 0.08);
+            --box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65);
+        }
+
+        [data-theme="light"] {
+            /* WARM LIGHT THEME (Warm Cream Linen & Deep Velvet Burgundy - Image 2 Left inspired) */
+            --bg-main: #f5efeb;
+            --bg-card: #ffffff;
+            --bg-card-hover: #fcf8f5;
+            --bg-nav: rgba(245, 239, 235, 0.92);
+            --bg-modal: #fdfbf9;
+            --bg-input: #eee2d9;
+            --accent-primary: #80232e;
+            --accent-secondary: #d97736;
+            --accent-gold: #b86b28;
+            --gradient-hero: linear-gradient(135deg, rgba(128, 35, 46, 0.12), rgba(217, 119, 54, 0.12));
+            --gradient-btn: linear-gradient(135deg, #80232e, #a83242);
+            --gradient-btn-hover: linear-gradient(135deg, #a83242, #d97736);
+            --gradient-logo: linear-gradient(135deg, #80232e, #d97736);
+            --text-main: #2b1810;
+            --text-muted: #7a5f56;
+            --border-color: rgba(128, 35, 46, 0.18);
+            --border-color-subtle: rgba(0, 0, 0, 0.08);
+            --box-shadow: 0 15px 35px -10px rgba(70, 25, 30, 0.12);
+        }
+
+        .theme-toggle-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.45rem 1.1rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+        }
+
+        .theme-toggle-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 6px 18px rgba(224, 122, 95, 0.3);
         }
 
         * {
@@ -29,7 +86,7 @@
             position: fixed;
             bottom: 2rem;
             right: 2rem;
-            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            background: var(--gradient-btn);
             color: #fff;
             padding: 0.85rem 1.4rem;
             border-radius: 9999px;
@@ -39,15 +96,16 @@
             align-items: center;
             gap: 0.6rem;
             cursor: pointer;
-            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.5);
+            box-shadow: 0 10px 25px -5px rgba(224, 122, 95, 0.4);
             z-index: 1000;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-color);
         }
 
         .passobot-trigger:hover {
             transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 15px 35px -5px rgba(236, 72, 153, 0.7);
+            box-shadow: 0 15px 35px -5px rgba(224, 122, 95, 0.6);
+            background: var(--gradient-btn-hover);
         }
 
         .passobot-window {
@@ -57,11 +115,11 @@
             width: 400px;
             height: 560px;
             max-width: calc(100vw - 2.5rem);
-            background: rgba(15, 23, 42, 0.95);
+            background: var(--bg-modal);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid var(--border-color);
             border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            box-shadow: var(--box-shadow);
             display: none;
             flex-direction: column;
             overflow: hidden;
@@ -80,8 +138,8 @@
 
         .passobot-header {
             padding: 1rem 1.25rem;
-            background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(139, 92, 246, 0.15));
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--gradient-hero);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -93,7 +151,7 @@
             gap: 0.75rem;
             font-weight: 700;
             font-size: 1.05rem;
-            color: #f8fafc;
+            color: var(--text-main);
         }
 
         .passobot-status {
@@ -107,13 +165,13 @@
         .passobot-close {
             background: transparent;
             border: none;
-            color: #94a3b8;
+            color: var(--text-muted);
             font-size: 1.3rem;
             cursor: pointer;
             transition: color 0.2s;
         }
 
-        .passobot-close:hover { color: #fff; }
+        .passobot-close:hover { color: var(--text-main); }
 
         .passobot-messages {
             flex: 1;
@@ -133,15 +191,15 @@
         }
 
         .ai-msg {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--bg-input);
+            border: 1px solid var(--border-color-subtle);
             align-self: flex-start;
-            color: #e2e8f0;
+            color: var(--text-main);
             border-bottom-left-radius: 2px;
         }
 
         .user-msg {
-            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            background: var(--gradient-btn);
             color: #fff;
             align-self: flex-end;
             border-bottom-right-radius: 2px;
@@ -152,15 +210,15 @@
             display: flex;
             gap: 0.5rem;
             overflow-x: auto;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            background: rgba(15, 23, 42, 0.6);
+            border-top: 1px solid var(--border-color-subtle);
+            background: var(--bg-card);
         }
 
         .chip-btn {
             white-space: nowrap;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #cbd5e1;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
             padding: 0.35rem 0.75rem;
             border-radius: 9999px;
             font-size: 0.78rem;
@@ -169,36 +227,36 @@
         }
 
         .chip-btn:hover {
-            background: rgba(236, 72, 153, 0.2);
-            border-color: #ec4899;
+            background: var(--gradient-btn);
             color: #fff;
+            border-color: transparent;
         }
 
         .passobot-footer {
             padding: 0.85rem 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid var(--border-color-subtle);
             display: flex;
             gap: 0.5rem;
-            background: rgba(15, 23, 42, 0.9);
+            background: var(--bg-modal);
         }
 
         .passobot-input {
             flex: 1;
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 0.6rem 0.9rem;
-            color: #fff;
+            color: var(--text-main);
             font-size: 0.88rem;
             outline: none;
         }
 
         .passobot-input:focus {
-            border-color: #8b5cf6;
+            border-color: var(--accent-primary);
         }
 
         .passobot-send {
-            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            background: var(--gradient-btn);
             border: none;
             color: #fff;
             padding: 0.6rem 1rem;
@@ -206,15 +264,15 @@
             font-weight: 700;
             font-size: 0.88rem;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, background 0.3s;
         }
 
-        .passobot-send:hover { opacity: 0.9; }
+        .passobot-send:hover { background: var(--gradient-btn-hover); }
 
         .ai-event-card {
             margin-top: 0.6rem;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 0.6rem 0.8rem;
             display: flex;
@@ -226,16 +284,16 @@
         .ai-event-title {
             font-weight: 700;
             font-size: 0.82rem;
-            color: #f8fafc;
+            color: var(--text-main);
         }
 
         .ai-event-sub {
             font-size: 0.72rem;
-            color: #94a3b8;
+            color: var(--text-muted);
         }
 
         .ai-event-btn {
-            background: #10b981;
+            background: var(--gradient-btn);
             color: #fff;
             border: none;
             padding: 0.35rem 0.65rem;
@@ -272,18 +330,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.8);
+            background: var(--bg-nav);
             backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 50;
+            transition: background 0.3s, border-color 0.3s;
         }
 
         .logo {
             font-size: 1.6rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #f43f5e, #a855f7);
+            background: var(--gradient-logo);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
@@ -471,7 +530,7 @@
 
         .cat-pill {
             background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
             padding: 0.6rem 1.25rem;
             border-radius: 9999px;
             color: var(--text-muted);
@@ -483,10 +542,10 @@
         }
 
         .cat-pill.active, .cat-pill:hover {
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            background: var(--gradient-btn);
             color: #fff;
             border-color: transparent;
-            box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
+            box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
         }
 
         /* Filter Section & Control Panel */
@@ -509,9 +568,9 @@
         }
 
         .btn-reset-filter {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #cbd5e1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
             padding: 0.4rem 0.85rem;
             border-radius: 9999px;
             font-size: 0.8rem;
@@ -531,12 +590,12 @@
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr;
             gap: 0.85rem;
-            background: rgba(15, 23, 42, 0.7);
+            background: var(--bg-card);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             border-radius: 1rem;
             padding: 1rem;
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--box-shadow);
             width: 100%;
         }
 
@@ -560,29 +619,29 @@
 
         .filter-input {
             width: 100%;
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
             border-radius: 0.75rem;
             padding: 0.65rem 0.9rem;
-            color: #f8fafc;
+            color: var(--text-main);
             font-size: 0.88rem;
             outline: none;
             transition: all 0.2s;
         }
 
         .filter-input:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
-            background: rgba(30, 41, 59, 1);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 10px rgba(224, 122, 95, 0.3);
+            background: var(--bg-card);
         }
 
         .filter-select {
             width: 100%;
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
             border-radius: 0.75rem;
             padding: 0.65rem 0.9rem;
-            color: #f8fafc;
+            color: var(--text-main);
             font-size: 0.88rem;
             outline: none;
             cursor: pointer;
@@ -590,13 +649,13 @@
         }
 
         .filter-select option {
-            background: #0f172a;
-            color: #f8fafc;
+            background: var(--bg-card);
+            color: var(--text-main);
         }
 
         .filter-select:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 10px rgba(224, 122, 95, 0.3);
         }
 
         /* Events Grid */
@@ -611,20 +670,21 @@
 
         .card {
             background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
             border-radius: 1.25rem;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s, border-color 0.3s;
             position: relative;
             cursor: pointer;
+            box-shadow: var(--box-shadow);
         }
 
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px -15px rgba(236, 72, 153, 0.3);
-            border-color: rgba(236, 72, 153, 0.4);
+            box-shadow: 0 20px 40px -15px rgba(224, 122, 95, 0.35);
+            border-color: var(--accent-primary);
         }
 
         .card-img-wrap {
@@ -649,14 +709,14 @@
             position: absolute;
             top: 1rem;
             left: 1rem;
-            background: rgba(15, 23, 42, 0.85);
+            background: var(--bg-modal);
             backdrop-filter: blur(8px);
-            color: #f43f5e;
+            color: var(--accent-primary);
             font-size: 0.75rem;
             font-weight: 700;
             padding: 0.35rem 0.75rem;
             border-radius: 9999px;
-            border: 1px solid rgba(244, 63, 94, 0.3);
+            border: 1px solid var(--border-color);
         }
 
         .card-body {
@@ -671,6 +731,7 @@
             font-size: 1.35rem;
             font-weight: 700;
             line-height: 1.3;
+            color: var(--text-main);
         }
 
         .card-venue {
@@ -684,7 +745,7 @@
         .card-footer {
             margin-top: auto;
             padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid var(--border-color-subtle);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -693,17 +754,17 @@
         .price-tag {
             font-size: 1.4rem;
             font-weight: 800;
-            color: #38bdf8;
+            color: var(--accent-gold);
         }
 
         .capacity-badge {
             font-size: 0.85rem;
             font-weight: 700;
-            background: rgba(56, 189, 248, 0.1);
-            color: #38bdf8;
+            background: rgba(244, 162, 97, 0.12);
+            color: var(--accent-gold);
             padding: 0.4rem 0.8rem;
             border-radius: 0.5rem;
-            border: 1px solid rgba(56, 189, 248, 0.2);
+            border: 1px solid var(--border-color);
             transition: all 0.3s;
         }
 
@@ -722,7 +783,7 @@
         .btn-buy {
             width: 100%;
             margin-top: 1rem;
-            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            background: var(--gradient-btn);
             color: #fff;
             border: none;
             padding: 0.9rem;
@@ -730,11 +791,15 @@
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
+            transition: opacity 0.2s, transform 0.1s, background 0.3s;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 0.5rem;
+        }
+
+        .btn-buy:hover {
+            background: var(--gradient-btn-hover);
         }
 
         .btn-buy:hover {
@@ -1586,6 +1651,9 @@
             </div>
         </div>
         <div class="user-status">
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleAppTheme()">
+                <span id="themeToggleIcon">☀️</span> <span id="themeToggleText">Aydınlık Tema</span>
+            </button>
             <div id="navAuthArea"></div>
         </div>
     </nav>
@@ -2550,6 +2618,38 @@
 
     <script>
         const API_BASE = '/api';
+        
+        /* Warm Theme Switcher Logic (Aydınlık / Koyu Sıcak Tema) */
+        function initTheme() {
+            const savedTheme = localStorage.getItem('passolive_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeToggleUI(savedTheme);
+        }
+
+        function toggleAppTheme() {
+            const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', current);
+            localStorage.setItem('passolive_theme', current);
+            updateThemeToggleUI(current);
+        }
+
+        function updateThemeToggleUI(theme) {
+            const btnText = document.getElementById('themeToggleText');
+            const btnIcon = document.getElementById('themeToggleIcon');
+            if (btnText && btnIcon) {
+                if (theme === 'light') {
+                    btnIcon.innerText = '🌙';
+                    btnText.innerText = 'Koyu Tema';
+                } else {
+                    btnIcon.innerText = '☀️';
+                    btnText.innerText = 'Aydınlık Tema';
+                }
+            }
+        }
+
+        // Initialize Theme immediately to prevent flicker
+        initTheme();
+
         let allEvents = [];
         let pendingTickets = [];
         let currentUser = JSON.parse(localStorage.getItem('passo_user')) || null;
