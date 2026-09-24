@@ -1939,29 +1939,53 @@
         </div>
 
         <!-- 4 Quick Feature Cards Grid (Inspired by Top 4 Feature Grid in Uploaded Image) -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem; width:100%; max-width:1540px; margin-bottom:2.5rem;">
-            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
-                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #9f1239, #e11d48); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">⚡</div>
-                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">Hızlı Bilet & 10 Dk Kilit</h4>
-                <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Redis Atomic DECR ile sıfır çakışma ve 10 dakikalık koltuk garantisi.</p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1.25rem; width:100%; max-width:1540px; margin-bottom:2.5rem;">
+            <!-- Card 1 -->
+            <div class="quick-feature-card" style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.35rem 1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); backdrop-filter:blur(12px); display:flex; flex-direction:column; gap:0.75rem; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position:relative; overflow:hidden;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, #9f1239, #e11d48); display:flex; align-items:center; justify-content:center; font-size:1.35rem; color:#fff; box-shadow:0 8px 20px rgba(225,29,72,0.35);">⚡</div>
+                    <span style="font-size:0.7rem; font-weight:800; padding:0.25rem 0.6rem; border-radius:9999px; background:rgba(225,29,72,0.15); color:#f43f5e; border:1px solid rgba(225,29,72,0.3); text-transform:uppercase; letter-spacing:0.5px;">⚡ ATOMİK HIZ</span>
+                </div>
+                <div>
+                    <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-main); margin-bottom:0.35rem; letter-spacing:-0.2px;">Hızlı Bilet & 10 Dk Kilit</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.45;">Redis Atomic DECR ile sıfır çakışma ve 10 dakikalık koltuk garantisi.</p>
+                </div>
             </div>
 
-            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
-                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #be123c, #881337); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">🛡️</div>
-                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">Karaborsacı Bot Koruması</h4>
-                <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Yapay zeka milisaniyelik sahte bot isteklerini anında engeller.</p>
+            <!-- Card 2 -->
+            <div class="quick-feature-card" style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.35rem 1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); backdrop-filter:blur(12px); display:flex; flex-direction:column; gap:0.75rem; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position:relative; overflow:hidden;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, #be123c, #881337); display:flex; align-items:center; justify-content:center; font-size:1.35rem; color:#fff; box-shadow:0 8px 20px rgba(190,18,60,0.35);">🛡️</div>
+                    <span style="font-size:0.7rem; font-weight:800; padding:0.25rem 0.6rem; border-radius:9999px; background:rgba(190,18,60,0.15); color:#fb7185; border:1px solid rgba(190,18,60,0.3); text-transform:uppercase; letter-spacing:0.5px;">🛡️ 100% GÜVENLİ</span>
+                </div>
+                <div>
+                    <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-main); margin-bottom:0.35rem; letter-spacing:-0.2px;">Karaborsacı Bot Koruması</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.45;">Yapay zeka milisaniyelik sahte bot isteklerini anında engeller.</p>
+                </div>
             </div>
 
-            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
-                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #06b6d4, #3b82f6); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">🤖</div>
-                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">PassoBot AI Asistanı</h4>
-                <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Google Gemini 2.0 Flash ile doğal dilde akıllı bilet danışmanı.</p>
+            <!-- Card 3 -->
+            <div class="quick-feature-card" style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.35rem 1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); backdrop-filter:blur(12px); display:flex; flex-direction:column; gap:0.75rem; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position:relative; overflow:hidden;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, #06b6d4, #3b82f6); display:flex; align-items:center; justify-content:center; font-size:1.35rem; color:#fff; box-shadow:0 8px 20px rgba(6,182,212,0.35);">🤖</div>
+                    <span style="font-size:0.7rem; font-weight:800; padding:0.25rem 0.6rem; border-radius:9999px; background:rgba(6,182,212,0.15); color:#38bdf8; border:1px solid rgba(6,182,212,0.3); text-transform:uppercase; letter-spacing:0.5px;">🤖 GEMINI AI</span>
+                </div>
+                <div>
+                    <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-main); margin-bottom:0.35rem; letter-spacing:-0.2px;">PassoBot AI Asistanı</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.45;">Google Gemini 2.0 Flash ile doğal dilde akıllı bilet danışmanı.</p>
+                </div>
             </div>
 
-            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
-                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #f59e0b, #d97706); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">💳</div>
-                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">3D Secure & Mobil QR</h4>
-                <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">256-Bit SSL şifreli ödeme ve anında taranabilir dijital bilet QR.</p>
+            <!-- Card 4 -->
+            <div class="quick-feature-card" style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.35rem 1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); backdrop-filter:blur(12px); display:flex; flex-direction:column; gap:0.75rem; transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position:relative; overflow:hidden;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, #f59e0b, #d97706); display:flex; align-items:center; justify-content:center; font-size:1.35rem; color:#fff; box-shadow:0 8px 20px rgba(245,158,11,0.35);">💳</div>
+                    <span style="font-size:0.7rem; font-weight:800; padding:0.25rem 0.6rem; border-radius:9999px; background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3); text-transform:uppercase; letter-spacing:0.5px;">🔒 256-BIT SSL</span>
+                </div>
+                <div>
+                    <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-main); margin-bottom:0.35rem; letter-spacing:-0.2px;">3D Secure & Mobil QR</h4>
+                    <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.45;">256-Bit SSL şifreli ödeme ve anında taranabilir dijital bilet QR.</p>
+                </div>
             </div>
         </div>
 
