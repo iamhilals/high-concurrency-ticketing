@@ -4117,7 +4117,10 @@
             });
         }
 
+        let lastFocusedSeat = { row: 'A', seat: 1 };
+
         function toggleSeatSelection(row, seat) {
+            lastFocusedSeat = { row, seat };
             const index = selectedSeats.findIndex(s => s.row === row && s.seat === seat);
             if (index >= 0) {
                 if (selectedSeats.length > 1) {
@@ -4320,39 +4323,72 @@
 
         function autoSelectAdjacentSeats(count) {
             const rows = ['A', 'B', 'C', 'D'];
-            let foundRow = null;
-            let foundStartSeat = null;
+            
+            // Start from last focused or currently selected seat
+            let targetRow = lastFocusedSeat ? lastFocusedSeat.row : 'A';
+            let targetSeat = lastFocusedSeat ? lastFocusedSeat.seat : 1;
 
-            for (let rIdx = 0; rIdx < rows.length; rIdx++) {
-                const row = rows[rIdx];
-                let consecutiveCount = 0;
-                let startSeat = null;
+            if (selectedSeats && selectedSeats.length > 0) {
+                targetRow = selectedSeats[0].row;
+                targetSeat = selectedSeats[0].seat;
+            }
 
-                for (let s = 1; s <= 10; s++) {
-                    const isReserved = (rIdx + s + parseInt(selectedBlockCode)) % 6 === 0;
-                    if (!isReserved) {
-                        if (consecutiveCount === 0) startSeat = s;
-                        consecutiveCount++;
-                        if (consecutiveCount === count) {
-                            foundRow = row;
-                            foundStartSeat = startSeat;
+            // Order rows starting with targetRow, then adjacent rows
+            const rowOrder = [targetRow, ...rows.filter(r => r !== targetRow)];
+
+            let bestMatch = null;
+
+            rowOrder.forEach((row) => {
+                if (bestMatch && bestMatch.dist === 0 && bestMatch.row === targetRow) return;
+
+                const rIdx = rows.indexOf(row);
+
+                for (let s = 1; s <= 10 - count + 1; s++) {
+                    let allFree = true;
+                    for (let k = 0; k < count; k++) {
+                        const isReserved = (rIdx + (s + k) + parseInt(selectedBlockCode)) % 6 === 0;
+                        if (isReserved) {
+                            allFree = false;
                             break;
                         }
-                    } else {
-                        consecutiveCount = 0;
-                        startSeat = null;
+                    }
+
+                    if (allFree) {
+                        const start = s;
+                        const end = s + count - 1;
+                        let dist = 0;
+                        if (targetSeat < start) {
+                            dist = start - targetSeat;
+                        } else if (targetSeat > end) {
+                            dist = targetSeat - end;
+                        } else {
+                            dist = 0; // Contains targetSeat!
+                        }
+
+                        // Add distance penalty for different rows
+                        const rowDistancePenalty = Math.abs(rows.indexOf(row) - rows.indexOf(targetRow)) * 30;
+                        const totalScore = dist + rowDistancePenalty;
+
+                        if (!bestMatch || totalScore < bestMatch.totalScore) {
+                            bestMatch = {
+                                row: row,
+                                startSeat: start,
+                                totalScore: totalScore,
+                                dist: dist
+                            };
+                        }
                     }
                 }
-                if (foundRow) break;
-            }
+            });
 
             const badge = document.getElementById('autoSeatBadge');
 
-            if (foundRow && foundStartSeat !== null) {
+            if (bestMatch) {
                 selectedSeats = [];
                 for (let k = 0; k < count; k++) {
-                    selectedSeats.push({ row: foundRow, seat: foundStartSeat + k });
+                    selectedSeats.push({ row: bestMatch.row, seat: bestMatch.startSeat + k });
                 }
+                lastFocusedSeat = { row: bestMatch.row, seat: bestMatch.startSeat };
                 renderSeatMatrix();
                 updateSeatingSummary();
                 if (typeof confetti === 'function') confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
@@ -4361,7 +4397,7 @@
                     badge.style.display = 'inline-flex';
                     badge.style.borderColor = 'rgba(34,197,94,0.3)';
                     badge.style.color = '#4ade80';
-                    badge.innerText = `✨ Sıra ${foundRow}, Koltuk ${foundStartSeat}-${foundStartSeat + count - 1} (${count} Adet) Seçildi`;
+                    badge.innerText = `✨ Sıra ${bestMatch.row}, Koltuk ${bestMatch.startSeat}-${bestMatch.startSeat + count - 1} (${count} Adet) Seçildi`;
                     setTimeout(() => { badge.style.display = 'none'; }, 4500);
                 }
             } else {
