@@ -107,6 +107,42 @@ public class TicketService {
     }
 
     /**
+     * Rezerve Edilen Koltuğun Kilit Süresini 3 Dakika Uzatma (+3 Dk Extension)
+     */
+    public SeatReserveResponse extendSeatLock(SeatReserveRequest request) {
+        String seatLockKey = "seat_lock:event:" + request.getEventId() + ":seat:" + request.getSeatId();
+        String lockVal = redisTemplate.opsForValue().get(seatLockKey);
+
+        if (lockVal == null) {
+            return SeatReserveResponse.builder()
+                    .success(false)
+                    .message("Rezervasyon süresi dolduğu için süre uzatılamadı!")
+                    .build();
+        }
+
+        Long currentTtlSeconds = redisTemplate.getExpire(seatLockKey, TimeUnit.SECONDS);
+        long extensionSeconds = 180; // +3 dakika
+        long newTtlSeconds = (currentTtlSeconds != null && currentTtlSeconds > 0) ? currentTtlSeconds + extensionSeconds : extensionSeconds;
+
+        // Maksimum 15 dakikayı aşmamasını sağla (900 saniye)
+        if (newTtlSeconds > 900) {
+            newTtlSeconds = 900;
+        }
+
+        redisTemplate.expire(seatLockKey, newTtlSeconds, TimeUnit.SECONDS);
+        LocalDateTime newExpiresAt = LocalDateTime.now().plusSeconds(newTtlSeconds);
+
+        return SeatReserveResponse.builder()
+                .success(true)
+                .eventId(request.getEventId())
+                .seatId(request.getSeatId())
+                .userId(request.getUserId())
+                .expiresAt(newExpiresAt)
+                .message("Koltuk rezervasyon süreniz başarıyla +3 dakika uzatıldı!")
+                .build();
+    }
+
+    /**
      * Rezerve Edilen Koltuğu Ödeme Sonrası Kesinleştirme (Confirm Reservation)
      */
     public TicketResponse confirmSeatReservation(SeatConfirmRequest request) {

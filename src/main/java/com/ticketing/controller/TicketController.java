@@ -32,6 +32,15 @@ public class TicketController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/extend-lock")
+    public ResponseEntity<SeatReserveResponse> extendLock(@RequestBody SeatReserveRequest request) {
+        SeatReserveResponse response = ticketService.extendSeatLock(request);
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(400).body(response);
+        }
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/confirm")
     public ResponseEntity<TicketResponse> confirmReservation(@RequestBody SeatConfirmRequest request) {
         TicketResponse response = ticketService.confirmSeatReservation(request);

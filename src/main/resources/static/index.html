@@ -1904,6 +1904,17 @@
     <!-- Outer Neon Frame Container (Inspired by Uploaded Image) -->
     <div class="app-outer-wrapper">
 
+        <!-- Floating Top Reservation Timer Bar -->
+        <div id="floatingTimerBar" style="display:none; position:fixed; top:18px; left:50%; transform:translateX(-50%); z-index:99999; background:linear-gradient(135deg, #1f070e, #3b0a1a); border:1px solid var(--accent-primary); border-radius:9999px; padding:0.5rem 1.4rem; box-shadow:0 10px 35px rgba(159,18,57,0.75); backdrop-filter:blur(16px); align-items:center; gap:1.25rem;">
+            <div style="font-size:0.85rem; font-weight:800; color:#fff; display:flex; align-items:center; gap:0.5rem;">
+                <span>⏱️ KİLİTLİ REZERVASYON:</span>
+                <span id="floatingTimerStr" style="font-size:1.15rem; color:#fbbf24; font-family:monospace; font-weight:800;">10:00</span>
+            </div>
+            <button onclick="extendReservationLock()" class="btn-buy" style="width:auto; margin:0; padding:0.4rem 1rem; font-size:0.8rem; border-radius:9999px; background:linear-gradient(135deg, #06b6d4, #3b82f6); box-shadow:0 4px 15px rgba(6,182,212,0.4);">
+                ⚡ +3 Dk Uzat
+            </button>
+        </div>
+
         <nav>
             <div style="display:flex; align-items:center; gap:1.25rem;">
                 <div class="logo" onclick="resetFilters()">🎟️ PassoLive</div>
@@ -2034,6 +2045,7 @@
                 <button class="cat-pill" id="pillFest" onclick="filterCat('Festival & DJ')">🎧 Festival & DJ</button>
                 <button class="cat-pill" id="pillSports" onclick="filterCat('Spor')">⚽ Spor</button>
                 <button class="cat-pill" id="pillComedy" onclick="filterCat('Komedi & Tiyatro')">🎭 Komedi & Tiyatro</button>
+                <button class="cat-pill" id="pillFav" onclick="filterCat('fav')" style="border-color:rgba(244,63,94,0.4); color:#f43f5e;">❤️ Favorilerim (<span id="favCountBadge">0</span>)</button>
             </div>
             
             <div style="display:flex; align-items:center; gap:0.75rem;">
@@ -2335,9 +2347,13 @@
 
                     <!-- Dynamic Seat Grid Selection -->
                     <div class="seat-matrix-wrapper">
-                        <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+                        <div style="display:flex; justify-content:space-between; width:100%; align-items:center; flex-wrap:wrap; gap:0.5rem;">
                             <span style="font-size:0.85rem; font-weight:800; color:#f8fafc;" id="activeBlockTitle">📍 Seçilen Blok: 001 - Sahne Önü VIP</span>
-                            <span style="font-size:0.75rem; color:#94a3b8;">Koltuk Seçiniz:</span>
+                            <div style="display:flex; align-items:center; gap:0.4rem;">
+                                <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">👥 Akıllı Bulucu:</span>
+                                <button type="button" onclick="autoSelectAdjacentSeats(2)" style="background:rgba(225,29,72,0.18); border:1px solid rgba(225,29,72,0.4); color:#f43f5e; padding:0.25rem 0.65rem; border-radius:6px; font-size:0.75rem; font-weight:800; cursor:pointer;">👥 2 Yan Yana</button>
+                                <button type="button" onclick="autoSelectAdjacentSeats(3)" style="background:rgba(6,182,212,0.18); border:1px solid rgba(6,182,212,0.4); color:#38bdf8; padding:0.25rem 0.65rem; border-radius:6px; font-size:0.75rem; font-weight:800; cursor:pointer;">👥 3 Yan Yana</button>
+                            </div>
                         </div>
                         <div class="seat-matrix" id="seatMatrix"></div>
                     </div>
@@ -2708,7 +2724,10 @@
             </div>
 
             <p style="color:#cbd5e1; font-size:0.85rem; margin-top:1rem;" id="modalStatusMsg">Bilet alma işleminiz ve koltuk rezervasyonunuz onaylandı.</p>
-            <button class="btn-close" onclick="closeModal()">📱 Biletlerime Git</button>
+            <div style="display:flex; gap:0.5rem; justify-content:center; margin-top:1rem;">
+                <button class="btn-close" style="margin-top:0;" onclick="closeModal()">📱 Biletlerime Git</button>
+                <button class="btn-close" style="margin-top:0; background:linear-gradient(135deg, #06b6d4, #3b82f6);" onclick="printActiveTicketPass()">📄 PDF Bilet İndir</button>
+            </div>
         </div>
     </div>
 
@@ -3419,6 +3438,45 @@
             if (track) track.scrollBy({ left: offset, behavior: 'smooth' });
         }
 
+        function getFavorites() {
+            try { return JSON.parse(localStorage.getItem('passo_favorites') || '[]'); } catch (e) { return []; }
+        }
+
+        function isFavorite(eventId) {
+            return getFavorites().includes(eventId);
+        }
+
+        function toggleFavorite(eventId) {
+            let favs = getFavorites();
+            if (favs.includes(eventId)) {
+                favs = favs.filter(id => id !== eventId);
+            } else {
+                favs.push(eventId);
+                if (typeof confetti === 'function') confetti({ particleCount: 35, spread: 50, origin: { y: 0.8 } });
+            }
+            localStorage.setItem('passo_favorites', JSON.stringify(favs));
+            updateFavBadge();
+            applyFilters();
+        }
+
+        function updateFavBadge() {
+            const favs = getFavorites();
+            const badge = document.getElementById('favCountBadge');
+            if (badge) badge.innerText = favs.length;
+        }
+
+        function toggleTicketAlarm(eventId, title) {
+            let alarms = JSON.parse(localStorage.getItem('passo_alarms') || '[]');
+            if (!alarms.includes(eventId)) {
+                alarms.push(eventId);
+                localStorage.setItem('passo_alarms', JSON.stringify(alarms));
+                if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+                alert(`🔔 Bilet alarmınız kuruldu! "${title}" etkinliğinde koltuk serbest bırakıldığında size anında haber vereceğiz.`);
+            } else {
+                alert(`🔔 Bu etkinlik için bilet alarmınız zaten aktif!`);
+            }
+        }
+
         function filterCat(cat) {
             activeCategory = cat;
             document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
@@ -3428,6 +3486,7 @@
             if (cat === 'Festival & DJ') document.getElementById('pillFest').classList.add('active');
             if (cat === 'Spor') document.getElementById('pillSports').classList.add('active');
             if (cat === 'Komedi & Tiyatro') document.getElementById('pillComedy').classList.add('active');
+            if (cat === 'fav' && document.getElementById('pillFav')) document.getElementById('pillFav').classList.add('active');
 
             applyFilters();
         }
@@ -3444,7 +3503,10 @@
             let result = [...allEvents];
 
             // 1. Category Filter
-            if (activeCategory !== 'all') {
+            if (activeCategory === 'fav') {
+                const favs = getFavorites();
+                result = result.filter(e => favs.includes(e.id));
+            } else if (activeCategory !== 'all') {
                 result = result.filter(e => e.category === activeCategory);
             }
 
@@ -3490,6 +3552,7 @@
             }
 
             renderEvents(result);
+            updateFavBadge();
 
             const countElem = document.getElementById('filterResultsCount');
             if (countElem) {
@@ -3534,14 +3597,19 @@
 
                 const isLow = evt.availableCapacity > 0 && evt.availableCapacity <= 30;
                 const img = evt.imageUrl || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80';
+                const isFav = isFavorite(evt.id);
 
                 const totalCap = evt.totalCapacity || 500;
                 const soldPct = Math.min(100, Math.max(5, Math.round(((totalCap - evt.availableCapacity) / totalCap) * 100)));
+                const titleClean = (evt.title || '').replace(/'/g, "\\'");
 
                 card.innerHTML = `
-                    <div class="card-img-wrap">
+                    <div class="card-img-wrap" style="position:relative;">
                         <img src="${img}" class="card-img" alt="${evt.title}">
                         <span class="card-tag">${evt.category || 'Etkinlik'}</span>
+                        <button type="button" onclick="event.stopPropagation(); toggleFavorite(${evt.id})" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.65); border:1px solid rgba(255,255,255,0.2); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; cursor:pointer; backdrop-filter:blur(8px); transition:transform 0.2s;" title="Favorilere Ekle/Çıkar">
+                            ${isFav ? '❤️' : '🤍'}
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="card-title">${evt.title}</div>
@@ -3572,9 +3640,11 @@
                             </div>
                         </div>
 
-                        <button class="btn-buy" ${evt.availableCapacity <= 0 ? 'disabled' : ''} onclick="event.stopPropagation(); openEventDetailModal(${evt.id})">
-                            ${evt.availableCapacity > 0 ? '⚡ Detay & Bilet Al' : '❌ TÜKENDİ'}
-                        </button>
+                        ${evt.availableCapacity > 0 ? `
+                            <button class="btn-buy" onclick="event.stopPropagation(); openEventDetailModal(${evt.id})">⚡ Detay & Bilet Al</button>
+                        ` : `
+                            <button class="btn-buy" style="background:linear-gradient(135deg, #d97706, #f59e0b); box-shadow:0 4px 15px rgba(245,158,11,0.4);" onclick="event.stopPropagation(); toggleTicketAlarm(${evt.id}, '${titleClean}')">🔔 Bilet Çıkınca Bildir</button>
+                        `}
                     </div>
                 `;
                 grid.appendChild(card);
@@ -4136,6 +4206,9 @@
             reservationSecondsLeft = 600; // 10 minutes
             updateTimerDisplay();
 
+            const floatBar = document.getElementById('floatingTimerBar');
+            if (floatBar) floatBar.style.display = 'flex';
+
             reservationTimerInterval = setInterval(() => {
                 reservationSecondsLeft--;
                 updateTimerDisplay();
@@ -4153,13 +4226,158 @@
                 clearInterval(reservationTimerInterval);
                 reservationTimerInterval = null;
             }
+            const floatBar = document.getElementById('floatingTimerBar');
+            if (floatBar) floatBar.style.display = 'none';
         }
 
         function updateTimerDisplay() {
             const m = Math.floor(reservationSecondsLeft / 60).toString().padStart(2, '0');
             const s = (reservationSecondsLeft % 60).toString().padStart(2, '0');
+            const timeStr = `${m}:${s}`;
+
             const elem = document.getElementById('reservationTimerStr');
-            if (elem) elem.innerText = `${m}:${s}`;
+            if (elem) elem.innerText = timeStr;
+
+            const floatElem = document.getElementById('floatingTimerStr');
+            if (floatElem) floatElem.innerText = timeStr;
+        }
+
+        async function extendReservationLock() {
+            if (!activeReservation || !currentUser) {
+                alert("⚠️ Uzatılacak aktif bir koltuk rezervasyonu bulunmuyor!");
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/tickets/extend-lock`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        eventId: activeReservation.eventId,
+                        userId: currentUser.id,
+                        seatId: activeReservation.seatId
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    reservationSecondsLeft += 180; // +3 dakika
+                    if (reservationSecondsLeft > 900) reservationSecondsLeft = 900;
+                    updateTimerDisplay();
+                    if (typeof confetti === 'function') confetti({ particleCount: 45, spread: 65, origin: { y: 0.2 } });
+                    alert("⏱️ Koltuk rezervasyon süreniz Redis sunucusunda başarıyla +3 dakika uzatıldı!");
+                } else {
+                    alert(`⚠️ ${data.message || 'Süre uzatılamadı!'}`);
+                }
+            } catch (err) {
+                console.error("Lock extension error:", err);
+                alert("Sunucu bağlantı hatası!");
+            }
+        }
+
+        function autoSelectAdjacentSeats(count) {
+            const rows = ['A', 'B', 'C', 'D'];
+            let foundRow = null;
+            let foundStartSeat = null;
+
+            for (let rIdx = 0; rIdx < rows.length; rIdx++) {
+                const row = rows[rIdx];
+                let consecutiveCount = 0;
+                let startSeat = null;
+
+                for (let s = 1; s <= 10; s++) {
+                    const isReserved = (rIdx + s + parseInt(selectedBlockCode)) % 6 === 0;
+                    if (!isReserved) {
+                        if (consecutiveCount === 0) startSeat = s;
+                        consecutiveCount++;
+                        if (consecutiveCount === count) {
+                            foundRow = row;
+                            foundStartSeat = startSeat;
+                            break;
+                        }
+                    } else {
+                        consecutiveCount = 0;
+                        startSeat = null;
+                    }
+                }
+                if (foundRow) break;
+            }
+
+            if (foundRow && foundStartSeat !== null) {
+                selectedRow = foundRow;
+                selectedSeat = foundStartSeat;
+                renderSeatMatrix();
+                updateSeatingSummary();
+                if (typeof confetti === 'function') confetti({ particleCount: 30, spread: 50, origin: { y: 0.6 } });
+                alert(`👥 ${count} adet yan yana koltuk otomatik seçildi:\n📍 Sıra ${foundRow}, Koltuk ${foundStartSeat}-${foundStartSeat + count - 1}`);
+            } else {
+                alert(`⚠️ Seçilen ${selectedBlockName} (Blok ${selectedBlockCode}) bölümünde yan yana ${count} adet boş koltuk bulunamadı.`);
+            }
+        }
+
+        function printActiveTicketPass() {
+            const title = activeDetailEvent ? activeDetailEvent.title : 'PassoLive Dijital Bilet';
+            const venue = activeDetailEvent ? (activeDetailEvent.venue || 'İstanbul Stadyum') : 'Etkinlik Sahnesi';
+            const userStr = currentUser ? currentUser.username.toUpperCase() : 'PASSOLİVE KULLANICISI';
+            const ticketCode = document.getElementById('modalTicketCodeStr') ? document.getElementById('modalTicketCodeStr').innerText : 'PASS-2026-TK-8899';
+            const seatInfo = document.getElementById('paySeatInfo') ? document.getElementById('paySeatInfo').innerText : 'Sahne Önü VIP • Blok 001';
+
+            const printWindow = window.open('', '_blank', 'width=800,height=900');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html lang="tr">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Dijital Bilet Pass - ${title}</title>
+                    <style>
+                        body { font-family: 'Plus Jakarta Sans', Arial, sans-serif; background:#090205; color:#fff; padding:2rem; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; }
+                        .pass-card { width:100%; max-width:620px; background:linear-gradient(135deg, #1f070e, #3b0a1a); border:2px solid #e11d48; border-radius:24px; padding:2.5rem; box-shadow:0 20px 60px rgba(225,29,72,0.5); text-align:center; position:relative; box-sizing:border-box; }
+                        .pass-header { font-size:1.8rem; font-weight:800; color:#f43f5e; letter-spacing:1px; margin-bottom:0.4rem; }
+                        .pass-sub { color:#fda4af; font-size:0.95rem; margin-bottom:1.5rem; }
+                        .pass-detail-box { background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:1.25rem 1.5rem; margin:1.25rem 0; text-align:left; line-height:2.0; font-size:1rem; }
+                        .qr-box { background:#fff; padding:1rem; border-radius:16px; display:inline-block; margin:1.25rem 0; box-shadow:0 10px 25px rgba(0,0,0,0.5); }
+                        .barcode-strip { background:#fff; color:#000; font-family:monospace; font-weight:bold; font-size:1.3rem; letter-spacing:5px; padding:0.75rem; border-radius:8px; margin-top:1rem; }
+                        .ssl-seal { font-size:0.85rem; color:#4ade80; margin-top:1.5rem; font-weight:bold; letter-spacing:0.5px; }
+                        @media print {
+                            body { background:#fff !important; color:#000 !important; }
+                            .pass-card { border:2px solid #000 !important; background:#fff !important; color:#000 !important; box-shadow:none !important; }
+                            .pass-header { color:#881337 !important; }
+                            .pass-sub { color:#4c0519 !important; }
+                            .pass-detail-box { background:#f9fafb !important; color:#000 !important; border:1px solid #d1d5db !important; }
+                            .ssl-seal { color:#15803d !important; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="pass-card">
+                        <div class="pass-header">🎟️ PASSOLİVE DİJİTAL BİLET PASS</div>
+                        <div class="pass-sub">256-Bit SSL Şifreli Resmi Giriş Belgesi</div>
+                        <h2 style="font-size:1.5rem; font-weight:800; margin-top:0.5rem; color:#fff;">${title}</h2>
+                        
+                        <div class="pass-detail-box">
+                            <div><strong>👤 Bilet Sahibi:</strong> ${userStr}</div>
+                            <div><strong>📍 Mekan & Konum:</strong> ${venue}</div>
+                            <div><strong>🪑 Koltuk Bilgisi:</strong> ${seatInfo}</div>
+                            <div><strong>📅 Düzenlenme Tarihi:</strong> ${new Date().toLocaleDateString('tr-TR')}</div>
+                            <div><strong>🛡️ Bilet Kod Numarası:</strong> ${ticketCode}</div>
+                        </div>
+
+                        <div class="qr-box">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(ticketCode)}" width="160" height="160" alt="Bilet QR">
+                        </div>
+
+                        <div class="barcode-strip">||| | |||| | ||||| ||| |||</div>
+                        <div style="font-size:0.85rem; margin-top:0.4rem; font-family:monospace; color:#cbd5e1;">* ${ticketCode} *</div>
+
+                        <div class="ssl-seal">🔒 256-BIT SSL ENCRYPTED & ATOMIC REDIS DECR VERIFIED</div>
+                    </div>
+                    <script>
+                        window.onload = function() { setTimeout(function() { window.print(); }, 500); };
+                    </script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
         }
 
         function updateCardPreview() {
