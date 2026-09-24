@@ -959,13 +959,48 @@
         .bubilet-poster-wrap {
             position: relative;
             height: 100%;
-            min-height: 420px;
+            min-height: 440px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            overflow: hidden;
+            background: var(--bg-modal);
+        }
+
+        .bubilet-poster-bg {
+            position: absolute;
+            inset: -30px;
+            background-size: cover;
+            background-position: center;
+            filter: blur(28px) brightness(0.45) saturate(1.4);
+            opacity: 0.85;
+            z-index: 1;
+            transform: scale(1.15);
+            transition: background-image 0.3s;
         }
 
         .bubilet-poster-img {
+            position: relative;
+            z-index: 2;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-height: 480px;
+            object-fit: contain;
+            border-radius: 1.25rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border-color);
+        }
+
+        .bubilet-poster-wrap .card-tag {
+            z-index: 3;
+            position: absolute;
+            top: 1.25rem;
+            left: 1.25rem;
+            background: rgba(15, 9, 32, 0.85);
+            backdrop-filter: blur(12px);
+            color: var(--accent-primary);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .bubilet-detail-content {
@@ -1892,6 +1927,7 @@
     <div class="modal-overlay" id="eventDetailModal">
         <div class="bubilet-detail-card">
             <div class="bubilet-poster-wrap">
+                <div class="bubilet-poster-bg" id="detailPosterBg"></div>
                 <img src="" id="detailPosterImg" class="bubilet-poster-img" alt="Poster">
                 <span class="card-tag" id="detailCategoryTag">Müzik & Konser</span>
             </div>
@@ -3301,7 +3337,14 @@
             if (!evt) return;
             activeDetailEvent = evt;
 
-            document.getElementById('detailPosterImg').src = evt.imageUrl || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80';
+            const posterUrl = evt.imageUrl || 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80';
+            document.getElementById('detailPosterImg').src = posterUrl;
+            
+            const posterBg = document.getElementById('detailPosterBg');
+            if (posterBg) {
+                posterBg.style.backgroundImage = `url('${posterUrl}')`;
+            }
+
             document.getElementById('detailCategoryTag').innerText = evt.category || 'Müzik & Konser';
             document.getElementById('detailTitle').innerText = evt.title;
             document.getElementById('detailVenue').innerText = `📍 ${evt.venue || 'İstanbul'}`;
