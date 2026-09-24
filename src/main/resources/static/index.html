@@ -2920,6 +2920,12 @@
                         </div>
                     </div>
 
+                    <!-- Live Cyberpunk Bot Terminal Log Streamer -->
+                    <div style="background:#040c09; border:1px solid rgba(34,197,94,0.4); border-radius:0.75rem; padding:0.85rem 1rem; font-family:monospace; font-size:0.75rem; color:#22c55e; max-height:110px; overflow-y:auto; box-shadow:inset 0 0 15px rgba(34,197,94,0.15); line-height:1.6;" id="liveBotTerminalFeed">
+                        <div style="color:#4ade80; font-weight:bold;">[SYSTEM ONLINE] 🛡️ Anti-Scalper AI Bot Armor Listening... (&lt;0.5ms Latency)</div>
+                        <div style="color:#86efac;">[LOG 23:37:00] PASS: User #812 - IP: 127.0.0.1 - Normal Human Click Delay (3.8s) - Risk: 4/100</div>
+                    </div>
+
                     <!-- Live Threat Logs Table -->
                     <div>
                         <div style="font-size:0.85rem; font-weight:700; color:#cbd5e1; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
@@ -3780,6 +3786,39 @@
             }
         }
 
+        let isAudioPlaying = false;
+
+        function playAudioTeaser(title) {
+            const modal = document.getElementById('audioTeaserModal');
+            if (!modal) return;
+            const titleElem = document.getElementById('audioTrackTitle');
+            if (titleElem) titleElem.innerText = `${title} (Canlı Fragman)`;
+            modal.style.display = 'flex';
+            isAudioPlaying = true;
+            const btn = document.getElementById('audioPlayPauseBtn');
+            if (btn) btn.innerText = '⏸';
+            if (typeof confetti === 'function') confetti({ particleCount: 30, spread: 50, origin: { y: 0.9 } });
+        }
+
+        function toggleAudioTeaserPlayback() {
+            isAudioPlaying = !isAudioPlaying;
+            const btn = document.getElementById('audioPlayPauseBtn');
+            if (btn) btn.innerText = isAudioPlaying ? '⏸' : '▶';
+            const bars = document.getElementById('soundwaveBars');
+            if (bars) bars.style.opacity = isAudioPlaying ? '1' : '0.3';
+        }
+
+        function closeAudioTeaserPlayer() {
+            const modal = document.getElementById('audioTeaserModal');
+            if (modal) modal.style.display = 'none';
+            isAudioPlaying = false;
+        }
+
+        function toggleAudioPreview() {
+            const title = activeDetailEvent ? activeDetailEvent.title : 'Konser Fragmanı';
+            playAudioTeaser(title);
+        }
+
         let userGeminiApiKey = localStorage.getItem('passo_gemini_key') || '';
 
         function togglePassoBot() {
@@ -4003,11 +4042,33 @@
         }
 
         async function simulateBotAttackLive() {
+            const feed = document.getElementById('liveBotTerminalFeed');
+            if (feed) {
+                const now = new Date().toLocaleTimeString();
+                const log1 = document.createElement('div');
+                log1.style.color = '#f43f5e';
+                log1.style.fontWeight = 'bold';
+                log1.innerText = `[${now}] 🚨 ATTACK DETECTED: 5 Scalper Bot Instances Dispatched...`;
+                feed.appendChild(log1);
+
+                const log2 = document.createElement('div');
+                log2.style.color = '#ef4444';
+                log2.innerText = `[${now}] 🚫 BLOCKED: Bot #1 (192.168.1.104) -> 190 req/sec (Risk: 98/100)`;
+                feed.appendChild(log2);
+
+                const log3 = document.createElement('div');
+                log3.style.color = '#f59e0b';
+                log3.innerText = `[${now}] ⚠️ WARN: Bot #2 (192.168.1.107) -> Headless Chrome Script (Risk: 82/100)`;
+                feed.appendChild(log3);
+
+                feed.scrollTop = feed.scrollHeight;
+            }
+
             try {
                 const res = await fetch(`${API_BASE}/ai/anti-scalper/simulate-attack`, { method: 'POST' });
                 if (res.ok) {
                     await fetchAntiScalperStats();
-                    alert("🚨 Karaborsacı Bot Saldırısı Simüle Edildi! AI Güvenlik Katmanı 5 insansı olmayan hızlı bot bilet alma isteğini anında tespit edip engelledi!");
+                    if (typeof confetti === 'function') confetti({ particleCount: 50, spread: 70, origin: { y: 0.3 } });
                 }
             } catch (err) {
                 console.error(err);
@@ -4837,7 +4898,30 @@
                 container.appendChild(errBubble);
                 container.scrollTop = container.scrollHeight;
             }
+    <!-- Floating Audio Teaser Soundwave Player Modal -->
+    <div id="audioTeaserModal" style="display:none; position:fixed; bottom:25px; left:25px; z-index:99999; background:linear-gradient(135deg, #130409, #2f0a15); border:1px solid var(--accent-primary); border-radius:1.25rem; padding:1rem 1.25rem; box-shadow:0 15px 40px rgba(159,18,57,0.65); backdrop-filter:blur(16px); align-items:center; gap:1rem; width:340px;">
+        <div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg, #06b6d4, #3b82f6); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff; cursor:pointer; box-shadow:0 0 15px rgba(6,182,212,0.5);" id="audioPlayPauseBtn" onclick="toggleAudioTeaserPlayback()">▶</div>
+        <div style="flex:1; overflow:hidden;">
+            <div style="font-size:0.85rem; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" id="audioTrackTitle">Teoman - Koyu Antoloji (Live Demo)</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);" id="audioTrackSub">🎵 Canlı Konser Fragmanı Önizlemesi</div>
+            
+            <!-- Animated Soundwave Equalizer Bars -->
+            <div style="display:flex; align-items:flex-end; gap:4px; height:16px; margin-top:0.4rem;" id="soundwaveBars">
+                <span style="width:3px; height:60%; background:#f43f5e; border-radius:2px; animation: eqPulse 0.8s infinite ease-in-out;"></span>
+                <span style="width:3px; height:90%; background:#ec4899; border-radius:2px; animation: eqPulse 0.6s infinite ease-in-out 0.2s;"></span>
+                <span style="width:3px; height:40%; background:#a855f7; border-radius:2px; animation: eqPulse 1.0s infinite ease-in-out 0.1s;"></span>
+                <span style="width:3px; height:100%; background:#06b6d4; border-radius:2px; animation: eqPulse 0.7s infinite ease-in-out 0.3s;"></span>
+                <span style="width:3px; height:70%; background:#fbbf24; border-radius:2px; animation: eqPulse 0.9s infinite ease-in-out 0.4s;"></span>
+            </div>
+        </div>
+        <button onclick="closeAudioTeaserPlayer()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.1rem;">✕</button>
+    </div>
+
+    <style>
+        @keyframes eqPulse {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
         }
-    </script>
+    </style>
 </body>
 </html>
