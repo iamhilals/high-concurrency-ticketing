@@ -1,23 +1,19 @@
-# Build artifacts
-target/
-!.mvn/wrapper/maven-wrapper.jar
+# Secret Configuration Files (Local API Keys)
+src/main/resources/application-secrets.yml
+src/main/resources/application-local.yml
+.env
 
-# IDE specific files
+# Maven build outputs
+target/
+*.class
+
+# IDE & Editor files
 .idea/
-*.iws
 *.iml
-*.ipr
-out/
 .vscode/
 .settings/
-.classpath
-.project
-.factorypath
+.project/
+.classpath/
 
-# OS files
-Thumbs.db
-.DS_Store
-
-# Private learning notes
-LEARNING_NOTES.md
-
+# Log files
+*.log

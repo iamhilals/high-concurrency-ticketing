@@ -1,6 +1,8 @@
 spring:
   application:
     name: ticketing-system
+  config:
+    import: "optional:classpath:application-secrets.yml"
   datasource:
     url: jdbc:postgresql://localhost:5432/ticketing
     username: postgres
@@ -38,4 +40,3 @@ gemini:
   api:
     key: ${GEMINI_API_KEY:}
     model: gemini-1.5-flash
-
