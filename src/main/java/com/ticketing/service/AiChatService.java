@@ -18,6 +18,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +34,15 @@ public class AiChatService {
     @Value("${gemini.api.key:}")
     private String configuredApiKey;
 
+    @Value("${gemini.api.model:gemini-1.5-flash}")
+    private String configuredModel;
+
+    private static final List<String> GREETING_WORDS = Arrays.asList(
+            "selam", "merhaba", "nasılsın", "nasilsin", "hey", "hi", "hello",
+            "günaydın", "gunaydin", "iyi günler", "iyi gunler", "iyi akşamlar", "iyi aksamlar",
+            "kimsin", "ne yapabilirsin", "yardım", "yardim"
+    );
+
     public AiChatService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
         this.objectMapper = new ObjectMapper();
@@ -43,9 +53,11 @@ public class AiChatService {
 
     public AiChatResponse processChat(AiChatRequest request) {
         String message = request.getMessage() != null ? request.getMessage().trim() : "";
+        String lowerMessage = message.toLowerCase();
+
         if (message.isEmpty()) {
             return AiChatResponse.builder()
-                    .reply("Merhaba! Ben PassoBot🤖. Size konser, tiyatro, festival ve bilet arama konusunda yardımcı olabilirim. Nasıl bir etkinlik arıyorsunuz?")
+                    .reply("Merhaba! 👋 Ben PassoBot 🤖. Size konser, tiyatro, festival ve maç biletleri arama konusunda yardımcı olabilirim. Nasıl bir etkinlik arıyorsunuz?")
                     .suggestedEvents(new ArrayList<>())
                     .usedEngine("Lokal NLP Asistanı")
                     .build();
@@ -73,10 +85,11 @@ public class AiChatService {
     }
 
     /**
-     * Calls Google Gemini 1.5 Flash Generative LLM API via HTTP
+     * Calls Google Gemini Generative LLM API via HTTP
      */
     private AiChatResponse callGeminiApi(String apiKey, String userMessage, List<Event> allEvents) throws Exception {
-        String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
+        String modelName = (configuredModel != null && !configuredModel.isEmpty()) ? configuredModel : "gemini-1.5-flash";
+        String apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + apiKey;
 
         // Build catalogue context for Gemini
         StringBuilder eventsCatalogue = new StringBuilder();
@@ -87,14 +100,13 @@ public class AiChatService {
                     e.getAvailableCapacity() != null ? e.getAvailableCapacity() : 0));
         }
 
-        String systemPrompt = "Sen PassoLive Bilet Satış Hizmetleri'nin resmi ve süper zeki AI Bilet Asistanısın (PassoBot 🤖).\n" +
-                "Görevin: Kullanıcıya çok samimi, enerjik, kibar ve bilet almaya heveslendiren yanıtlar vermektir.\n\n" +
-                "Sistemimizde şu anda yayında olan CANLI ETKİNLİK KATALOĞUMUZ:\n" +
+        String systemPrompt = "Sen PassoLive Bilet Satış Platformu'nun süper akıllı ve samimi AI Bilet Asistanısın (PassoBot 🤖).\n\n" +
+                "KURAL 1 (SELAMLAŞMA & SOHBET): Kullanıcı 'selam', 'merhaba', 'nasılsın' gibi genel selamlaşma/sohbet ifadeleri kullandığında SADECE kibarca karşılık ver, kendinizi tanıt ve ne tür bir etkinlik (konser, tiyatro, maç, bütçe) aradığını sor. Asla etkinlik arama hatası verme ve zoraki bilet önerme!\n\n" +
+                "KURAL 2 (BİLET & ETKİNLİK ARAMASI): Kullanıcı spesifik bir kategori, şehir, bütçe veya sanatçı sorduğunda aşağıdaki canlı katalogdan en uygun etkinlikleri öner.\n\n" +
+                "CANLI ETKİNLİK KATALOĞUMUZ:\n" +
                 eventsCatalogue.toString() + "\n" +
-                "KULLANICI SORUSU: \"" + userMessage + "\"\n\n" +
-                "KURAL 1: Yanıtını Türkçe ver. Kullanıcının sorusuna doğrudan, detaylı ve coşkulu cevap ver.\n" +
-                "KURAL 2: Önerdiğin etkinliklerin tam başlıklarını ve ID'lerini cevabının içinde doğal bir şekilde geçir.\n" +
-                "KURAL 3: Biletlerin 10 dakikalığına geçici olarak rezerve edilebildiğini ve anında tükenmeden almasını tavsiye et.";
+                "KULLANICI MESAJI: \"" + userMessage + "\"\n\n" +
+                "Lütfen yanıtını doğal, samimi ve Türkçe olarak ver. Önerdiğin etkinliklerin tam başlığını yanıtının içinde geçir.";
 
         // Construct Gemini JSON payload
         ObjectNode rootNode = objectMapper.createObjectNode();
@@ -116,7 +128,15 @@ public class AiChatService {
         HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
         if (httpResponse.statusCode() != 200) {
-            throw new RuntimeException("Gemini API Error Code: " + httpResponse.statusCode() + " - " + httpResponse.body());
+            // Try fallback to gemini-1.5-flash if model was gemini-2.0-flash
+            if (apiUrl.contains("gemini-2.0-flash")) {
+                String fallbackUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
+                HttpRequest fallbackReq = HttpRequest.newBuilder().uri(URI.create(fallbackUrl)).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(jsonPayload)).timeout(Duration.ofSeconds(12)).build();
+                httpResponse = httpClient.send(fallbackReq, HttpResponse.BodyHandlers.ofString());
+            }
+            if (httpResponse.statusCode() != 200) {
+                throw new RuntimeException("Gemini API Error Code: " + httpResponse.statusCode() + " - " + httpResponse.body());
+            }
         }
 
         JsonNode responseJson = objectMapper.readTree(httpResponse.body());
@@ -128,29 +148,22 @@ public class AiChatService {
             // Match recommended events in Gemini's response
             List<Event> matchedEvents = new ArrayList<>();
             String lowerReply = aiReply.toLowerCase();
-            for (Event e : allEvents) {
-                if ((e.getTitle() != null && lowerReply.contains(e.getTitle().toLowerCase())) ||
-                    lowerReply.contains("id: " + e.getId()) ||
-                    lowerReply.contains("#" + e.getId())) {
-                    matchedEvents.add(e);
-                }
-            }
-
-            // If no explicit title matched, match by category/budget keywords
-            if (matchedEvents.isEmpty()) {
-                String cat = detectCategory(userMessage.toLowerCase());
-                if (cat != null) {
-                    matchedEvents = allEvents.stream()
-                            .filter(e -> e.getCategory() != null && e.getCategory().toLowerCase().contains(cat))
-                            .limit(3)
-                            .collect(Collectors.toList());
+            
+            // Only attach event cards if Gemini actually recommended specific events
+            if (!isGreetingOnly(userMessage)) {
+                for (Event e : allEvents) {
+                    if ((e.getTitle() != null && lowerReply.contains(e.getTitle().toLowerCase())) ||
+                        lowerReply.contains("id: " + e.getId()) ||
+                        lowerReply.contains("#" + e.getId())) {
+                        matchedEvents.add(e);
+                    }
                 }
             }
 
             return AiChatResponse.builder()
                     .reply(aiReply)
                     .suggestedEvents(matchedEvents)
-                    .usedEngine("Google Gemini 1.5 Flash (Generative AI)")
+                    .usedEngine("Google Gemini LLM (" + modelName + ")")
                     .build();
         }
 
@@ -158,10 +171,20 @@ public class AiChatService {
     }
 
     /**
-     * Local Fast Regex & NLP Fallback Matcher
+     * Local Fast Regex & Smart Greeting Matcher
      */
     private AiChatResponse processLocalChat(String rawMessage, List<Event> allEvents) {
-        String message = rawMessage.toLowerCase();
+        String message = rawMessage.toLowerCase().trim();
+
+        // 1. Direct Greeting Matcher (Selam, Merhaba, Nasılsın)
+        if (isGreetingOnly(message)) {
+            return AiChatResponse.builder()
+                    .reply("Harika bir gün! 👋 Ben **PassoBot AI**. Size en sevdiğiniz konserler, spor maçları, tiyatrolar veya bütçenize uygun etkinlikleri bulmak için buradayım.\n\nNasıl bir etkinlik arıyorsunuz? (Örn: *'500 TL altı rock konserleri'*, *'İstanbul tiyatroları'* veya *'Derbi maçlar'*)")
+                    .suggestedEvents(new ArrayList<>())
+                    .usedEngine("Lokal NLP Asistanı")
+                    .build();
+        }
+
         List<Event> matchedEvents = new ArrayList<>();
         StringBuilder replyBuilder = new StringBuilder();
 
@@ -213,6 +236,16 @@ public class AiChatService {
                 .suggestedEvents(matchedEvents)
                 .usedEngine("Lokal NLP Asistanı (Fallback)")
                 .build();
+    }
+
+    private boolean isGreetingOnly(String text) {
+        String clean = text.replaceAll("[^a-zA-ZçğıöşüÇĞİÖŞÜ\\s]", "").trim().toLowerCase();
+        for (String greeting : GREETING_WORDS) {
+            if (clean.equalsIgnoreCase(greeting) || clean.startsWith(greeting + " ") || clean.endsWith(" " + greeting)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private BigDecimal extractMaxPrice(String text) {
