@@ -2348,7 +2348,12 @@
                     <!-- Dynamic Seat Grid Selection -->
                     <div class="seat-matrix-wrapper">
                         <div style="display:flex; justify-content:space-between; width:100%; align-items:center; flex-wrap:wrap; gap:0.5rem;">
-                            <span style="font-size:0.85rem; font-weight:800; color:#f8fafc;" id="activeBlockTitle">📍 Seçilen Blok: 001 - Sahne Önü VIP</span>
+                            <div style="display:flex; align-items:center; gap:0.75rem;">
+                                <span style="font-size:0.85rem; font-weight:800; color:#f8fafc;" id="activeBlockTitle">📍 Seçilen Blok: 001 - Sahne Önü VIP</span>
+                                <div id="autoSeatBadge" style="display:none; align-items:center; gap:0.4rem; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); color:#4ade80; font-size:0.75rem; font-weight:800; padding:0.25rem 0.75rem; border-radius:9999px;">
+                                    ✨ 3 Adet Koltuk Seçildi
+                                </div>
+                            </div>
                             <div style="display:flex; align-items:center; gap:0.4rem;">
                                 <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">👥 Akıllı Bulucu:</span>
                                 <button type="button" onclick="autoSelectAdjacentSeats(2)" style="background:rgba(225,29,72,0.18); border:1px solid rgba(225,29,72,0.4); color:#f43f5e; padding:0.25rem 0.65rem; border-radius:6px; font-size:0.75rem; font-weight:800; cursor:pointer;">👥 2 Yan Yana</button>
@@ -3688,6 +3693,11 @@
 
         let selectedBlockCode = '001';
         let selectedBlockName = 'Sahne Önü VIP';
+        let selectedSeats = [{ row: 'A', seat: 1 }];
+
+        function isSeatSelected(row, seat) {
+            return selectedSeats.some(s => s.row === row && s.seat === seat);
+        }
 
         function openSeatingFromDetail() {
             closeEventDetailModal();
@@ -3721,6 +3731,7 @@
             selectedBlockCode = blockCode;
             selectedBlockName = blockLabel;
             selectedZone = zone;
+            selectedSeats = [{ row: 'A', seat: 1 }];
 
             // Clear selected class from all block cards
             document.querySelectorAll('.block-card').forEach(card => card.classList.remove('selected'));
@@ -4092,21 +4103,34 @@
                     if ((rIdx + s + parseInt(selectedBlockCode)) % 6 === 0) {
                         btn.classList.add('reserved');
                         btn.disabled = true;
-                    } else if (selectedRow === row && selectedSeat === s) {
+                    } else if (isSeatSelected(row, s)) {
                         btn.classList.add('selected');
                     }
 
                     btn.onclick = () => {
-                        selectedRow = row;
-                        selectedSeat = s;
-                        renderSeatMatrix();
-                        updateSeatingSummary();
+                        toggleSeatSelection(row, s);
                     };
 
                     rowDiv.appendChild(btn);
                 }
                 matrix.appendChild(rowDiv);
             });
+        }
+
+        function toggleSeatSelection(row, seat) {
+            const index = selectedSeats.findIndex(s => s.row === row && s.seat === seat);
+            if (index >= 0) {
+                if (selectedSeats.length > 1) {
+                    selectedSeats.splice(index, 1);
+                }
+            } else {
+                if (selectedSeats.length > 0 && selectedSeats[0].row !== row) {
+                    selectedSeats = [];
+                }
+                selectedSeats.push({ row, seat });
+            }
+            renderSeatMatrix();
+            updateSeatingSummary();
         }
 
         let calculatedFinalPrice = 850;
@@ -4124,9 +4148,22 @@
                 multiplier = 0.8;
             }
 
-            calculatedFinalPrice = Math.round(basePrice * multiplier);
-            document.getElementById('selectedSeatSummary').innerText = `${selectedBlockName} • Blok ${selectedBlockCode} • Sıra ${selectedRow} - Koltuk ${selectedSeat}`;
-            document.getElementById('selectedTotalPrice').innerText = `₺${calculatedFinalPrice},00`;
+            const unitPrice = Math.round(basePrice * multiplier);
+            const totalCount = selectedSeats.length || 1;
+            calculatedFinalPrice = unitPrice * totalCount;
+
+            const sortedSeats = [...selectedSeats].sort((a,b)=>a.seat-b.seat);
+            const seatsStr = sortedSeats.map(s => s.seat).join(', ');
+            const mainRow = sortedSeats.length > 0 ? sortedSeats[0].row : 'A';
+
+            const summaryText = totalCount > 1 
+                ? `${selectedBlockName} • Blok ${selectedBlockCode} • Sıra ${mainRow} (Koltuk ${seatsStr}) • ${totalCount} Bilet`
+                : `${selectedBlockName} • Blok ${selectedBlockCode} • Sıra ${mainRow} - Koltuk ${seatsStr}`;
+
+            document.getElementById('selectedSeatSummary').innerText = summaryText;
+            document.getElementById('selectedTotalPrice').innerText = totalCount > 1 
+                ? `₺${calculatedFinalPrice},00 (${totalCount}x ₺${unitPrice})`
+                : `₺${calculatedFinalPrice},00`;
         }
 
         let activeReservation = null;
@@ -4141,7 +4178,11 @@
                 return;
             }
 
-            const seatIdStr = `${selectedBlockCode}-${selectedRow}${selectedSeat}`;
+            const sortedSeats = [...selectedSeats].sort((a,b)=>a.seat-b.seat);
+            const mainRow = sortedSeats.length > 0 ? sortedSeats[0].row : 'A';
+            const seatsStr = sortedSeats.map(s => s.seat).join(', ');
+            const seatIdStr = sortedSeats.map(s => `${selectedBlockCode}-${s.row}${s.seat}`).join(',');
+            const totalCount = selectedSeats.length || 1;
 
             // Call Redis Temporary Seat Lock Endpoint (10-Minute Lock)
             try {
@@ -4179,7 +4220,9 @@
             document.getElementById('payEventTitle').innerText = activeDetailEvent.title;
             document.getElementById('payVenueStr').innerText = `📍 ${activeDetailEvent.venue || 'İstanbul'}`;
             
-            const seatSummaryText = `${selectedBlockName} • Blok ${selectedBlockCode} • Sıra ${selectedRow} - Koltuk ${selectedSeat}`;
+            const seatSummaryText = totalCount > 1 
+                ? `${selectedBlockName} • Blok ${selectedBlockCode} • Sıra ${mainRow} (Koltuk ${seatsStr}) • ${totalCount} Adet Bilet`
+                : `${selectedBlockName} • Blok ${selectedBlockCode} • Sıra ${mainRow} - Koltuk ${seatsStr}`;
             document.getElementById('paySeatInfo').innerText = seatSummaryText;
             
             const priceStr = `₺${calculatedFinalPrice},00`;
@@ -4303,15 +4346,32 @@
                 if (foundRow) break;
             }
 
+            const badge = document.getElementById('autoSeatBadge');
+
             if (foundRow && foundStartSeat !== null) {
-                selectedRow = foundRow;
-                selectedSeat = foundStartSeat;
+                selectedSeats = [];
+                for (let k = 0; k < count; k++) {
+                    selectedSeats.push({ row: foundRow, seat: foundStartSeat + k });
+                }
                 renderSeatMatrix();
                 updateSeatingSummary();
-                if (typeof confetti === 'function') confetti({ particleCount: 30, spread: 50, origin: { y: 0.6 } });
-                alert(`👥 ${count} adet yan yana koltuk otomatik seçildi:\n📍 Sıra ${foundRow}, Koltuk ${foundStartSeat}-${foundStartSeat + count - 1}`);
+                if (typeof confetti === 'function') confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
+
+                if (badge) {
+                    badge.style.display = 'inline-flex';
+                    badge.style.borderColor = 'rgba(34,197,94,0.3)';
+                    badge.style.color = '#4ade80';
+                    badge.innerText = `✨ Sıra ${foundRow}, Koltuk ${foundStartSeat}-${foundStartSeat + count - 1} (${count} Adet) Seçildi`;
+                    setTimeout(() => { badge.style.display = 'none'; }, 4500);
+                }
             } else {
-                alert(`⚠️ Seçilen ${selectedBlockName} (Blok ${selectedBlockCode}) bölümünde yan yana ${count} adet boş koltuk bulunamadı.`);
+                if (badge) {
+                    badge.style.display = 'inline-flex';
+                    badge.style.borderColor = 'rgba(239,68,68,0.4)';
+                    badge.style.color = '#f87171';
+                    badge.innerText = `⚠️ Blok ${selectedBlockCode} içinde yan yana ${count} boş koltuk bulunamadı.`;
+                    setTimeout(() => { badge.style.display = 'none'; }, 4500);
+                }
             }
         }
 
