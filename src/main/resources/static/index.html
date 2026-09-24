@@ -8,48 +8,93 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
+    <style>
         :root {
-            /* WARM DARK THEME (Warm Rosewood, Burgundy & Terracotta - Image 2 Right inspired) */
-            --bg-main: #180d11;
-            --bg-card: #27141b;
-            --bg-card-hover: #331923;
-            --bg-nav: rgba(24, 13, 17, 0.88);
-            --bg-modal: #221117;
-            --bg-input: rgba(46, 23, 31, 0.7);
-            --accent-primary: #e07a5f;
-            --accent-secondary: #b5485d;
-            --accent-gold: #f4a261;
-            --gradient-hero: linear-gradient(135deg, rgba(224, 122, 95, 0.25), rgba(181, 72, 93, 0.25));
-            --gradient-btn: linear-gradient(135deg, #e07a5f, #b5485d);
-            --gradient-btn-hover: linear-gradient(135deg, #f4a261, #e07a5f);
-            --gradient-logo: linear-gradient(135deg, #e07a5f, #f4a261);
-            --text-main: #faf0e6;
-            --text-muted: #d4b2b6;
-            --border-color: rgba(224, 122, 95, 0.22);
+            /* CYBER NEON PURPLE DARK THEME (VÉRITÉ DANCE Studio Inspired - Image Uploaded) */
+            --bg-outer-space: #06030b;
+            --bg-main: #0c0617;
+            --bg-card: #180e2b;
+            --bg-card-hover: #241440;
+            --bg-nav: rgba(12, 6, 23, 0.9);
+            --bg-modal: #150b26;
+            --bg-input: rgba(36, 20, 64, 0.7);
+            --accent-primary: #a855f7;
+            --accent-secondary: #6366f1;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #f59e0b;
+            --gradient-hero: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(99, 102, 241, 0.3));
+            --gradient-btn: linear-gradient(135deg, #a855f7, #6366f1);
+            --gradient-btn-hover: linear-gradient(135deg, #c084fc, #818cf8);
+            --gradient-btn-cyan: linear-gradient(135deg, #06b6d4, #3b82f6);
+            --gradient-logo: linear-gradient(135deg, #c084fc, #38bdf8);
+            --gradient-promo: linear-gradient(135deg, #7e22ce, #1d4ed8);
+            --text-main: #f8fafc;
+            --text-muted: #c084fc;
+            --border-color: rgba(168, 85, 247, 0.35);
             --border-color-subtle: rgba(255, 255, 255, 0.08);
-            --box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65);
+            --box-shadow: 0 20px 50px -10px rgba(168, 85, 247, 0.3);
+            --outer-frame-shadow: 0 0 60px rgba(168, 85, 247, 0.35), 0 0 120px rgba(99, 102, 241, 0.2);
         }
 
         [data-theme="light"] {
-            /* WARM LIGHT THEME (Warm Cream Linen & Deep Velvet Burgundy - Image 2 Left inspired) */
-            --bg-main: #f5efeb;
+            /* CYBER SILK LAVENDER LIGHT THEME (Pristine Lavender & Velvet Violet) */
+            --bg-outer-space: #e9e0fa;
+            --bg-main: #f3edff;
             --bg-card: #ffffff;
-            --bg-card-hover: #fcf8f5;
-            --bg-nav: rgba(245, 239, 235, 0.92);
-            --bg-modal: #fdfbf9;
-            --bg-input: #eee2d9;
-            --accent-primary: #80232e;
-            --accent-secondary: #d97736;
-            --accent-gold: #b86b28;
-            --gradient-hero: linear-gradient(135deg, rgba(128, 35, 46, 0.12), rgba(217, 119, 54, 0.12));
-            --gradient-btn: linear-gradient(135deg, #80232e, #a83242);
-            --gradient-btn-hover: linear-gradient(135deg, #a83242, #d97736);
-            --gradient-logo: linear-gradient(135deg, #80232e, #d97736);
-            --text-main: #2b1810;
-            --text-muted: #7a5f56;
-            --border-color: rgba(128, 35, 46, 0.18);
+            --bg-card-hover: #f8f4ff;
+            --bg-nav: rgba(243, 237, 255, 0.95);
+            --bg-modal: #fcf9ff;
+            --bg-input: #e9deff;
+            --accent-primary: #7e22ce;
+            --accent-secondary: #4f46e5;
+            --accent-cyan: #0284c7;
+            --accent-gold: #d97706;
+            --gradient-hero: linear-gradient(135deg, rgba(126, 34, 206, 0.12), rgba(79, 70, 229, 0.12));
+            --gradient-btn: linear-gradient(135deg, #7e22ce, #4f46e5);
+            --gradient-btn-hover: linear-gradient(135deg, #9333ea, #6366f1);
+            --gradient-btn-cyan: linear-gradient(135deg, #0284c7, #2563eb);
+            --gradient-logo: linear-gradient(135deg, #7e22ce, #0284c7);
+            --gradient-promo: linear-gradient(135deg, #6b21a8, #1e40af);
+            --text-main: #1e1b4b;
+            --text-muted: #6b21a8;
+            --border-color: rgba(126, 34, 206, 0.22);
             --border-color-subtle: rgba(0, 0, 0, 0.08);
-            --box-shadow: 0 15px 35px -10px rgba(70, 25, 30, 0.12);
+            --box-shadow: 0 15px 35px -10px rgba(126, 34, 206, 0.15);
+            --outer-frame-shadow: 0 0 40px rgba(126, 34, 206, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-outer-space);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            transition: background 0.3s;
+        }
+
+        .app-outer-wrapper {
+            width: 100%;
+            max-width: 1280px;
+            margin: 1.5rem auto;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            box-shadow: var(--outer-frame-shadow);
+            padding: 0 1.5rem 2.5rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .quick-feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary) !important;
+            box-shadow: 0 12px 30px rgba(168, 85, 247, 0.3) !important;
         }
 
         .theme-toggle-btn {
@@ -1642,31 +1687,86 @@
 </head>
 <body>
 
-    <nav>
-        <div style="display:flex; align-items:center; gap:1.25rem;">
-            <div class="logo" onclick="resetFilters()">🎟️ PassoLive</div>
-            <div class="system-status-pill" style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.25); padding:0.35rem 0.85rem; border-radius:9999px; font-size:0.8rem; font-weight:700; color:#4ade80;">
-                <span style="width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation: pulseGlow 2s infinite;"></span>
-                <span>CANLI BİLET SATIŞI AKTİF</span>
+    <!-- Outer Neon Frame Container (Inspired by Uploaded Image) -->
+    <div class="app-outer-wrapper">
+
+        <nav>
+            <div style="display:flex; align-items:center; gap:1.25rem;">
+                <div class="logo" onclick="resetFilters()">🎟️ PassoLive</div>
+                <div class="system-status-pill" style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); padding:0.35rem 0.85rem; border-radius:9999px; font-size:0.8rem; font-weight:700; color:#4ade80;">
+                    <span style="width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation: pulseGlow 2s infinite;"></span>
+                    <span>CANLI BİLET SATIŞI AKTİF</span>
+                </div>
+            </div>
+            <div class="user-status">
+                <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleAppTheme()">
+                    <span id="themeToggleIcon">☀️</span> <span id="themeToggleText">Aydınlık Tema</span>
+                </button>
+                <div id="navAuthArea"></div>
+            </div>
+        </nav>
+
+        <!-- Hero Section (VÉRITÉ DANCE Studio Layout Inspired) -->
+        <div class="hero">
+            <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(168,85,247,0.18); backdrop-filter:blur(8px); border:1px solid rgba(168,85,247,0.4); border-radius:9999px; padding:0.4rem 1.1rem; width:fit-content; margin-bottom:1rem;">
+                <span style="font-size:0.8rem; font-weight:800; letter-spacing:0.5px; color:#c084fc;">🎁 SEZON FIRSATI • SEÇİLİ BİLETLERDE 10 DK KİLİT GARANTİSİ</span>
+            </div>
+            <h1 class="hero-title">TÜRKİYE'NİN EN YÜKSEK PERFORMANSLI DİJİTAL BİLET PLATFORMU</h1>
+            <p class="hero-subtitle">En sevdiğin konserler, tiyatrolar, gösteriler ve spor etkinlikleri için biletini saniyeler içinde güvenle ayırt.</p>
+            
+            <div style="display:flex; gap:1rem; margin-top:1.5rem; flex-wrap:wrap;">
+                <button class="btn-buy" style="width:auto; padding:0.85rem 1.75rem; font-size:0.95rem; border-radius:9999px; background:linear-gradient(135deg, #a855f7, #6366f1); box-shadow:0 8px 25px rgba(168,85,247,0.4);" onclick="filterCat('all')">
+                    🎟️ Tüm Etkinlikleri Keşfet
+                </button>
+                <button class="btn-buy" style="width:auto; padding:0.85rem 1.75rem; font-size:0.95rem; border-radius:9999px; background:linear-gradient(135deg, #06b6d4, #3b82f6); box-shadow:0 8px 25px rgba(6,182,212,0.4);" onclick="togglePassoBot()">
+                    🤖 PassoBot AI ile Ara
+                </button>
             </div>
         </div>
-        <div class="user-status">
-            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleAppTheme()">
-                <span id="themeToggleIcon">☀️</span> <span id="themeToggleText">Aydınlık Tema</span>
+
+        <!-- 4 Quick Feature Cards Grid (Inspired by Top 4 Feature Grid in Uploaded Image) -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem; width:100%; max-width:1200px; margin-bottom:2.5rem;">
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
+                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #a855f7, #6366f1); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">⚡</div>
+                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">Hızlı Bilet & 10 Dk Kilit</h4>
+                <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Redis Atomic DECR ile sıfır çakışma ve 10 dakikalık koltuk garantisi.</p>
+            </div>
+
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
+                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #ef4444, #dc2626); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">🛡️</div>
+                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">Karaborsacı Bot Koruması</h4>
+                <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Yapay zeka milisaniyelik sahte bot isteklerini anında engeller.</p>
+            </div>
+
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
+                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #06b6d4, #3b82f6); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">🤖</div>
+                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">PassoBot AI Asistanı</h4>
+                <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Google Gemini 2.0 Flash ile doğal dilde akıllı bilet danışmanı.</p>
+            </div>
+
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
+                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #f59e0b, #d97706); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">💳</div>
+                <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">3D Secure & Mobil QR</h4>
+                <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">256-Bit SSL şifreli ödeme ve anında taranabilir dijital bilet QR.</p>
+            </div>
+        </div>
+
+        <!-- Special Promo Announcement Banner (Inspired by Middle Purple Promo Banner in Uploaded Image) -->
+        <div style="width:100%; max-width:1200px; background:var(--gradient-promo); border-radius:1.5rem; padding:1.75rem 2rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem; box-shadow:0 15px 35px rgba(126, 34, 206, 0.4); border:1px solid rgba(255,255,255,0.18);" class="promo-banner-card">
+            <div style="display:flex; align-items:center; gap:1.25rem;">
+                <div style="font-size:2.5rem;">🎟️</div>
+                <div>
+                    <div style="font-size:0.78rem; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:1px;">⚡ CANLI PERFORMANS & REZERVE GARANTİSİ</div>
+                    <h3 style="font-size:1.25rem; font-weight:800; color:#fff; margin-top:0.2rem;">Koltuk Rezervasyonunuz 10 Dakika Boyunca Redis Koruması Altında!</h3>
+                    <div style="font-size:0.85rem; color:#e0e7ff; margin-top:0.25rem;">Ödemenizi tamamlayana kadar koltuğunuz başkalarına kilitlenir.</div>
+                </div>
+            </div>
+            <button class="btn-buy" style="width:auto; padding:0.75rem 1.5rem; font-size:0.9rem; background:linear-gradient(135deg, #06b6d4, #3b82f6); border-radius:9999px; box-shadow:0 6px 20px rgba(6,182,212,0.4);" onclick="filterCat('all')">
+                🔥 Hemen Koltuk Seç
             </button>
-            <div id="navAuthArea"></div>
         </div>
-    </nav>
 
-    <div class="hero">
-        <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(255,255,255,0.1); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.18); border-radius:9999px; padding:0.4rem 1rem; width:fit-content; margin-bottom:1rem;">
-            <span style="font-size:0.8rem; font-weight:800; letter-spacing:0.5px; color:#f43f5e;">⚡ TÜRKİYE'NİN LİDER BİLET PLATFORMU</span>
-        </div>
-        <h1 class="hero-title">Canlı Etkinlikler & Canlı Biletler</h1>
-        <p class="hero-subtitle">En sevdiğin konserler, tiyatrolar, gösteriler ve spor etkinlikleri için biletini saniyeler içinde güvenle ayırt.</p>
-    </div>
-
-    <div class="filter-section-container">
+        <div class="filter-section-container">
         <!-- Category Pills & Count Header -->
         <div class="category-filter-header">
             <div class="category-bar">
@@ -1783,6 +1883,7 @@
             </div>
         </div>
     </footer>
+    </div> <!-- End app-outer-wrapper -->
 
     <!-- Bubilet Event Detail Modal -->
     <div class="modal-overlay" id="eventDetailModal">
