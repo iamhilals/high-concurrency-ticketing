@@ -9,57 +9,57 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
         :root {
-            /* CYBER NEON VIOLET & WARM PINK DARK THEME */
-            --bg-outer-space: #07040d;
-            --bg-main: #0f0920;
-            --bg-card: #1a112f;
-            --bg-card-hover: #271946;
-            --bg-nav: rgba(15, 9, 32, 0.88);
-            --bg-modal: #170c2c;
-            --bg-input: rgba(39, 25, 70, 0.75);
-            --accent-primary: #a855f7;
-            --accent-secondary: #ec4899;
+            /* OBSIDIAN BLACK & RICH BURGUNDY DARK THEME */
+            --bg-outer-space: #090205;
+            --bg-main: #130409;
+            --bg-card: #1f070e;
+            --bg-card-hover: #2f0a15;
+            --bg-nav: rgba(19, 4, 9, 0.9);
+            --bg-modal: #1a050b;
+            --bg-input: rgba(47, 10, 21, 0.75);
+            --accent-primary: #9f1239;
+            --accent-secondary: #e11d48;
             --accent-cyan: #06b6d4;
-            --accent-gold: #fbbf24;
-            --gradient-hero: linear-gradient(135deg, rgba(168, 85, 247, 0.28), rgba(236, 72, 153, 0.22), rgba(6, 182, 212, 0.18));
-            --gradient-btn: linear-gradient(135deg, #a855f7, #ec4899);
-            --gradient-btn-hover: linear-gradient(135deg, #c084fc, #f472b6);
+            --accent-gold: #f59e0b;
+            --gradient-hero: linear-gradient(135deg, rgba(159, 18, 57, 0.35), rgba(225, 29, 72, 0.25), rgba(76, 5, 25, 0.4));
+            --gradient-btn: linear-gradient(135deg, #9f1239, #e11d48);
+            --gradient-btn-hover: linear-gradient(135deg, #be123c, #f43f5e);
             --gradient-btn-cyan: linear-gradient(135deg, #06b6d4, #3b82f6);
-            --gradient-logo: linear-gradient(135deg, #c084fc, #f472b6, #38bdf8);
-            --gradient-promo: linear-gradient(135deg, #7e22ce, #db2777, #2563eb);
-            --text-main: #f8fafc;
-            --text-muted: #cbd5e1;
-            --border-color: rgba(168, 85, 247, 0.35);
+            --gradient-logo: linear-gradient(135deg, #f43f5e, #be123c, #fbbf24);
+            --gradient-promo: linear-gradient(135deg, #881337, #be123c, #4c0519);
+            --text-main: #fff1f2;
+            --text-muted: #fda4af;
+            --border-color: rgba(159, 18, 57, 0.4);
             --border-color-subtle: rgba(255, 255, 255, 0.1);
-            --box-shadow: 0 20px 50px -10px rgba(168, 85, 247, 0.35);
-            --outer-frame-shadow: 0 0 50px rgba(168, 85, 247, 0.4), 0 0 100px rgba(236, 72, 153, 0.25);
+            --box-shadow: 0 20px 50px -10px rgba(159, 18, 57, 0.35);
+            --outer-frame-shadow: 0 0 50px rgba(159, 18, 57, 0.45), 0 0 100px rgba(225, 29, 72, 0.25);
         }
 
         [data-theme="light"] {
-            /* SUNSET SILK & VELVET ROSE LIGHT THEME */
-            --bg-outer-space: #eae5f5;
-            --bg-main: #f7f4fd;
+            /* WARM CREAM & DEEP BURGUNDY LIGHT THEME */
+            --bg-outer-space: #f5efe6;
+            --bg-main: #fcf8f2;
             --bg-card: #ffffff;
-            --bg-card-hover: #f3ebff;
-            --bg-nav: rgba(247, 244, 253, 0.92);
+            --bg-card-hover: #f8f1e7;
+            --bg-nav: rgba(252, 248, 242, 0.94);
             --bg-modal: #ffffff;
-            --bg-input: #ede7f8;
-            --accent-primary: #8b5cf6;
-            --accent-secondary: #e11d48;
+            --bg-input: #f3e8da;
+            --accent-primary: #881337;
+            --accent-secondary: #9f1239;
             --accent-cyan: #0284c7;
             --accent-gold: #d97706;
-            --gradient-hero: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(225, 29, 72, 0.08), rgba(2, 132, 199, 0.08));
-            --gradient-btn: linear-gradient(135deg, #8b5cf6, #e11d48);
-            --gradient-btn-hover: linear-gradient(135deg, #7c3aed, #be123c);
+            --gradient-hero: linear-gradient(135deg, rgba(136, 19, 55, 0.1), rgba(159, 18, 57, 0.08), rgba(217, 119, 6, 0.08));
+            --gradient-btn: linear-gradient(135deg, #881337, #9f1239);
+            --gradient-btn-hover: linear-gradient(135deg, #9f1239, #be123c);
             --gradient-btn-cyan: linear-gradient(135deg, #0284c7, #2563eb);
-            --gradient-logo: linear-gradient(135deg, #7c3aed, #e11d48);
-            --gradient-promo: linear-gradient(135deg, #6d28d9, #be123c, #1d4ed8);
-            --text-main: #1e1035;
-            --text-muted: #64748b;
-            --border-color: rgba(139, 92, 246, 0.22);
-            --border-color-subtle: rgba(0, 0, 0, 0.08);
-            --box-shadow: 0 15px 35px -10px rgba(139, 92, 246, 0.15);
-            --outer-frame-shadow: 0 0 40px rgba(139, 92, 246, 0.2), 0 0 80px rgba(225, 29, 72, 0.12);
+            --gradient-logo: linear-gradient(135deg, #881337, #be123c);
+            --gradient-promo: linear-gradient(135deg, #4c0519, #881337, #9f1239);
+            --text-main: #2c0812;
+            --text-muted: #782335;
+            --border-color: rgba(136, 19, 55, 0.22);
+            --border-color-subtle: rgba(136, 19, 55, 0.08);
+            --box-shadow: 0 15px 35px -10px rgba(136, 19, 55, 0.15);
+            --outer-frame-shadow: 0 0 40px rgba(136, 19, 55, 0.18);
         }
 
         body {
@@ -77,10 +77,10 @@
             width: 100%;
             max-width: 1280px;
             margin: 1.5rem auto;
-            background: rgba(15, 9, 32, 0.85);
+            background: var(--bg-main);
             backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 28px;
             box-shadow: var(--outer-frame-shadow);
             padding: 0 1.5rem 2.5rem 1.5rem;
             position: relative;
@@ -95,7 +95,7 @@
         .quick-feature-card:hover {
             transform: translateY(-5px);
             border-color: var(--accent-primary) !important;
-            box-shadow: 0 12px 30px rgba(168, 85, 247, 0.3) !important;
+            box-shadow: 0 12px 30px rgba(159, 18, 57, 0.3) !important;
         }
 
         .theme-toggle-btn {
@@ -103,7 +103,7 @@
             border: 1px solid var(--border-color);
             color: var(--text-main);
             padding: 0.45rem 1.1rem;
-            border-radius: 4px;
+            border-radius: 9999px;
             font-size: 0.85rem;
             font-weight: 700;
             cursor: pointer;
@@ -117,7 +117,7 @@
         .theme-toggle-btn:hover {
             transform: translateY(-2px);
             border-color: var(--accent-primary);
-            box-shadow: 0 6px 18px rgba(224, 122, 95, 0.3);
+            box-shadow: 0 6px 18px rgba(159, 18, 57, 0.3);
         }
 
         * {
@@ -135,14 +135,14 @@
             background: var(--gradient-btn);
             color: #fff;
             padding: 0.85rem 1.4rem;
-            border-radius: 4px;
+            border-radius: 9999px;
             font-weight: 700;
             font-size: 0.95rem;
             display: flex;
             align-items: center;
             gap: 0.6rem;
             cursor: pointer;
-            box-shadow: 0 10px 25px -5px rgba(224, 122, 95, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(159, 18, 57, 0.4);
             z-index: 1000;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid var(--border-color);
@@ -150,7 +150,7 @@
 
         .passobot-trigger:hover {
             transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 15px 35px -5px rgba(224, 122, 95, 0.6);
+            box-shadow: 0 15px 35px -5px rgba(159, 18, 57, 0.6);
             background: var(--gradient-btn-hover);
         }
 
@@ -164,7 +164,7 @@
             background: var(--bg-modal);
             backdrop-filter: blur(20px);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 20px;
             box-shadow: var(--box-shadow);
             display: none;
             flex-direction: column;
@@ -352,11 +352,10 @@
         body {
             background-color: var(--bg-outer-space);
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(168, 85, 247, 0.22) 0%, transparent 40%),
-                radial-gradient(circle at 85% 15%, rgba(236, 72, 153, 0.2) 0%, transparent 40%),
-                radial-gradient(circle at 50% 60%, rgba(6, 182, 212, 0.18) 0%, transparent 50%),
-                radial-gradient(circle at 20% 85%, rgba(126, 34, 206, 0.22) 0%, transparent 45%),
-                radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.12) 0%, transparent 45%);
+                radial-gradient(circle at 10% 20%, rgba(159, 18, 57, 0.28) 0%, transparent 45%),
+                radial-gradient(circle at 85% 15%, rgba(136, 19, 55, 0.25) 0%, transparent 45%),
+                radial-gradient(circle at 50% 60%, rgba(190, 18, 60, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 20% 85%, rgba(76, 5, 25, 0.3) 0%, transparent 45%);
             background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
@@ -376,16 +375,16 @@
             width: 140vw;
             height: 140vh;
             background: 
-                radial-gradient(circle at 30% 30%, rgba(168, 85, 247, 0.16), transparent 50%),
-                radial-gradient(circle at 70% 40%, rgba(236, 72, 153, 0.14), transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.14), transparent 50%);
-            filter: blur(90px);
+                radial-gradient(circle at 30% 30%, rgba(159, 18, 57, 0.2), transparent 50%),
+                radial-gradient(circle at 70% 40%, rgba(190, 18, 60, 0.16), transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(76, 5, 25, 0.22), transparent 50%);
+            filter: blur(100px);
             pointer-events: none;
             z-index: 0;
-            animation: floatNebulaMists 22s ease-in-out infinite alternate;
+            animation: floatBurgundyMists 22s ease-in-out infinite alternate;
         }
 
-        @keyframes floatNebulaMists {
+        @keyframes floatBurgundyMists {
             0% { transform: translate(0, 0) scale(1); }
             50% { transform: translate(40px, -30px) scale(1.08); }
             100% { transform: translate(-30px, 40px) scale(0.96); }
@@ -443,7 +442,7 @@
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             padding: 0.45rem 1rem;
-            border-radius: 4px;
+            border-radius: 9999px;
             font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-main);
@@ -456,7 +455,7 @@
         .user-profile-badge:hover {
             background: var(--bg-card-hover);
             border-color: var(--accent-primary);
-            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.2);
+            box-shadow: 0 4px 14px rgba(159, 18, 57, 0.2);
         }
 
         .profile-dropdown-menu {
@@ -542,7 +541,7 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #fff;
             padding: 0.5rem 1.25rem;
-            border-radius: 4px;
+            border-radius: 9999px;
             font-weight: 600;
             font-size: 0.9rem;
             cursor: pointer;
@@ -564,7 +563,7 @@
             max-width: 1200px;
             margin: 2rem 0;
             padding: 3rem 2rem;
-            border-radius: 6px;
+            border-radius: 1.5rem;
             background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(139, 92, 246, 0.15)), url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1600&q=80');
             background-size: cover;
             background-position: center;
@@ -606,7 +605,7 @@
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             padding: 0.6rem 1.25rem;
-            border-radius: 4px;
+            border-radius: 9999px;
             color: var(--text-muted);
             font-weight: 600;
             font-size: 0.9rem;
@@ -619,7 +618,7 @@
             background: var(--gradient-btn);
             color: #fff;
             border-color: transparent;
-            box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
+            box-shadow: 0 4px 14px rgba(159, 18, 57, 0.35);
         }
 
         /* Filter Section & Control Panel */
@@ -646,7 +645,7 @@
             border: 1px solid var(--border-color);
             color: var(--text-muted);
             padding: 0.4rem 0.85rem;
-            border-radius: 4px;
+            border-radius: 9999px;
             font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
@@ -667,7 +666,7 @@
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 1rem;
             padding: 1rem;
             box-shadow: var(--box-shadow);
             width: 100%;
@@ -695,7 +694,7 @@
             width: 100%;
             background: var(--bg-input);
             border: 1px solid var(--border-color);
-            border-radius: 4px;
+            border-radius: 0.75rem;
             padding: 0.65rem 0.9rem;
             color: var(--text-main);
             font-size: 0.88rem;
@@ -705,7 +704,7 @@
 
         .filter-input:focus {
             border-color: var(--accent-primary);
-            box-shadow: 0 0 10px rgba(224, 122, 95, 0.3);
+            box-shadow: 0 0 10px rgba(159, 18, 57, 0.3);
             background: var(--bg-card);
         }
 
@@ -713,7 +712,7 @@
             width: 100%;
             background: var(--bg-input);
             border: 1px solid var(--border-color);
-            border-radius: 4px;
+            border-radius: 0.75rem;
             padding: 0.65rem 0.9rem;
             color: var(--text-main);
             font-size: 0.88rem;
@@ -729,7 +728,7 @@
 
         .filter-select:focus {
             border-color: var(--accent-primary);
-            box-shadow: 0 0 10px rgba(224, 122, 95, 0.3);
+            box-shadow: 0 0 10px rgba(159, 18, 57, 0.3);
         }
 
         /* Events Grid */
@@ -745,7 +744,7 @@
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
+            border-radius: 1.25rem;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -757,7 +756,7 @@
 
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px -15px rgba(224, 122, 95, 0.35);
+            box-shadow: 0 20px 40px -15px rgba(159, 18, 57, 0.35);
             border-color: var(--accent-primary);
         }
 
@@ -789,7 +788,7 @@
             font-size: 0.75rem;
             font-weight: 700;
             padding: 0.35rem 0.75rem;
-            border-radius: 4px;
+            border-radius: 9999px;
             border: 1px solid var(--border-color);
         }
 
@@ -837,7 +836,7 @@
             background: rgba(244, 162, 97, 0.12);
             color: var(--accent-gold);
             padding: 0.4rem 0.8rem;
-            border-radius: 4px;
+            border-radius: 0.5rem;
             border: 1px solid var(--border-color);
             transition: all 0.3s;
         }
@@ -861,7 +860,7 @@
             color: #fff;
             border: none;
             padding: 0.9rem;
-            border-radius: 4px;
+            border-radius: 0.75rem;
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
@@ -1760,7 +1759,7 @@
         <nav>
             <div style="display:flex; align-items:center; gap:1.25rem;">
                 <div class="logo" onclick="resetFilters()">🎟️ PassoLive</div>
-                <div class="system-status-pill" style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); padding:0.35rem 0.85rem; border-radius:4px; font-size:0.8rem; font-weight:700; color:#4ade80;">
+                <div class="system-status-pill" style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); padding:0.35rem 0.85rem; border-radius:9999px; font-size:0.8rem; font-weight:700; color:#4ade80;">
                     <span style="width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation: pulseGlow 2s infinite;"></span>
                     <span>CANLI BİLET SATIŞI AKTİF</span>
                 </div>
@@ -1775,17 +1774,17 @@
 
         <!-- Hero Section (VÉRITÉ DANCE Studio Layout Inspired) -->
         <div class="hero">
-            <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(168,85,247,0.18); backdrop-filter:blur(8px); border:1px solid rgba(168,85,247,0.4); border-radius:4px; padding:0.4rem 1.1rem; width:fit-content; margin-bottom:1rem;">
-                <span style="font-size:0.8rem; font-weight:800; letter-spacing:0.5px; color:#c084fc;">🎁 SEZON FIRSATI • SEÇİLİ BİLETLERDE 10 DK KİLİT GARANTİSİ</span>
+            <div style="display:inline-flex; align-items:center; gap:0.5rem; background:rgba(159,18,57,0.22); backdrop-filter:blur(8px); border:1px solid rgba(159,18,57,0.4); border-radius:9999px; padding:0.4rem 1.1rem; width:fit-content; margin-bottom:1rem;">
+                <span style="font-size:0.8rem; font-weight:800; letter-spacing:0.5px; color:#fda4af;">🎁 SEZON FIRSATI • SEÇİLİ BİLETLERDE 10 DK KİLİT GARANTİSİ</span>
             </div>
             <h1 class="hero-title">TÜRKİYE'NİN EN YÜKSEK PERFORMANSLI DİJİTAL BİLET PLATFORMU</h1>
             <p class="hero-subtitle">En sevdiğin konserler, tiyatrolar, gösteriler ve spor etkinlikleri için biletini saniyeler içinde güvenle ayırt.</p>
             
             <div style="display:flex; gap:1rem; margin-top:1.5rem; flex-wrap:wrap;">
-                <button class="btn-buy" style="width:auto; padding:0.85rem 1.75rem; font-size:0.95rem; border-radius:4px; background:linear-gradient(135deg, #a855f7, #6366f1); box-shadow:0 8px 25px rgba(168,85,247,0.4);" onclick="filterCat('all')">
+                <button class="btn-buy" style="width:auto; padding:0.85rem 1.75rem; font-size:0.95rem; border-radius:9999px; background:linear-gradient(135deg, #9f1239, #e11d48); box-shadow:0 8px 25px rgba(159,18,57,0.4);" onclick="filterCat('all')">
                     🎟️ Tüm Etkinlikleri Keşfet
                 </button>
-                <button class="btn-buy" style="width:auto; padding:0.85rem 1.75rem; font-size:0.95rem; border-radius:4px; background:linear-gradient(135deg, #06b6d4, #3b82f6); box-shadow:0 8px 25px rgba(6,182,212,0.4);" onclick="togglePassoBot()">
+                <button class="btn-buy" style="width:auto; padding:0.85rem 1.75rem; font-size:0.95rem; border-radius:9999px; background:linear-gradient(135deg, #06b6d4, #3b82f6); box-shadow:0 8px 25px rgba(6,182,212,0.4);" onclick="togglePassoBot()">
                     🤖 PassoBot AI ile Ara
                 </button>
             </div>
@@ -1793,42 +1792,42 @@
 
         <!-- 4 Quick Feature Cards Grid (Inspired by Top 4 Feature Grid in Uploaded Image) -->
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1.25rem; width:100%; max-width:1200px; margin-bottom:2.5rem;">
-            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:6px; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
-                <div style="width:42px; height:42px; border-radius:4px; background:linear-gradient(135deg, #a855f7, #6366f1); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">⚡</div>
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
+                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #9f1239, #e11d48); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">⚡</div>
                 <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">Hızlı Bilet & 10 Dk Kilit</h4>
                 <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Redis Atomic DECR ile sıfır çakışma ve 10 dakikalık koltuk garantisi.</p>
             </div>
 
-            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:6px; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
-                <div style="width:42px; height:42px; border-radius:4px; background:linear-gradient(135deg, #ef4444, #dc2626); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">🛡️</div>
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
+                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #be123c, #881337); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">🛡️</div>
                 <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">Karaborsacı Bot Koruması</h4>
                 <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Yapay zeka milisaniyelik sahte bot isteklerini anında engeller.</p>
             </div>
 
-            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:6px; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
-                <div style="width:42px; height:42px; border-radius:4px; background:linear-gradient(135deg, #06b6d4, #3b82f6); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">🤖</div>
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
+                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #06b6d4, #3b82f6); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">🤖</div>
                 <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">PassoBot AI Asistanı</h4>
                 <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">Google Gemini 2.0 Flash ile doğal dilde akıllı bilet danışmanı.</p>
             </div>
 
-            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:6px; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
-                <div style="width:42px; height:42px; border-radius:4px; background:linear-gradient(135deg, #f59e0b, #d97706); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">💳</div>
+            <div style="background:var(--bg-card); border:1px solid var(--border-color); padding:1.25rem; border-radius:1.25rem; box-shadow:var(--box-shadow); display:flex; flex-direction:column; gap:0.5rem; transition:transform 0.3s;" class="quick-feature-card">
+                <div style="width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg, #f59e0b, #d97706); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:#fff;">💳</div>
                 <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-main);">3D Secure & Mobil QR</h4>
                 <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4;">256-Bit SSL şifreli ödeme ve anında taranabilir dijital bilet QR.</p>
             </div>
         </div>
 
         <!-- Special Promo Announcement Banner (Inspired by Middle Purple Promo Banner in Uploaded Image) -->
-        <div style="width:100%; max-width:1200px; background:var(--gradient-promo); border-radius:6px; padding:1.75rem 2rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem; box-shadow:0 15px 35px rgba(126, 34, 206, 0.4); border:1px solid rgba(255,255,255,0.18);" class="promo-banner-card">
+        <div style="width:100%; max-width:1200px; background:var(--gradient-promo); border-radius:1.5rem; padding:1.75rem 2rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem; box-shadow:0 15px 35px rgba(159, 18, 57, 0.4); border:1px solid rgba(255,255,255,0.18);" class="promo-banner-card">
             <div style="display:flex; align-items:center; gap:1.25rem;">
                 <div style="font-size:2.5rem;">🎟️</div>
                 <div>
                     <div style="font-size:0.78rem; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:1px;">⚡ CANLI PERFORMANS & REZERVE GARANTİSİ</div>
                     <h3 style="font-size:1.25rem; font-weight:800; color:#fff; margin-top:0.2rem;">Koltuk Rezervasyonunuz 10 Dakika Boyunca Redis Koruması Altında!</h3>
-                    <div style="font-size:0.85rem; color:#e0e7ff; margin-top:0.25rem;">Ödemenizi tamamlayana kadar koltuğunuz başkalarına kilitlenir.</div>
+                    <div style="font-size:0.85rem; color:#ffe4e6; margin-top:0.25rem;">Ödemenizi tamamlayana kadar koltuğunuz başkalarına kilitlenir.</div>
                 </div>
             </div>
-            <button class="btn-buy" style="width:auto; padding:0.75rem 1.5rem; font-size:0.9rem; background:linear-gradient(135deg, #06b6d4, #3b82f6); border-radius:4px; box-shadow:0 6px 20px rgba(6,182,212,0.4);" onclick="filterCat('all')">
+            <button class="btn-buy" style="width:auto; padding:0.75rem 1.5rem; font-size:0.9rem; background:linear-gradient(135deg, #06b6d4, #3b82f6); border-radius:9999px; box-shadow:0 6px 20px rgba(6,182,212,0.4);" onclick="filterCat('all')">
                 🔥 Hemen Koltuk Seç
             </button>
         </div>
