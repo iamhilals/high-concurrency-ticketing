@@ -4371,13 +4371,13 @@
 
                         <div class="ssl-seal">🔒 256-BIT SSL ENCRYPTED & ATOMIC REDIS DECR VERIFIED</div>
                     </div>
-                    <script>
-                        window.onload = function() { setTimeout(function() { window.print(); }, 500); };
-                    </script>
                 </body>
                 </html>
             `);
             printWindow.document.close();
+            setTimeout(() => {
+                try { printWindow.print(); } catch(e) {}
+            }, 600);
         }
 
         function updateCardPreview() {
