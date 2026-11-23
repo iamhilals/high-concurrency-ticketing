@@ -9,6 +9,7 @@
 [![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
 [![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-7.5-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)](https://kafka.apache.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Three.js](https://img.shields.io/badge/Three.js-3D%20Venues-000000?style=for-the-badge&logo=threedotjs&logoColor=white)](https://threejs.org/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
 </div>
@@ -57,11 +58,30 @@ flowchart LR
 - **Gelişmiş Arama & Filtreleme:** Metin arama, şehir, önümüzdeki 12 aya dinamik tarih filtresi, maksimum fiyat, sıralama ve trend kaydırıcı (*carousel*).
 - **Hesap Bazlı Favoriler & Bilet Alarmı:** Favoriler her kullanıcı hesabına özel saklanır; oturum kapatıldığında temizlenir. Biletleri tükenen etkinlikler için bildirim alarmı kurulabilir.
 
-### 🎟️ Bilet Seçimi, Ödeme & Dijital Bilet
-- **İnteraktif Salon Haritası & Yan Yana Koltuk Bulucu:** VIP (`1.8x`), Saha İçi (`1.2x`) ve Tribün (`0.8x`) blokları, dinamik 4x10 koltuk matrisi ve tek tıkla **2 veya 3 yan yana boş koltuk** seçimi.
-- **Sahne Görüş Açısı Önizlemesi:** Seçilen kategoriye göre güncellenen sahne bakış açısı görselleri ve yakınlaştırma desteği.
+### 🎟️ 3D İnteraktif Koltuk Seçimi, Ödeme & Dijital Bilet
+- **Three.js 3D İnteraktif Salon & 12 Özgün Mekan Modeli:** Bilet seçimi ekranı doğrudan **360° döndürülebilen, yakınlaştırılabilen 3D salon modeliyle** açılır; istenirse tek tıkla `🧊 3D Salon` ve `🗺️ 2D Plan` görünümleri arasında geçiş yapılabilir.
+- **Canlı 3D Koltuk Tıklama & Kamera Açıları (`POV`):** 3D sahnede herhangi bir koltuğa tıklanarak doğrudan seçim yapılabilir; **`Genel Bakış`**, **`Koltuğumdan Gör`** (seçili koltuğun göz hizasından gerçek 3D görüş açısı) ve **`Sahne Yakın`** kamera modları anlık geçiş sunar.
+- **Akıllı Blok & Yan Yana Koltuk Bulucu:** VIP (`1.8x`), Saha İçi (`1.2x`) ve Tribün (`0.8x`) blokları, 3D sahneyle çift yönlü senkronize 4×10 koltuk matrisi ve tek tıkla **2 veya 3 yan yana boş koltuk** seçimi.
 - **10 Dakikalık Canlı Geri Sayım & `+3 Dk` Uzatma:** Ödeme süresince üst barda canlı sayaç.
 - **SMS Doğrulama & Yazdırılabilir QR Dijital Bilet:** Sanal kart önizlemeli ödeme ekranı, 6 haneli tek kullanımlık SMS doğrulaması, PNR kodlu taranabilir **QR bilet** ve yazdırılabilir **PDF dijital giriş belgesi**.
+
+### 🏟️ Etkinliğe Göre Otomatik Oluşturulan 12 Farklı 3D Mekan Modeli
+40 etkinliklik katalogdaki her etkinlik; adına, kategorisine ve mekanına göre otomatik olarak kendi türüne özel 3D mimariyle açılır ve tüm tribün koltukları sahne/saha odağına bakar:
+
+| 3D Mekan Modeli | Kapsanan Etkinlik Örnekleri | Öne Çıkan 3D Detaylar |
+| --- | --- | --- |
+| **🎤 Konser & Açıkhava Arenası** | Duman & Manga, Teoman, Sıla, Mor ve Ötesi | Dev sahne ekranı, truss ışık köprüsü, ses kuleleri ve kademeli tribünler |
+| **🎹 Senfoni & Piyano Salonu** | Fazıl Say, Sertab Erener Senfonik | Kapağı açık 3D kuyruklu konser piyanosu, altın org boruları ve orkestra sehpaları |
+| **🎧 360° Elektronik Festival & DJ** | Armin van Buuren, Solomun, Tale of Us (10 Festival) | Ortada 360° sekizgen DJ adası, dönen ışık halkası ve 6 adet tarayan lazer hüzmesi |
+| **⚽ Futbol Stadyumu (4 Tribün)** | Galatasaray–Fenerbahçe, Beşiktaş–Trabzonspor, A Milli Maç | Çizgili çim saha, 3D kaleler, 4 köşe projektör kulesi ve 4 taraflı tribün |
+| **🏀 Basketbol & EuroLeague Arenası** | Anadolu Efes – Real Madrid EuroLeague | Parke saha, 3 sayı çizgileri, 3D potalar ve tavanda dönen Jumbotron |
+| **🏐 Voleybol Arenası** | Filenin Sultanları Dünya Şampiyonası | FIVB mavi–turuncu zemin, yüksek 3D voleybol filesi, kırmızı-beyaz antenler ve hakem standı |
+| **🎾 Toprak Kort Tenis Arenası** | ATP Tennis Istanbul Open | Kiremit rengi toprak kort, alçak 3D tenis filesi, yüksek hakem kulesi ve kort duvarları |
+| **🥊 Kickboxing & Dövüş Ringi** | World Kickboxing Grand Prix | Yükseltilmiş 3D boks ringi, 4 sıra ring halatı, kırmızı/mavi köşeler ve tavan ışık kafesi |
+| **🏎️ Formula 1 & Yarış Pisti** | Turkish Grand Prix Formula 1, Red Bull Car Park Drift | Asfalt pist, kırmızı-beyaz kerb virajlar, 5 ışıklı start kapısı, paddock ve **canlı turlayan 2 adet 3D F1 aracı** |
+| **🏃‍♂️ Boğaz Köprüsü & Maraton Parkuru** | Istanbul Marathon Halk Koşusu | Boğaz suları üzerinde asma köprü ayakları, 6 şeritli mavi parkur ve damalı FINISH takı |
+| **🎭 Klasik Kadife Tiyatro & Opera** | Amadeus, Bir Baba Hamlet, Zengin Mutfak, Güldür Güldür | Altın varaklı proscenium kemeri, bordo kadife perdeler, kristal avize ve yükseltilmiş balkon |
+| **🎙️ Stand-Up & Gösteri Sahnesi** | Cem Yılmaz, Tolgshow, Yasemin Sakallıoğlu, Doğu Demirkol | Sıcak ahşap sahne, ortada 3D ayaklı krom mikrofon, bar taburesi ve tek odak spot ışığı |
 
 ### 🔐 Hesap Güvenliği & Yönetim
 - **Canlı Şifre Gücü Göstergesi:** Hem **Kayıt Ol** hem **Profil Düzenleme** formlarında 4 kademeli (**Zayıf / Orta / İyi / Güçlü**) canlı güç çubuğu ve 4 maddelik anlık kural kontrol listesi.
@@ -79,7 +99,7 @@ flowchart LR
 | **Mesaj Kuyruğu** | Apache Kafka (`confluentinc/cp-kafka:7.5.0`), Zookeeper |
 | **Veritabanı** | PostgreSQL 15 (`alpine`) |
 | **Yapay Zeka / Asistan** | Google Gemini API (HTTP Client) + Yerel Türkçe Kural Tabanlı Fallback |
-| **Frontend** | HTML5, Modern CSS3 (Glassmorphism & Hologram Aurora), Vanilla ES6+ JavaScript, QRious, Canvas Confetti |
+| **Frontend** | HTML5, Modern CSS3 (Glassmorphism & Hologram Aurora), Vanilla ES6+ JavaScript, **Three.js (r128 3D Salon Motoru)**, QRious, Canvas Confetti |
 | **Altyapı** | Docker & Docker Compose, Maven Wrapper (`mvnw`) |
 
 ---
@@ -109,7 +129,7 @@ High-Concurrency Ticketing/
     └── resources/
         ├── application.properties             # DB, Redis, Kafka ve opsiyonel Gemini ayarları
         └── static/
-            └── index.html                     # PassoLive tek sayfa web arayüzü
+            └── index.html                     # PassoLive tek sayfa web arayüzü + 12 özgün 3D salon motoru (Three.js)
 ```
 
 ---

@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
             /* WARM VELVET BURGUNDY & CREAM HOLOGRAPHIC AURORA — DARK THEME */
@@ -1101,6 +1102,154 @@
 
         [data-theme="light"] .pw-rule-item.met {
             color: #15803d;
+        }
+
+        /* ==================== 3D INTERACTIVE ARENA VIEWPORT ==================== */
+        .seating-mode-switcher {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(25, 9, 16, 0.72);
+            border: 1px solid var(--border-luminous);
+            padding: 0.25rem;
+            border-radius: 9999px;
+        }
+
+        .seating-mode-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.4rem 0.95rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .seating-mode-btn:hover {
+            color: var(--text-main);
+        }
+
+        .seating-mode-btn.active {
+            background: var(--gradient-btn);
+            color: var(--btn-text);
+            box-shadow: 0 4px 14px -4px rgba(196, 82, 114, 0.65);
+        }
+
+        .arena-3d-viewport {
+            width: 100%;
+            height: 410px;
+            border-radius: 1.15rem;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 25%, #2b101e 0%, #12060c 72%, #090306 100%);
+            border: 1px solid var(--border-luminous);
+            box-shadow: inset 0 1px 0 rgba(255, 240, 228, 0.22), 0 20px 45px -18px rgba(0, 0, 0, 0.8);
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+        }
+
+        .arena-3d-viewport:active {
+            cursor: grabbing;
+        }
+
+        .arena-3d-viewport canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
+
+        .arena-3d-hud-top {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            right: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        .arena-3d-cam-group {
+            display: inline-flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            pointer-events: auto;
+        }
+
+        .arena-3d-cam-btn {
+            background: rgba(20, 8, 14, 0.76);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(247, 215, 192, 0.3);
+            color: #fff5ec;
+            padding: 0.38rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.22s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .arena-3d-cam-btn:hover, .arena-3d-cam-btn.active {
+            background: var(--gradient-btn);
+            color: var(--btn-text);
+            border-color: transparent;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px -4px rgba(196, 82, 114, 0.6);
+        }
+
+        .arena-3d-hud-bottom {
+            position: absolute;
+            bottom: 0.7rem;
+            left: 0.75rem;
+            right: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        .arena-3d-hint {
+            background: rgba(16, 6, 11, 0.74);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(248, 222, 206, 0.16);
+            color: #dec0c8;
+            font-size: 0.71rem;
+            font-weight: 600;
+            padding: 0.32rem 0.75rem;
+            border-radius: 9999px;
+        }
+
+        .arena-3d-tooltip {
+            position: absolute;
+            pointer-events: none;
+            z-index: 10;
+            background: rgba(24, 9, 16, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(247, 215, 192, 0.5);
+            color: #fff8f2;
+            padding: 0.45rem 0.78rem;
+            border-radius: 0.7rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.65);
+            transform: translate(-50%, -125%);
+            white-space: nowrap;
+            display: none;
         }
 
         .logo {
@@ -2943,17 +3092,42 @@
     <div class="modal-overlay" id="seatingViewModal">
         <div class="seating-map-card">
             <!-- Modal Header -->
-            <div style="padding:1.25rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.6);">
+            <div style="padding:1.1rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; background:rgba(25,9,16,0.85);">
                 <div>
-                    <h3 style="font-size:1.2rem; font-weight:800; color:#f8fafc;" id="seatingEventTitle">Etkinlik Başlığı</h3>
-                    <div style="font-size:0.8rem; color:#94a3b8;">Saha İçi & Tribün Oturma Planı</div>
+                    <h3 style="font-size:1.2rem; font-weight:800; color:#fff7f0;" id="seatingEventTitle">Etkinlik Başlığı</h3>
+                    <div style="font-size:0.8rem; color:#dec0c8;">3D İnteraktif Salon & Oturma Planı</div>
                 </div>
-                <button style="background:none; border:none; color:#94a3b8; font-size:1.5rem; cursor:pointer;" onclick="closeSeatingModal()">✕</button>
+                <div style="display:flex; align-items:center; gap:0.85rem;">
+                    <div class="seating-mode-switcher">
+                        <button type="button" class="seating-mode-btn active" id="btnMode3D" onclick="switchSeatingViewMode('3d')">🧊 3D Salon</button>
+                        <button type="button" class="seating-mode-btn" id="btnMode2D" onclick="switchSeatingViewMode('2d')">🗺️ 2D Plan</button>
+                    </div>
+                    <button style="background:none; border:none; color:#dec0c8; font-size:1.5rem; cursor:pointer;" onclick="closeSeatingModal()">✕</button>
+                </div>
             </div>
 
             <div class="seating-layout-grid">
-                <!-- Left Column: Arena Floor Plan & Seat Matrix -->
+                <!-- Left Column: 3D Arena / 2D Floor Plan & Seat Matrix -->
                 <div class="arena-floor-plan">
+                    <!-- 3D Interactive Concert Arena Viewport -->
+                    <div class="arena-3d-viewport" id="arena3DContainer">
+                        <div class="arena-3d-hud-top">
+                            <div class="arena-3d-cam-group">
+                                <button type="button" class="arena-3d-cam-btn active" id="camBtnOverview" onclick="setArena3DCameraPreset('overview')">🏟️ Genel Bakış</button>
+                                <button type="button" class="arena-3d-cam-btn" id="camBtnSeatPov" onclick="setArena3DCameraPreset('seat_pov')">👁️ Koltuğumdan Gör</button>
+                                <button type="button" class="arena-3d-cam-btn" id="camBtnStage" onclick="setArena3DCameraPreset('stage')">🎤 Sahne Yakın</button>
+                            </div>
+                            <span class="arena-3d-hint" id="arena3DActiveBadge" style="color:#fce9da; border-color:rgba(247,215,192,0.35);">✦ Blok 001 • Sıra A - Koltuk 1</span>
+                        </div>
+                        <div class="arena-3d-tooltip" id="arena3DTooltip"></div>
+                        <div class="arena-3d-hud-bottom">
+                            <span class="arena-3d-hint">🖱️ Sürükle: 360° Döndür • Kaydır: Yakınlaştır • Koltuğa Tıkla: Seç</span>
+                            <span class="arena-3d-hint" id="arena3DVenueTypeBadge" style="color:#f5d6c0; border-color:rgba(247,215,192,0.35);">🎤 Konser & Açıkhava Arenası</span>
+                        </div>
+                    </div>
+
+                    <!-- 2D Classic Arena Blocks Layout (Hidden when 3D mode is active) -->
+                    <div id="arena2DContainer" style="display:none; width:100%;">
                     <!-- Stage Bar -->
                     <div class="stage-indicator-bar">🎤 SAHNE</div>
 
@@ -3056,6 +3230,7 @@
                             </div>
                         </div>
                     </div>
+                    </div> <!-- End arena2DContainer -->
 
                     <!-- Dynamic Seat Grid Selection -->
                     <div class="seat-matrix-wrapper">
@@ -3114,34 +3289,6 @@
                             <div style="text-align:right;">
                                 <div style="font-size:1.1rem; font-weight:800; color:#fff;" id="sidebarPriceCat2">₺360</div>
                                 <div style="font-size:0.7rem; color:#4ade80;">7 Blok Açık</div>
-                            </div>
-                        </div>
-
-                        <!-- Interactive Seat POV Preview Card -->
-                        <div style="background:linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.95)); border:1px solid rgba(56,189,248,0.4); border-radius:1rem; padding:0.9rem; display:flex; flex-direction:column; gap:0.6rem; position:relative; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <div style="display:flex; align-items:center; gap:0.4rem;">
-                                    <span style="font-size:0.82rem; font-weight:800; color:#38bdf8;">✨ SAHNE GÖRÜŞ AÇISI ÖNİZLEMESİ</span>
-                                </div>
-                                <button type="button" onclick="togglePovZoom()" style="background:rgba(6,182,212,0.2); border:1px solid rgba(6,182,212,0.5); color:#06b6d4; font-size:0.72rem; font-weight:800; padding:0.25rem 0.65rem; border-radius:9999px; cursor:pointer; backdrop-filter:blur(6px); transition:all 0.2s;" title="Sahneyi Yakınlaştır">
-                                    🔍 <span id="povZoomBtnText">Yakınlaştır</span>
-                                </button>
-                            </div>
-
-                            <!-- Viewfinder Viewport Container -->
-                            <div style="height:155px; width:100%; border-radius:0.75rem; overflow:hidden; position:relative; border:1px solid rgba(255,255,255,0.15); box-shadow:inset 0 0 20px rgba(0,0,0,0.8); perspective: 1000px;" id="povViewportBox">
-                                <img id="povImagePreview" src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1200&q=85" style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease; transform: scale(1.05) rotateX(2deg);" alt="Sahne Görüş Açısı">
-                                
-                                <!-- Viewfinder Reticle Grid Lines -->
-                                <div style="position:absolute; inset:0; border:1px dashed rgba(6,182,212,0.25); pointer-events:none; display:flex; align-items:center; justify-content:center;">
-                                    <div style="width:24px; height:24px; border:1px solid rgba(6,182,212,0.6); border-radius:50%; display:flex; align-items:center; justify-content:center;">
-                                        <div style="width:4px; height:4px; background:#06b6d4; border-radius:50%;"></div>
-                                    </div>
-                                </div>
-
-                                <div style="position:absolute; top:0.5rem; right:0.5rem; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); padding:0.25rem 0.65rem; border-radius:9999px; font-size:0.7rem; color:#38bdf8; font-weight:800; border:1px solid rgba(56,189,248,0.3);" id="povDistanceStr">📍 Mesafe: 0-5m (Sahne Sıfır VIP)</div>
-
-                                <div style="position:absolute; bottom:0.5rem; left:0.5rem; background:linear-gradient(90deg, rgba(15,23,42,0.9), rgba(15,23,42,0.6)); backdrop-filter:blur(8px); padding:0.3rem 0.75rem; border-radius:9999px; font-size:0.75rem; color:#fff; font-weight:800; border:1px solid rgba(255,255,255,0.2);" id="povBadgeLabel">🌟 VIP Sahne Sıfır Görüş Açısı</div>
                             </div>
                         </div>
 
@@ -4978,6 +5125,2023 @@
             return selectedSeats.some(s => s.row === row && s.seat === seat);
         }
 
+        let activeSeatingViewMode = '3d';
+        let arena3D = {
+            initialized: false,
+            running: false,
+            animId: null,
+            scene: null,
+            venueGroup: null,
+            camera: null,
+            renderer: null,
+            raycaster: null,
+            mouse: null,
+            seatMeshes: [],
+            activeBlocks: [],
+            beaconMesh: null,
+            spotlights: [],
+            rotatingProps: [],
+            trackCars: [],
+            hoveredSeat: null,
+            venueType: 'concert',
+            focalPoint: { x: 0, y: 3.6, z: -15.4 },
+            overviewCam: { theta: 0.32, phi: 0.98, radius: 32, lookX: 0, lookY: 1.2, lookZ: -1.8 },
+            stageCam: { theta: -0.25, phi: 1.18, radius: 17.5, lookX: 0, lookY: 2.4, lookZ: -12.5 },
+            camMode: 'overview',
+            theta: 0.35,
+            phi: 1.02,
+            radius: 32,
+            targetTheta: 0.35,
+            targetPhi: 1.02,
+            targetRadius: 32,
+            lookTarget: null,
+            targetLook: null,
+            directCamPos: null,
+            directLookAt: null,
+            isDragging: false,
+            dragStartX: 0,
+            dragStartY: 0,
+            dragMoved: 0
+        };
+
+        function detectVenue3DType(evt) {
+            if (!evt) return 'concert';
+            const cat = (evt.category || '').toLowerCase();
+            const title = (evt.title || '').toLowerCase();
+            const venue = (evt.venue || '').toLowerCase();
+
+            // 1. Festival & DJ
+            if (cat.includes('festival') || cat.includes('dj')) return 'festival';
+
+            // 2. Spor Branşlarına Göre Birebir 3D Mekan
+            if (cat.includes('spor')) {
+                if (title.includes('formula') || title.includes('grand prix') && !title.includes('kickbox') || title.includes('drift') || venue.includes('yarış') || venue.includes('tuzla')) {
+                    return 'racetrack';
+                }
+                if (title.includes('marathon') || title.includes('maraton') || title.includes('koşu') || venue.includes('köprü')) {
+                    return 'marathon';
+                }
+                if (title.includes('tenis') || title.includes('tennis') || title.includes('atp')) {
+                    return 'tennis';
+                }
+                if (title.includes('voleybol') || title.includes('sultanlar')) {
+                    return 'volleyball';
+                }
+                if (title.includes('kickbox') || title.includes('boks') || title.includes('dövüş') || title.includes('ufc')) {
+                    return 'boxing_ring';
+                }
+                if (title.includes('efes') || title.includes('euroleague') || title.includes('basket')) {
+                    return 'basketball';
+                }
+                return 'stadium';
+            }
+
+            // 3. Komedi & Tiyatro Ayrımı (Stand-Up vs Klasik Tiyatro/Opera)
+            if (cat.includes('tiyatro') || cat.includes('komedi')) {
+                if (title.includes('stand-up') || title.includes('cem yılmaz') || title.includes('doğu demirkol') || title.includes('yasemin') || title.includes('pod-show') || title.includes('rabarba') || title.includes('tolgshow')) {
+                    return 'standup';
+                }
+                return 'theater';
+            }
+
+            // 4. Müzik & Konser Ayrımı (Piyano / Senfoni vs Konser Arenası)
+            if (title.includes('fazıl say') || title.includes('piyano') || title.includes('senfonik') || title.includes('senfoni') || title.includes('klasik müzik')) {
+                return 'symphony';
+            }
+            return 'concert';
+        }
+
+        function getBlocksForVenue3D(venueType) {
+            if (venueType === 'racetrack') {
+                // Formula 1 & Yarış Pisti Tribünleri — Ana Düzlük, Viraj & Paddock Tribünleri (Hepsi piste bakar)
+                return [
+                    // Ana Start/Finish Düzlüğü VIP Tribünleri (Güney, piste -Z bakar -> rotY = 0)
+                    { code: '001', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x: -7.2, z:  10.8, baseY: 1.0, rowStepY: 0.48, rowStepZ: 1.05, rotY: 0 },
+                    { code: '002', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: true,  x:  0.0, z:  10.8, baseY: 1.0, rowStepY: 0.48, rowStepZ: 1.05, rotY: 0 },
+                    { code: '003', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x:  7.2, z:  10.8, baseY: 1.0, rowStepY: 0.48, rowStepZ: 1.05, rotY: 0 },
+                    // Karşı Paddock Üstü 1. Kategori Tribünleri (Kuzey, piste +Z bakar -> rotY = Math.PI)
+                    { code: '004', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x: -7.2, z: -11.4, baseY: 1.6, rowStepY: 0.48, rowStepZ: 1.05, rotY: Math.PI },
+                    { code: '005', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  0.0, z: -11.4, baseY: 1.6, rowStepY: 0.48, rowStepZ: 1.05, rotY: Math.PI },
+                    { code: '006', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  7.2, z: -11.4, baseY: 1.6, rowStepY: 0.48, rowStepZ: 1.05, rotY: Math.PI },
+                    // Üst Ana Tribün (2. Kategori)
+                    { code: '204', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x: -7.4, z:  16.4, baseY: 3.6, rowStepY: 0.56, rowStepZ: 1.10, rotY: 0 },
+                    { code: '205', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  0.0, z:  16.4, baseY: 3.6, rowStepY: 0.56, rowStepZ: 1.10, rotY: 0 },
+                    { code: '206', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  7.4, z:  16.4, baseY: 3.6, rowStepY: 0.56, rowStepZ: 1.10, rotY: 0 },
+                    // Batı 1. Viraj Tribünleri (x < 0, piste +X bakar -> rotY = -PI/2)
+                    { code: '201', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -18.0, z: -5.6, baseY: 1.5, rowStepY: 0.52, rowStepZ: 1.08, rotY: -Math.PI / 2 - 0.14 },
+                    { code: '202', zone: 'CAT2', label: 'Sol Tribün',    soldout: true,  x: -18.8, z:  0.0, baseY: 1.5, rowStepY: 0.52, rowStepZ: 1.08, rotY: -Math.PI / 2 },
+                    { code: '203', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -18.0, z:  5.6, baseY: 1.5, rowStepY: 0.52, rowStepZ: 1.08, rotY: -Math.PI / 2 + 0.14 },
+                    // Doğu 8. Viraj Tribünleri (x > 0, piste -X bakar -> rotY = +PI/2)
+                    { code: '207', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  18.0, z: -5.6, baseY: 1.5, rowStepY: 0.52, rowStepZ: 1.08, rotY:  Math.PI / 2 + 0.14 },
+                    { code: '208', zone: 'CAT2', label: 'Sağ Tribün',    soldout: true,  x:  18.8, z:  0.0, baseY: 1.5, rowStepY: 0.52, rowStepZ: 1.08, rotY:  Math.PI / 2 },
+                    { code: '209', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  18.0, z:  5.6, baseY: 1.5, rowStepY: 0.52, rowStepZ: 1.08, rotY:  Math.PI / 2 - 0.14 }
+                ];
+            }
+
+            if (venueType === 'festival') {
+                // 360° Dairesel Festival Arenası — Tüm bloklar ortadaki DJ sahnesine (0,0) bakar
+                const blocks = [
+                    { code: '001', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, angle: -0.55, r: 7.4,  baseY: 0.25, rowStepY: 0.18, rowStepZ: 0.95 },
+                    { code: '002', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: true,  angle:  0.00, r: 7.4,  baseY: 0.25, rowStepY: 0.18, rowStepZ: 0.95 },
+                    { code: '003', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, angle:  0.55, r: 7.4,  baseY: 0.25, rowStepY: 0.18, rowStepZ: 0.95 },
+                    { code: '004', zone: 'CAT1', label: 'Saha İçi',      soldout: false, angle: -2.05, r: 8.6,  baseY: 0.65, rowStepY: 0.24, rowStepZ: 0.98 },
+                    { code: '005', zone: 'CAT1', label: 'Saha İçi',      soldout: false, angle:  3.14, r: 8.6,  baseY: 0.65, rowStepY: 0.24, rowStepZ: 0.98 },
+                    { code: '006', zone: 'CAT1', label: 'Saha İçi',      soldout: false, angle:  2.05, r: 8.6,  baseY: 0.65, rowStepY: 0.24, rowStepZ: 0.98 },
+                    { code: '201', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, angle: -1.35, r: 14.2, baseY: 2.2,  rowStepY: 0.52, rowStepZ: 1.08 },
+                    { code: '202', zone: 'CAT2', label: 'Sol Tribün',    soldout: true,  angle: -2.45, r: 14.2, baseY: 2.2,  rowStepY: 0.52, rowStepZ: 1.08 },
+                    { code: '203', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, angle: -0.95, r: 14.2, baseY: 2.2,  rowStepY: 0.52, rowStepZ: 1.08 },
+                    { code: '204', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, angle: -0.45, r: 14.8, baseY: 2.4,  rowStepY: 0.54, rowStepZ: 1.08 },
+                    { code: '205', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, angle:  0.00, r: 14.8, baseY: 2.4,  rowStepY: 0.54, rowStepZ: 1.08 },
+                    { code: '206', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, angle:  0.45, r: 14.8, baseY: 2.4,  rowStepY: 0.54, rowStepZ: 1.08 },
+                    { code: '207', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, angle:  0.95, r: 14.2, baseY: 2.2,  rowStepY: 0.52, rowStepZ: 1.08 },
+                    { code: '208', zone: 'CAT2', label: 'Sağ Tribün',    soldout: true,  angle:  1.45, r: 14.2, baseY: 2.2,  rowStepY: 0.52, rowStepZ: 1.08 },
+                    { code: '209', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, angle:  2.45, r: 14.2, baseY: 2.2,  rowStepY: 0.52, rowStepZ: 1.08 }
+                ];
+                return blocks.map(b => {
+                    const x = Math.sin(b.angle) * b.r;
+                    const z = Math.cos(b.angle) * b.r;
+                    return { ...b, x, z, rotY: Math.atan2(x, z) };
+                });
+            }
+
+            if (venueType === 'stadium' || venueType === 'basketball' || venueType === 'tennis' || venueType === 'volleyball' || venueType === 'boxing_ring') {
+                // 4 Taraflı Stadyum & Spor Arenaları — Tüm tribünler ortadaki alana (0,0) bakar
+                const isCompact = venueType === 'boxing_ring';
+                const isCourt = venueType === 'basketball' || venueType === 'tennis' || venueType === 'volleyball';
+                const sideZ = isCompact ? 7.6 : (isCourt ? 9.4 : 10.6);
+                const endX = isCompact ? 11.2 : (isCourt ? 13.8 : 15.6);
+                return [
+                    // Güney VIP Maraton (z > 0, kuzeye -Z bakar -> rotY = 0)
+                    { code: '001', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x: -6.8, z:  sideZ, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: 0 },
+                    { code: '002', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: true,  x:  0.0, z:  sideZ, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: 0 },
+                    { code: '003', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x:  6.8, z:  sideZ, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: 0 },
+                    // Kuzey Karşı Maraton (z < 0, güneye +Z bakar -> rotY = Math.PI)
+                    { code: '004', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x: -6.8, z: -sideZ, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: Math.PI },
+                    { code: '005', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  0.0, z: -sideZ, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: Math.PI },
+                    { code: '006', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  6.8, z: -sideZ, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: Math.PI },
+                    // Üst Güney Tribün (z > 0, ikinci kat)
+                    { code: '204', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x: -7.2, z:  sideZ + 5.6, baseY: 3.4, rowStepY: 0.58, rowStepZ: 1.1, rotY: 0 },
+                    { code: '205', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  0.0, z:  sideZ + 5.6, baseY: 3.4, rowStepY: 0.58, rowStepZ: 1.1, rotY: 0 },
+                    { code: '206', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  7.2, z:  sideZ + 5.6, baseY: 3.4, rowStepY: 0.58, rowStepZ: 1.1, rotY: 0 },
+                    // Batı Kale Arkası (x < 0, doğuya +X bakar -> rotY = -Math.PI/2)
+                    { code: '201', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -endX, z: -5.8, baseY: 1.4, rowStepY: 0.52, rowStepZ: 1.08, rotY: -Math.PI / 2 },
+                    { code: '202', zone: 'CAT2', label: 'Sol Tribün',    soldout: true,  x: -endX, z:  0.0, baseY: 1.4, rowStepY: 0.52, rowStepZ: 1.08, rotY: -Math.PI / 2 },
+                    { code: '203', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -endX, z:  5.8, baseY: 1.4, rowStepY: 0.52, rowStepZ: 1.08, rotY: -Math.PI / 2 },
+                    // Doğu Kale Arkası (x > 0, batıya -X bakar -> rotY = +Math.PI/2)
+                    { code: '207', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  endX, z: -5.8, baseY: 1.4, rowStepY: 0.52, rowStepZ: 1.08, rotY:  Math.PI / 2 },
+                    { code: '208', zone: 'CAT2', label: 'Sağ Tribün',    soldout: true,  x:  endX, z:  0.0, baseY: 1.4, rowStepY: 0.52, rowStepZ: 1.08, rotY:  Math.PI / 2 },
+                    { code: '209', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  endX, z:  5.8, baseY: 1.4, rowStepY: 0.52, rowStepZ: 1.08, rotY:  Math.PI / 2 }
+                ];
+            }
+
+            if (venueType === 'marathon') {
+                return [
+                    { code: '001', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x: -7.0, z:  8.4, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: 0 },
+                    { code: '002', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: true,  x:  0.0, z:  8.4, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: 0 },
+                    { code: '003', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x:  7.0, z:  8.4, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: 0 },
+                    { code: '004', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x: -7.0, z: -8.4, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: Math.PI },
+                    { code: '005', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  0.0, z: -8.4, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: Math.PI },
+                    { code: '006', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  7.0, z: -8.4, baseY: 0.9, rowStepY: 0.45, rowStepZ: 1.05, rotY: Math.PI },
+                    { code: '204', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x: -7.2, z:  13.8, baseY: 3.1, rowStepY: 0.55, rowStepZ: 1.08, rotY: 0 },
+                    { code: '205', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  0.0, z:  13.8, baseY: 3.1, rowStepY: 0.55, rowStepZ: 1.08, rotY: 0 },
+                    { code: '206', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  7.2, z:  13.8, baseY: 3.1, rowStepY: 0.55, rowStepZ: 1.08, rotY: 0 },
+                    { code: '201', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -14.2, z:  8.4, baseY: 1.4, rowStepY: 0.48, rowStepZ: 1.05, rotY: -0.18 },
+                    { code: '202', zone: 'CAT2', label: 'Sol Tribün',    soldout: true,  x: -14.2, z: -8.4, baseY: 1.4, rowStepY: 0.48, rowStepZ: 1.05, rotY: Math.PI + 0.18 },
+                    { code: '203', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -14.2, z:  13.8, baseY: 3.1, rowStepY: 0.55, rowStepZ: 1.08, rotY: -0.15 },
+                    { code: '207', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  14.2, z:  8.4, baseY: 1.4, rowStepY: 0.48, rowStepZ: 1.05, rotY:  0.18 },
+                    { code: '208', zone: 'CAT2', label: 'Sağ Tribün',    soldout: true,  x:  14.2, z: -8.4, baseY: 1.4, rowStepY: 0.48, rowStepZ: 1.05, rotY: Math.PI - 0.18 },
+                    { code: '209', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  14.2, z:  13.8, baseY: 3.1, rowStepY: 0.55, rowStepZ: 1.08, rotY:  0.15 }
+                ];
+            }
+
+            if (venueType === 'theater' || venueType === 'symphony' || venueType === 'standup') {
+                // Klasik Yelpaze Tiyatro & Opera Salonu + Üst Balkon + Yan Localar (Tümü sahneye z=-15 bakar)
+                return [
+                    // Ön Orkestra VIP (yelpaze eğimli)
+                    { code: '001', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x: -6.5, z: -6.2, baseY: 0.3, rowStepY: 0.22, rowStepZ: 1.05, rotY: -0.20 },
+                    { code: '002', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: true,  x:  0.0, z: -6.8, baseY: 0.3, rowStepY: 0.22, rowStepZ: 1.05, rotY:  0.00 },
+                    { code: '003', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x:  6.5, z: -6.2, baseY: 0.3, rowStepY: 0.22, rowStepZ: 1.05, rotY:  0.20 },
+                    // Orta Parter Salon
+                    { code: '004', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x: -6.8, z:  0.2, baseY: 1.3, rowStepY: 0.30, rowStepZ: 1.08, rotY: -0.16 },
+                    { code: '005', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  0.0, z: -0.4, baseY: 1.3, rowStepY: 0.30, rowStepZ: 1.08, rotY:  0.00 },
+                    { code: '006', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  6.8, z:  0.2, baseY: 1.3, rowStepY: 0.30, rowStepZ: 1.08, rotY:  0.16 },
+                    // Yükseltilmiş Opera Balkonu (Üst Kat)
+                    { code: '204', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x: -6.9, z:  7.2, baseY: 4.8, rowStepY: 0.52, rowStepZ: 1.08, rotY: -0.14 },
+                    { code: '205', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  0.0, z:  6.7, baseY: 4.8, rowStepY: 0.52, rowStepZ: 1.08, rotY:  0.00 },
+                    { code: '206', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  6.9, z:  7.2, baseY: 4.8, rowStepY: 0.52, rowStepZ: 1.08, rotY:  0.14 },
+                    // Sol Yan Localar (Yüksek Balkon, sahneye dönük)
+                    { code: '201', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -13.0, z: -6.0, baseY: 4.0, rowStepY: 0.38, rowStepZ: 1.0, rotY: -Math.PI / 2 + 0.36 },
+                    { code: '202', zone: 'CAT2', label: 'Sol Tribün',    soldout: true,  x: -13.4, z:  0.2, baseY: 4.2, rowStepY: 0.38, rowStepZ: 1.0, rotY: -Math.PI / 2 + 0.42 },
+                    { code: '203', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -13.0, z:  6.2, baseY: 4.4, rowStepY: 0.38, rowStepZ: 1.0, rotY: -Math.PI / 2 + 0.50 },
+                    // Sağ Yan Localar (Yüksek Balkon, sahneye dönük)
+                    { code: '207', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  13.0, z: -6.0, baseY: 4.0, rowStepY: 0.38, rowStepZ: 1.0, rotY:  Math.PI / 2 - 0.36 },
+                    { code: '208', zone: 'CAT2', label: 'Sağ Tribün',    soldout: true,  x:  13.4, z:  0.2, baseY: 4.2, rowStepY: 0.38, rowStepZ: 1.0, rotY:  Math.PI / 2 - 0.42 },
+                    { code: '209', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  13.0, z:  6.2, baseY: 4.4, rowStepY: 0.38, rowStepZ: 1.0, rotY:  Math.PI / 2 - 0.50 }
+                ];
+            }
+
+            // Varsayılan: Konser & Açıkhava Arenası (U-Şekilli)
+            return [
+                { code: '001', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x: -7.0, z: -6.8, baseY: 0.25, rowStepY: 0.16, rowStepZ: 1.05, rotY: -0.14 },
+                { code: '002', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: true,  x:  0.0, z: -7.2, baseY: 0.25, rowStepY: 0.16, rowStepZ: 1.05, rotY:  0.00 },
+                { code: '003', zone: 'VIP',  label: 'Sahne Önü VIP', soldout: false, x:  7.0, z: -6.8, baseY: 0.25, rowStepY: 0.16, rowStepZ: 1.05, rotY:  0.14 },
+                { code: '004', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x: -7.2, z: -0.6, baseY: 1.15, rowStepY: 0.24, rowStepZ: 1.08, rotY: -0.10 },
+                { code: '005', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  0.0, z: -0.9, baseY: 1.15, rowStepY: 0.24, rowStepZ: 1.08, rotY:  0.00 },
+                { code: '006', zone: 'CAT1', label: 'Saha İçi',      soldout: false, x:  7.2, z: -0.6, baseY: 1.15, rowStepY: 0.24, rowStepZ: 1.08, rotY:  0.10 },
+                { code: '204', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x: -7.8, z:  6.8, baseY: 2.8,  rowStepY: 0.58, rowStepZ: 1.15, rotY: -0.12 },
+                { code: '205', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  0.0, z:  6.5, baseY: 2.8,  rowStepY: 0.58, rowStepZ: 1.15, rotY:  0.00 },
+                { code: '206', zone: 'CAT2', label: 'Arka Tribün',   soldout: false, x:  7.8, z:  6.8, baseY: 2.8,  rowStepY: 0.58, rowStepZ: 1.15, rotY:  0.12 },
+                { code: '201', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -14.8, z: -5.8, baseY: 2.5, rowStepY: 0.55, rowStepZ: 1.12, rotY: -Math.PI / 2 + 0.14 },
+                { code: '202', zone: 'CAT2', label: 'Sol Tribün',    soldout: true,  x: -15.2, z:  0.4, baseY: 2.5, rowStepY: 0.55, rowStepZ: 1.12, rotY: -Math.PI / 2 + 0.08 },
+                { code: '203', zone: 'CAT2', label: 'Sol Tribün',    soldout: false, x: -14.8, z:  6.4, baseY: 2.5, rowStepY: 0.55, rowStepZ: 1.12, rotY: -Math.PI / 2 + 0.22 },
+                { code: '207', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  14.8, z: -5.8, baseY: 2.5, rowStepY: 0.55, rowStepZ: 1.12, rotY:  Math.PI / 2 - 0.14 },
+                { code: '208', zone: 'CAT2', label: 'Sağ Tribün',    soldout: true,  x:  15.2, z:  0.4, baseY: 2.5, rowStepY: 0.55, rowStepZ: 1.12, rotY:  Math.PI / 2 - 0.08 },
+                { code: '209', zone: 'CAT2', label: 'Sağ Tribün',    soldout: false, x:  14.8, z:  6.4, baseY: 2.5, rowStepY: 0.55, rowStepZ: 1.12, rotY:  Math.PI / 2 - 0.22 }
+            ];
+        }
+
+        function createStageScreenTexture(eventTitle, subTitle) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 384;
+            const ctx = canvas.getContext('2d');
+
+            const grad = ctx.createLinearGradient(0, 0, 1024, 384);
+            grad.addColorStop(0, '#3a0e21');
+            grad.addColorStop(0.35, '#8e2346');
+            grad.addColorStop(0.68, '#d47c88');
+            grad.addColorStop(1, '#f3d2be');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1024, 384);
+
+            const rad = ctx.createRadialGradient(512, 192, 20, 512, 192, 420);
+            rad.addColorStop(0, 'rgba(255, 244, 232, 0.35)');
+            rad.addColorStop(1, 'rgba(25, 9, 16, 0.45)');
+            ctx.fillStyle = rad;
+            ctx.fillRect(0, 0, 1024, 384);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#fff5ea';
+            ctx.font = '700 26px "Plus Jakarta Sans", Arial, sans-serif';
+            ctx.fillText('✦  PASSOLIVE CANLI SAHNE  ✦', 512, 112);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '800 44px "Plus Jakarta Sans", Arial, sans-serif';
+            const cleanTitle = (eventTitle || 'Canlı Konser Sahnesi').slice(0, 34);
+            ctx.fillText(cleanTitle, 512, 210);
+
+            ctx.fillStyle = '#fce9da';
+            ctx.font = '600 21px "Plus Jakarta Sans", Arial, sans-serif';
+            ctx.fillText(subTitle || '3D İNTERAKTİF SALON • KOLTUĞUNU SEÇ & SAHNEYİ GÖR', 512, 286);
+
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        function createFootballPitchTexture() {
+            const c = document.createElement('canvas');
+            c.width = 1024;
+            c.height = 640;
+            const ctx = c.getContext('2d');
+            // Striped emerald grass
+            const stripes = 12;
+            const sw = c.width / stripes;
+            for (let i = 0; i < stripes; i++) {
+                ctx.fillStyle = i % 2 === 0 ? '#1e6b3a' : '#247c44';
+                ctx.fillRect(i * sw, 0, sw + 1, c.height);
+            }
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.88)';
+            ctx.lineWidth = 6;
+            // Outer lines
+            ctx.strokeRect(36, 36, c.width - 72, c.height - 72);
+            // Midfield line & circle
+            ctx.beginPath();
+            ctx.moveTo(c.width / 2, 36);
+            ctx.lineTo(c.width / 2, c.height - 36);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(c.width / 2, c.height / 2, 84, 0, Math.PI * 2);
+            ctx.stroke();
+            // Penalty boxes
+            ctx.strokeRect(36, 175, 130, 290);
+            ctx.strokeRect(c.width - 166, 175, 130, 290);
+            ctx.strokeRect(36, 240, 52, 160);
+            ctx.strokeRect(c.width - 88, 240, 52, 160);
+            const tex = new THREE.CanvasTexture(c);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        function createIndoorCourtTexture() {
+            const c = document.createElement('canvas');
+            c.width = 1024;
+            c.height = 640;
+            const ctx = c.getContext('2d');
+            // Warm polished hardwood planks
+            const grad = ctx.createLinearGradient(0, 0, 1024, 640);
+            grad.addColorStop(0, '#b57b47');
+            grad.addColorStop(0.5, '#cf965d');
+            grad.addColorStop(1, '#a96f3c');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, c.width, c.height);
+
+            // Subtle parquet stripes
+            ctx.fillStyle = 'rgba(255, 240, 220, 0.08)';
+            for (let y = 0; y < c.height; y += 22) {
+                ctx.fillRect(0, y, c.width, 8);
+            }
+            // Burgundy center court & paint keys
+            ctx.fillStyle = 'rgba(138, 34, 66, 0.72)';
+            ctx.fillRect(40, 210, 165, 220);
+            ctx.fillRect(c.width - 205, 210, 165, 220);
+            ctx.beginPath();
+            ctx.arc(c.width / 2, c.height / 2, 76, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#fff8f0';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(40, 40, c.width - 80, c.height - 80);
+            ctx.beginPath();
+            ctx.moveTo(c.width / 2, 40);
+            ctx.lineTo(c.width / 2, c.height - 40);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(c.width / 2, c.height / 2, 76, 0, Math.PI * 2);
+            ctx.stroke();
+            // 3-point arcs
+            ctx.beginPath();
+            ctx.arc(95, c.height / 2, 185, -Math.PI / 2, Math.PI / 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(c.width - 95, c.height / 2, 185, Math.PI / 2, -Math.PI / 2);
+            ctx.stroke();
+
+            const tex = new THREE.CanvasTexture(c);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        function createTennisCourtTexture() {
+            const c = document.createElement('canvas');
+            c.width = 1024;
+            c.height = 640;
+            const ctx = c.getContext('2d');
+            // Roland-Garros / Istanbul Open Clay Court surrounds
+            ctx.fillStyle = '#9c4529';
+            ctx.fillRect(0, 0, c.width, c.height);
+            // Main Clay Playing Surface
+            ctx.fillStyle = '#c45b36';
+            ctx.fillRect(110, 95, c.width - 220, c.height - 190);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 6;
+            // Doubles outer boundary
+            ctx.strokeRect(110, 95, c.width - 220, c.height - 190);
+            // Singles sidelines
+            ctx.beginPath();
+            ctx.moveTo(110, 152); ctx.lineTo(c.width - 110, 152);
+            ctx.moveTo(110, c.height - 152); ctx.lineTo(c.width - 110, c.height - 152);
+            // Service lines
+            ctx.moveTo(310, 152); ctx.lineTo(310, c.height - 152);
+            ctx.moveTo(c.width - 310, 152); ctx.lineTo(c.width - 310, c.height - 152);
+            // Center service line
+            ctx.moveTo(310, c.height / 2); ctx.lineTo(c.width - 310, c.height / 2);
+            // Center marks
+            ctx.moveTo(110, c.height / 2); ctx.lineTo(130, c.height / 2);
+            ctx.moveTo(c.width - 130, c.height / 2); ctx.lineTo(c.width - 110, c.height / 2);
+            ctx.stroke();
+            const tex = new THREE.CanvasTexture(c);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        function createVolleyballCourtTexture() {
+            const c = document.createElement('canvas');
+            c.width = 1024;
+            c.height = 640;
+            const ctx = c.getContext('2d');
+            // International FIVB Blue free zone
+            ctx.fillStyle = '#1e5b8c';
+            ctx.fillRect(0, 0, c.width, c.height);
+            // Warm Orange-Apricot playing court
+            ctx.fillStyle = '#e0894c';
+            ctx.fillRect(130, 110, c.width - 260, c.height - 220);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(130, 110, c.width - 260, c.height - 220);
+            // Center line & 3-meter attack lines
+            ctx.beginPath();
+            ctx.moveTo(c.width / 2, 110); ctx.lineTo(c.width / 2, c.height - 110);
+            ctx.moveTo(c.width / 2 - 125, 110); ctx.lineTo(c.width / 2 - 125, c.height - 110);
+            ctx.moveTo(c.width / 2 + 125, 110); ctx.lineTo(c.width / 2 + 125, c.height - 110);
+            ctx.stroke();
+            const tex = new THREE.CanvasTexture(c);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        function createMarathonTrackTexture() {
+            const c = document.createElement('canvas');
+            c.width = 1024;
+            c.height = 512;
+            const ctx = c.getContext('2d');
+            // Deep Bosphorus night water outside bridge deck
+            ctx.fillStyle = '#0d2238';
+            ctx.fillRect(0, 0, c.width, c.height);
+            // Bridge Asphalt Roadway
+            ctx.fillStyle = '#252932';
+            ctx.fillRect(0, 120, c.width, 272);
+            // Blue Marathon Running Carpet
+            ctx.fillStyle = '#1d4f8a';
+            ctx.fillRect(0, 145, c.width, 222);
+            // 6 Running Lanes
+            ctx.strokeStyle = 'rgba(255,255,255,0.72)';
+            ctx.lineWidth = 4;
+            for (let y = 145; y <= 367; y += 37) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(c.width, y);
+                ctx.stroke();
+            }
+            // Checkered Finish Line in center
+            const fx = c.width / 2 - 18;
+            for (let r = 0; r < 11; r++) {
+                for (let col = 0; col < 3; col++) {
+                    ctx.fillStyle = (r + col) % 2 === 0 ? '#ffffff' : '#111115';
+                    ctx.fillRect(fx + col * 14, 148 + r * 20, 14, 20);
+                }
+            }
+            const tex = new THREE.CanvasTexture(c);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        function createRacetrackTexture() {
+            const c = document.createElement('canvas');
+            c.width = 1024;
+            c.height = 640;
+            const ctx = c.getContext('2d');
+
+            // Gravel runoff & dark infield grass
+            ctx.fillStyle = '#1b2620';
+            ctx.fillRect(0, 0, c.width, c.height);
+
+            // Outer gravel/runoff border
+            ctx.strokeStyle = '#3c3a39';
+            ctx.lineWidth = 148;
+            ctx.lineJoin = 'round';
+            const drawOval = (padX, padY) => {
+                const r = (c.height - padY * 2) / 2;
+                ctx.beginPath();
+                ctx.moveTo(padX + r, padY);
+                ctx.lineTo(c.width - padX - r, padY);
+                ctx.arc(c.width - padX - r, c.height / 2, r, -Math.PI / 2, Math.PI / 2);
+                ctx.lineTo(padX + r, c.height - padY);
+                ctx.arc(padX + r, c.height / 2, r, Math.PI / 2, -Math.PI / 2);
+                ctx.closePath();
+            };
+            drawOval(115, 118);
+            ctx.stroke();
+
+            // Red & White F1 Kerbs (outer & inner)
+            ctx.save();
+            ctx.setLineDash([20, 20]);
+            ctx.strokeStyle = '#e11d48';
+            ctx.lineWidth = 112;
+            drawOval(115, 118);
+            ctx.stroke();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineDashOffset = 20;
+            drawOval(115, 118);
+            ctx.stroke();
+            ctx.restore();
+
+            // Dark Asphalt Racing Track
+            ctx.strokeStyle = '#25262c';
+            ctx.lineWidth = 96;
+            drawOval(115, 118);
+            ctx.stroke();
+
+            // Crisp White Track Edge Lines
+            ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+            ctx.lineWidth = 4;
+            drawOval(72, 75);
+            ctx.stroke();
+            drawOval(158, 161);
+            ctx.stroke();
+
+            // Racing Center Dashed Line
+            ctx.save();
+            ctx.setLineDash([18, 22]);
+            ctx.strokeStyle = 'rgba(245, 214, 192, 0.45)';
+            ctx.lineWidth = 3;
+            drawOval(115, 118);
+            ctx.stroke();
+            ctx.restore();
+
+            // Checkered Start/Finish Line on Bottom Straight (facing VIP grandstand)
+            const sfX = c.width / 2 - 14;
+            const sfY = c.height - 166;
+            const sq = 12;
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 3; col++) {
+                    ctx.fillStyle = (row + col) % 2 === 0 ? '#ffffff' : '#111115';
+                    ctx.fillRect(sfX + col * sq, sfY + row * sq, sq, sq);
+                }
+            }
+
+            // Starting Grid Boxes behind Start/Finish
+            ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+            ctx.lineWidth = 3;
+            for (let g = 0; g < 4; g++) {
+                const gx = sfX - 50 - g * 44;
+                const gy = sfY + (g % 2 === 0 ? 16 : 56);
+                ctx.beginPath();
+                ctx.moveTo(gx + 18, gy);
+                ctx.lineTo(gx, gy);
+                ctx.lineTo(gx, gy + 24);
+                ctx.lineTo(gx + 18, gy + 24);
+                ctx.stroke();
+            }
+
+            // Center Circuit Emblem
+            ctx.fillStyle = 'rgba(245, 214, 192, 0.85)';
+            ctx.font = '800 32px "Plus Jakarta Sans", Arial, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('✦ GRAND PRIX CIRCUIT ✦', c.width / 2, c.height / 2 + 10);
+
+            const tex = new THREE.CanvasTexture(c);
+            tex.needsUpdate = true;
+            return tex;
+        }
+
+        function createF1Car3D(bodyColor, accentColor) {
+            const car = new THREE.Group();
+            const bodyMat = new THREE.MeshStandardMaterial({ color: bodyColor, metalness: 0.72, roughness: 0.25 });
+            const accentMat = new THREE.MeshBasicMaterial({ color: accentColor });
+            const tireMat = new THREE.MeshStandardMaterial({ color: 0x111115, roughness: 0.9 });
+
+            // Sleek Chassis
+            const chassis = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.26, 1.95), bodyMat);
+            chassis.position.y = 0.22;
+            car.add(chassis);
+
+            // Nose Cone
+            const nose = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.16, 0.75), bodyMat);
+            nose.position.set(0, 0.18, 1.15);
+            car.add(nose);
+
+            // Front Wing
+            const fWing = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.07, 0.3), accentMat);
+            fWing.position.set(0, 0.12, 1.45);
+            car.add(fWing);
+
+            // Rear Wing
+            const rWing = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.26, 0.26), accentMat);
+            rWing.position.set(0, 0.48, -0.92);
+            car.add(rWing);
+
+            // Cockpit Helmet
+            const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+            helmet.position.set(0, 0.42, 0.05);
+            car.add(helmet);
+
+            // 4 Racing Slicks
+            const wheelGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.22, 12);
+            [[-0.46, 0.72], [0.46, 0.72], [-0.48, -0.68], [0.48, -0.68]].forEach(([wx, wz]) => {
+                const w = new THREE.Mesh(wheelGeo, tireMat);
+                w.rotation.z = Math.PI / 2;
+                w.position.set(wx, 0.18, wz);
+                car.add(w);
+            });
+            return car;
+        }
+
+        function buildVenueArchitecture3D(group, venueType, eventTitle) {
+            arena3D.spotlights = [];
+            arena3D.rotatingProps = [];
+            arena3D.trackCars = [];
+
+            if (venueType === 'racetrack') {
+                // ==================== 3D FORMULA 1 & YARIŞ PİSTİ ====================
+                arena3D.scene.background = new THREE.Color(0x111218);
+                arena3D.scene.fog = new THREE.FogExp2(0x111218, 0.0095);
+                arena3D.focalPoint = { x: 0, y: 1.2, z: 4.5 };
+                arena3D.overviewCam = { theta: 0.48, phi: 0.96, radius: 40, lookX: 0, lookY: 1.2, lookZ: 1.0 };
+                arena3D.stageCam = { theta: 0.25, phi: 1.18, radius: 17.5, lookX: 0, lookY: 1.4, lookZ: 5.5 };
+
+                const ground = new THREE.Mesh(
+                    new THREE.PlaneGeometry(76, 62),
+                    new THREE.MeshStandardMaterial({ color: 0x161f1a, roughness: 0.92 })
+                );
+                ground.rotation.x = -Math.PI / 2;
+                ground.position.y = -0.06;
+                group.add(ground);
+
+                // Textured Asphalt Circuit Plane
+                const circuit = new THREE.Mesh(
+                    new THREE.PlaneGeometry(31.0, 19.4),
+                    new THREE.MeshStandardMaterial({ map: createRacetrackTexture(), roughness: 0.78, metalness: 0.12 })
+                );
+                circuit.rotation.x = -Math.PI / 2;
+                circuit.position.y = 0.02;
+                group.add(circuit);
+
+                // Start/Finish Overhead Light Gantry spanning the South Main Straight (z ≈ 6.1)
+                const gantryMat = new THREE.MeshStandardMaterial({ color: 0x2c2e38, metalness: 0.78, roughness: 0.28 });
+                const gPillar1 = new THREE.Mesh(new THREE.BoxGeometry(0.45, 5.2, 0.45), gantryMat);
+                gPillar1.position.set(0, 2.6, 3.6);
+                const gPillar2 = new THREE.Mesh(new THREE.BoxGeometry(0.45, 5.2, 0.45), gantryMat);
+                gPillar2.position.set(0, 2.6, 8.6);
+                const gBeam = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.9, 5.6), gantryMat);
+                gBeam.position.set(0, 4.9, 6.1);
+                group.add(gPillar1, gPillar2, gBeam);
+
+                // 5 Iconic Red F1 Start Lights hanging under gantry
+                const redLightMat = new THREE.MeshBasicMaterial({ color: 0xff2a4b });
+                for (let i = 0; i < 5; i++) {
+                    const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), redLightMat);
+                    lamp.position.set(-0.42, 4.35, 4.5 + i * 0.8);
+                    group.add(lamp);
+                }
+
+                // Illuminated Paddock Pit Building along the Infield Straight
+                const pitBldg = new THREE.Mesh(
+                    new THREE.BoxGeometry(11.5, 2.1, 2.8),
+                    new THREE.MeshStandardMaterial({ color: 0x231620, roughness: 0.45, metalness: 0.4 })
+                );
+                pitBldg.position.set(0, 1.05, 0.6);
+                group.add(pitBldg);
+                const pitSign = new THREE.Mesh(
+                    new THREE.PlaneGeometry(9.6, 1.6),
+                    new THREE.MeshBasicMaterial({ map: createStageScreenTexture(eventTitle, 'START / FINISH • PADDOCK') })
+                );
+                pitSign.position.set(0, 2.9, 2.02);
+                group.add(pitSign);
+
+                // 2 Animated 3D Formula 1 Cars Racing Around the Oval Track!
+                const car1 = createF1Car3D(0xd91c4b, 0xfff0e0);
+                const car2 = createF1Car3D(0xeab348, 0x1a0a12);
+                group.add(car1, car2);
+                arena3D.trackCars.push({ mesh: car1, progress: 0.0, speed: 0.24, laneOffset: -0.65 });
+                arena3D.trackCars.push({ mesh: car2, progress: 0.48, speed: 0.215, laneOffset: 0.65 });
+
+                // 4 Trackside Floodlight Poles
+                const poleMat = new THREE.MeshStandardMaterial({ color: 0x343844, metalness: 0.7, roughness: 0.4 });
+                [[-19, -11], [19, -11], [-19, 11], [19, 11]].forEach(([px, pz]) => {
+                    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.4, 13, 10), poleMat);
+                    mast.position.set(px, 6.5, pz);
+                    group.add(mast);
+                    const head = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.9, 0.5), new THREE.MeshBasicMaterial({ color: 0xfff8ea }));
+                    head.position.set(px, 13.0, pz);
+                    head.lookAt(0, 0, 0);
+                    group.add(head);
+                });
+
+                const trackLight = new THREE.PointLight(0xfff4e2, 1.9, 52);
+                trackLight.position.set(0, 15, 2);
+                group.add(trackLight);
+                return;
+            }
+
+            if (venueType === 'festival') {
+                // ==================== 360° ELEKTRONİK FESTİVAL & DJ SAHNESİ ====================
+                arena3D.scene.background = new THREE.Color(0x110514);
+                arena3D.scene.fog = new THREE.FogExp2(0x110514, 0.012);
+                arena3D.focalPoint = { x: 0, y: 2.3, z: 0 };
+                arena3D.overviewCam = { theta: 0.45, phi: 0.92, radius: 31, lookX: 0, lookY: 1.5, lookZ: 0 };
+                arena3D.stageCam = { theta: 0.2, phi: 1.18, radius: 13.5, lookX: 0, lookY: 2.1, lookZ: 0 };
+
+                const floor = new THREE.Mesh(
+                    new THREE.CircleGeometry(28, 64),
+                    new THREE.MeshStandardMaterial({ color: 0x16071c, roughness: 0.72, metalness: 0.3 })
+                );
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = -0.05;
+                group.add(floor);
+
+                // Concentric glowing floor rings
+                [5.0, 11.4, 19.2].forEach((rad, i) => {
+                    const r = new THREE.Mesh(
+                        new THREE.RingGeometry(rad, rad + 0.22, 64),
+                        new THREE.MeshBasicMaterial({ color: i === 0 ? 0xf5d6c0 : 0xe06d94, side: THREE.DoubleSide, transparent: true, opacity: 0.42 })
+                    );
+                    r.rotation.x = -Math.PI / 2;
+                    r.position.y = 0.02;
+                    group.add(r);
+                });
+
+                // Center Octagonal DJ Island Stage
+                const island = new THREE.Mesh(
+                    new THREE.CylinderGeometry(4.4, 4.9, 1.4, 8),
+                    new THREE.MeshStandardMaterial({ color: 0x260c28, roughness: 0.32, metalness: 0.65 })
+                );
+                island.position.y = 0.7;
+                group.add(island);
+
+                // Glowing DJ Booth Desk + Decks
+                const booth = new THREE.Mesh(
+                    new THREE.BoxGeometry(3.2, 1.15, 1.4),
+                    new THREE.MeshStandardMaterial({ color: 0x18091b, roughness: 0.3, metalness: 0.7 })
+                );
+                booth.position.set(0, 1.95, 0);
+                group.add(booth);
+
+                const boothNeon = new THREE.Mesh(
+                    new THREE.BoxGeometry(3.3, 0.14, 1.48),
+                    new THREE.MeshBasicMaterial({ color: 0xf5d6c0 })
+                );
+                boothNeon.position.set(0, 2.55, 0);
+                group.add(boothNeon);
+
+                // Turntable platters
+                [-0.75, 0.75].forEach(x => {
+                    const deck = new THREE.Mesh(
+                        new THREE.CylinderGeometry(0.35, 0.35, 0.08, 20),
+                        new THREE.MeshBasicMaterial({ color: 0xe89ca8 })
+                    );
+                    deck.position.set(x, 2.64, 0);
+                    group.add(deck);
+                });
+
+                // Floating Rotating Holographic Halo Ring above DJ Booth
+                const halo = new THREE.Mesh(
+                    new THREE.TorusGeometry(5.8, 0.2, 16, 64),
+                    new THREE.MeshBasicMaterial({ color: 0xf4c8b0 })
+                );
+                halo.position.y = 7.4;
+                halo.rotation.x = Math.PI / 2;
+                group.add(halo);
+                arena3D.rotatingProps.push({ mesh: halo, axis: 'z', speed: 0.6 });
+
+                const haloInner = new THREE.Mesh(
+                    new THREE.TorusGeometry(4.2, 0.12, 12, 48),
+                    new THREE.MeshBasicMaterial({ color: 0xd96690 })
+                );
+                haloInner.position.y = 6.2;
+                haloInner.rotation.x = Math.PI / 2;
+                group.add(haloInner);
+
+                // 6 Radiating Laser Beams from DJ Center
+                const beamGeo = new THREE.ConeGeometry(1.9, 14, 18, 1, true);
+                const beamColors = [0xf5d6c0, 0xe8739c, 0xc76ee0, 0xf2b399, 0xe8739c, 0xf5d6c0];
+                for (let i = 0; i < 6; i++) {
+                    const ang = (i / 6) * Math.PI * 2;
+                    const bm = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({
+                        color: beamColors[i], transparent: true, opacity: 0.14, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending
+                    }));
+                    bm.position.set(Math.sin(ang) * 2.2, 5.8, Math.cos(ang) * 2.2);
+                    bm.rotation.z = -Math.sin(ang) * 0.65;
+                    bm.rotation.x = Math.cos(ang) * 0.65;
+                    group.add(bm);
+                    arena3D.spotlights.push({ mesh: bm, baseX: ang, phase: i * 1.05, isRadial: true });
+                }
+
+                const ptLight = new THREE.PointLight(0xe88ca8, 2.6, 36);
+                ptLight.position.set(0, 6.2, 0);
+                group.add(ptLight);
+                return;
+            }
+
+            if (venueType === 'stadium' || venueType === 'basketball') {
+                // ==================== FUTBOL STADYUMU & BASKETBOL ARENASI ====================
+                const isCourt = venueType === 'basketball';
+                arena3D.scene.background = new THREE.Color(isCourt ? 0x160a12 : 0x0d1512);
+                arena3D.scene.fog = new THREE.FogExp2(isCourt ? 0x160a12 : 0x0d1512, 0.0105);
+                arena3D.focalPoint = { x: 0, y: 1.2, z: 0 };
+                arena3D.overviewCam = { theta: 0.55, phi: 0.94, radius: 37, lookX: 0, lookY: 1.2, lookZ: 0 };
+                arena3D.stageCam = { theta: 0.0, phi: 1.12, radius: 19, lookX: 0, lookY: 1.0, lookZ: 0 };
+
+                const outerFloor = new THREE.Mesh(
+                    new THREE.PlaneGeometry(66, 56),
+                    new THREE.MeshStandardMaterial({ color: isCourt ? 0x1a0c14 : 0x131e19, roughness: 0.88 })
+                );
+                outerFloor.rotation.x = -Math.PI / 2;
+                outerFloor.position.y = -0.06;
+                group.add(outerFloor);
+
+                // Pitch or Hardwood Court Surface
+                const fieldW = isCourt ? 19.0 : 22.8;
+                const fieldH = isCourt ? 12.0 : 14.4;
+                const pitchTex = isCourt ? createIndoorCourtTexture() : createFootballPitchTexture();
+                const pitch = new THREE.Mesh(
+                    new THREE.PlaneGeometry(fieldW, fieldH),
+                    new THREE.MeshStandardMaterial({ map: pitchTex, roughness: isCourt ? 0.35 : 0.85, metalness: isCourt ? 0.18 : 0.05 })
+                );
+                pitch.rotation.x = -Math.PI / 2;
+                pitch.position.y = 0.02;
+                group.add(pitch);
+
+                // Perimeter Glowing LED Boards
+                const boardMat = new THREE.MeshBasicMaterial({ color: 0xf3d2be });
+                const hBoardGeo = new THREE.BoxGeometry(fieldW + 0.6, 0.45, 0.16);
+                const vBoardGeo = new THREE.BoxGeometry(0.16, 0.45, fieldH + 0.6);
+                [fieldH / 2 + 0.4, -(fieldH / 2 + 0.4)].forEach(z => {
+                    const b = new THREE.Mesh(hBoardGeo, boardMat);
+                    b.position.set(0, 0.24, z);
+                    group.add(b);
+                });
+                [fieldW / 2 + 0.4, -(fieldW / 2 + 0.4)].forEach(x => {
+                    const b = new THREE.Mesh(vBoardGeo, boardMat);
+                    b.position.set(x, 0.24, 0);
+                    group.add(b);
+                });
+
+                if (isCourt) {
+                    // 3D Basketball Hoops & Overhead Scoreboard Cube
+                    const poleMat = new THREE.MeshStandardMaterial({ color: 0x3a202d, metalness: 0.7, roughness: 0.3 });
+                    const glassMat = new THREE.MeshBasicMaterial({ color: 0xfff5ec, transparent: true, opacity: 0.7 });
+                    [-fieldW / 2 + 0.6, fieldW / 2 - 0.6].forEach(xPos => {
+                        const dir = xPos < 0 ? 1 : -1;
+                        const pole = new THREE.Mesh(new THREE.BoxGeometry(0.28, 3.4, 0.28), poleMat);
+                        pole.position.set(xPos, 1.7, 0);
+                        group.add(pole);
+                        const backboard = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.2, 1.8), glassMat);
+                        backboard.position.set(xPos + dir * 0.5, 3.0, 0);
+                        group.add(backboard);
+                        const hoop = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.05, 8, 20), new THREE.MeshBasicMaterial({ color: 0xe8643c }));
+                        hoop.rotation.x = Math.PI / 2;
+                        hoop.position.set(xPos + dir * 0.85, 2.7, 0);
+                        group.add(hoop);
+                    });
+                    // Suspended Center Jumbotron Cube
+                    const jumbo = new THREE.Mesh(
+                        new THREE.BoxGeometry(4.4, 2.4, 4.4),
+                        new THREE.MeshBasicMaterial({ map: createStageScreenTexture(eventTitle, 'CANLI SPOR ARENASI') })
+                    );
+                    jumbo.position.set(0, 10.6, 0);
+                    group.add(jumbo);
+                    arena3D.rotatingProps.push({ mesh: jumbo, axis: 'y', speed: 0.22 });
+                } else {
+                    // 3D Football Goalposts on Left & Right Ends
+                    const postMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                    [-fieldW / 2 + 0.85, fieldW / 2 - 0.85].forEach(xPos => {
+                        const p1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.2, 10), postMat);
+                        p1.position.set(xPos, 1.1, -2.0);
+                        const p2 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 2.2, 10), postMat);
+                        p2.position.set(xPos, 1.1, 2.0);
+                        const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 4.1, 10), postMat);
+                        bar.rotation.x = Math.PI / 2;
+                        bar.position.set(xPos, 2.2, 0);
+                        group.add(p1, p2, bar);
+                    });
+                }
+
+                // 4 Tall Corner Stadium Floodlight Towers
+                const towerMat = new THREE.MeshStandardMaterial({ color: 0x2d3238, metalness: 0.7, roughness: 0.4 });
+                [[-18.5, -13.5], [18.5, -13.5], [-18.5, 13.5], [18.5, 13.5]].forEach(([tx, tz]) => {
+                    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.45, 14.5, 10), towerMat);
+                    mast.position.set(tx, 7.25, tz);
+                    group.add(mast);
+                    const lampHead = new THREE.Mesh(
+                        new THREE.BoxGeometry(2.4, 1.1, 0.6),
+                        new THREE.MeshBasicMaterial({ color: 0xfff8e8 })
+                    );
+                    lampHead.position.set(tx, 14.4, tz);
+                    lampHead.lookAt(0, 0, 0);
+                    group.add(lampHead);
+                });
+
+                const fieldLight = new THREE.PointLight(0xfff5e4, 1.8, 48);
+                fieldLight.position.set(0, 14, 0);
+                group.add(fieldLight);
+                return;
+            }
+
+            if (venueType === 'tennis') {
+                // ==================== 3D TOPRAK KORT TENİS ARENASI ====================
+                arena3D.scene.background = new THREE.Color(0x1b0e0b);
+                arena3D.scene.fog = new THREE.FogExp2(0x1b0e0b, 0.011);
+                arena3D.focalPoint = { x: 0, y: 1.0, z: 0 };
+                arena3D.overviewCam = { theta: 0.52, phi: 0.94, radius: 34, lookX: 0, lookY: 1.0, lookZ: 0 };
+                arena3D.stageCam = { theta: 0.15, phi: 1.15, radius: 17, lookX: 0, lookY: 1.0, lookZ: 0 };
+
+                const surround = new THREE.Mesh(
+                    new THREE.PlaneGeometry(62, 52),
+                    new THREE.MeshStandardMaterial({ color: 0x261510, roughness: 0.9 })
+                );
+                surround.rotation.x = -Math.PI / 2;
+                surround.position.y = -0.06;
+                group.add(surround);
+
+                // Clay Tennis Court
+                const court = new THREE.Mesh(
+                    new THREE.PlaneGeometry(19.2, 12.2),
+                    new THREE.MeshStandardMaterial({ map: createTennisCourtTexture(), roughness: 0.88 })
+                );
+                court.rotation.x = -Math.PI / 2;
+                court.position.y = 0.02;
+                group.add(court);
+
+                // Low 3D Tennis Net across the center (x = 0)
+                const postMat = new THREE.MeshStandardMaterial({ color: 0x222228, metalness: 0.7, roughness: 0.3 });
+                [-4.6, 4.6].forEach(z => {
+                    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.05, 10), postMat);
+                    post.position.set(0, 0.52, z);
+                    group.add(post);
+                });
+                const netMesh = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.06, 0.85, 9.2),
+                    new THREE.MeshBasicMaterial({ color: 0x1a1a20, transparent: true, opacity: 0.65 })
+                );
+                netMesh.position.set(0, 0.48, 0);
+                const netTopBand = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.1, 0.12, 9.2),
+                    new THREE.MeshBasicMaterial({ color: 0xffffff })
+                );
+                netTopBand.position.set(0, 0.94, 0);
+                group.add(netMesh, netTopBand);
+
+                // High Umpire Chair on the side of the net
+                const chairGroup = new THREE.Group();
+                chairGroup.position.set(0, 0, -5.4);
+                const chairStand = new THREE.Mesh(new THREE.BoxGeometry(0.85, 2.0, 0.85), new THREE.MeshStandardMaterial({ color: 0x2e4a38, roughness: 0.5 }));
+                chairStand.position.y = 1.0;
+                const chairSeat = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.2, 0.75), new THREE.MeshStandardMaterial({ color: 0xf5d6c0 }));
+                chairSeat.position.y = 2.1;
+                const chairBack = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.75, 0.14), new THREE.MeshStandardMaterial({ color: 0xf5d6c0 }));
+                chairBack.position.set(0, 2.5, -0.32);
+                chairGroup.add(chairStand, chairSeat, chairBack);
+                group.add(chairGroup);
+
+                // Forest-Green Wimbledon/ATP style perimeter wall
+                const wallMat = new THREE.MeshStandardMaterial({ color: 0x1f4732, roughness: 0.65 });
+                [6.4, -6.4].forEach(z => {
+                    const w = new THREE.Mesh(new THREE.BoxGeometry(19.8, 0.65, 0.22), wallMat);
+                    w.position.set(0, 0.32, z);
+                    group.add(w);
+                });
+                [9.8, -9.8].forEach(x => {
+                    const w = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.65, 12.8), wallMat);
+                    w.position.set(x, 0.32, 0);
+                    group.add(w);
+                });
+
+                const tLight = new THREE.PointLight(0xfff4e0, 1.85, 44);
+                tLight.position.set(0, 14, 0);
+                group.add(tLight);
+                return;
+            }
+
+            if (venueType === 'volleyball') {
+                // ==================== 3D VOLEYBOL ARENASI (FIVB FİLE + HAKEM KULESİ) ====================
+                arena3D.scene.background = new THREE.Color(0x0c1422);
+                arena3D.scene.fog = new THREE.FogExp2(0x0c1422, 0.011);
+                arena3D.focalPoint = { x: 0, y: 1.8, z: 0 };
+                arena3D.overviewCam = { theta: 0.52, phi: 0.94, radius: 34, lookX: 0, lookY: 1.4, lookZ: 0 };
+                arena3D.stageCam = { theta: 0.12, phi: 1.15, radius: 17, lookX: 0, lookY: 1.6, lookZ: 0 };
+
+                const floor = new THREE.Mesh(
+                    new THREE.PlaneGeometry(62, 52),
+                    new THREE.MeshStandardMaterial({ color: 0x101c2e, roughness: 0.85 })
+                );
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = -0.06;
+                group.add(floor);
+
+                const court = new THREE.Mesh(
+                    new THREE.PlaneGeometry(19.0, 12.0),
+                    new THREE.MeshStandardMaterial({ map: createVolleyballCourtTexture(), roughness: 0.42, metalness: 0.12 })
+                );
+                court.rotation.x = -Math.PI / 2;
+                court.position.y = 0.02;
+                group.add(court);
+
+                // High 3D Volleyball Net + Poles + Red-White Antennae!
+                const poleMat = new THREE.MeshStandardMaterial({ color: 0xe84a5f, roughness: 0.4 });
+                [-4.6, 4.6].forEach(z => {
+                    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 2.8, 12), poleMat);
+                    pole.position.set(0, 1.4, z);
+                    group.add(pole);
+                    // Antenna rod rising above net
+                    const ant = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.6, 8), new THREE.MeshBasicMaterial({ color: 0xff3355 }));
+                    ant.position.set(0, 2.55, z * 0.88);
+                    group.add(ant);
+                });
+                const vNet = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.06, 1.15, 9.0),
+                    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.48 })
+                );
+                vNet.position.set(0, 2.05, 0);
+                const vTopTape = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.11, 0.12, 9.0),
+                    new THREE.MeshBasicMaterial({ color: 0xffffff })
+                );
+                vTopTape.position.set(0, 2.65, 0);
+                group.add(vNet, vTopTape);
+
+                // Referee Stand next to net
+                const refStand = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.9, 1.8, 0.9),
+                    new THREE.MeshStandardMaterial({ color: 0x263954, roughness: 0.5 })
+                );
+                refStand.position.set(0, 0.9, -5.3);
+                group.add(refStand);
+
+                const vLight = new THREE.PointLight(0xfff5e8, 1.9, 44);
+                vLight.position.set(0, 14, 0);
+                group.add(vLight);
+                return;
+            }
+
+            if (venueType === 'boxing_ring') {
+                // ==================== 3D KİCKBOXİNG & DÖVÜŞ RİNGİ ARENASI ====================
+                arena3D.scene.background = new THREE.Color(0x12060c);
+                arena3D.scene.fog = new THREE.FogExp2(0x12060c, 0.012);
+                arena3D.focalPoint = { x: 0, y: 2.2, z: 0 };
+                arena3D.overviewCam = { theta: 0.62, phi: 0.96, radius: 29, lookX: 0, lookY: 1.8, lookZ: 0 };
+                arena3D.stageCam = { theta: 0.45, phi: 1.18, radius: 14, lookX: 0, lookY: 2.1, lookZ: 0 };
+
+                const floor = new THREE.Mesh(
+                    new THREE.CircleGeometry(28, 64),
+                    new THREE.MeshStandardMaterial({ color: 0x170810, roughness: 0.85 })
+                );
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = -0.05;
+                group.add(floor);
+
+                // Elevated Square Boxing Ring Platform
+                const ringBase = new THREE.Mesh(
+                    new THREE.BoxGeometry(8.2, 1.4, 8.2),
+                    new THREE.MeshStandardMaterial({ color: 0x24101a, roughness: 0.55 })
+                );
+                ringBase.position.y = 0.7;
+                group.add(ringBase);
+
+                // Ring Canvas Mat
+                const ringMat = new THREE.Mesh(
+                    new THREE.BoxGeometry(7.8, 0.14, 7.8),
+                    new THREE.MeshStandardMaterial({ color: 0xe6e8f0, roughness: 0.7 })
+                );
+                ringMat.position.y = 1.45;
+                group.add(ringMat);
+
+                // 4 Corner Posts (Red, Blue, White, White)
+                const corners = [
+                    [-3.6, -3.6, 0xe11d48],
+                    [ 3.6,  3.6, 0x2563eb],
+                    [-3.6,  3.6, 0xf8fafc],
+                    [ 3.6, -3.6, 0xf8fafc]
+                ];
+                corners.forEach(([cx, cz, col]) => {
+                    const post = new THREE.Mesh(
+                        new THREE.CylinderGeometry(0.18, 0.18, 2.2, 12),
+                        new THREE.MeshStandardMaterial({ color: col, roughness: 0.35 })
+                    );
+                    post.position.set(cx, 2.5, cz);
+                    group.add(post);
+                });
+
+                // 4 Rows of Ring Ropes around all 4 sides!
+                const ropeColors = [0xe11d48, 0xffffff, 0xffffff, 0x2563eb];
+                [1.95, 2.38, 2.82, 3.25].forEach((ry, idx) => {
+                    const rMat = new THREE.MeshBasicMaterial({ color: ropeColors[idx] });
+                    const hRope = new THREE.BoxGeometry(7.2, 0.06, 0.06);
+                    const vRope = new THREE.BoxGeometry(0.06, 0.06, 7.2);
+                    [-3.6, 3.6].forEach(z => {
+                        const r = new THREE.Mesh(hRope, rMat);
+                        r.position.set(0, ry, z);
+                        group.add(r);
+                    });
+                    [-3.6, 3.6].forEach(x => {
+                        const r = new THREE.Mesh(vRope, rMat);
+                        r.position.set(x, ry, 0);
+                        group.add(r);
+                    });
+                });
+
+                // Overhead Arena Light Truss Rig above the Ring
+                const rigFrame = new THREE.Mesh(
+                    new THREE.BoxGeometry(9.0, 0.45, 9.0),
+                    new THREE.MeshStandardMaterial({ color: 0x2a1a22, wireframe: true })
+                );
+                rigFrame.position.y = 8.8;
+                group.add(rigFrame);
+
+                const ringLight = new THREE.PointLight(0xfff5ec, 2.8, 32);
+                ringLight.position.set(0, 8.2, 0);
+                group.add(ringLight);
+
+                // Dramatic overhead spotlight cone straight onto the ring
+                const ringCone = new THREE.Mesh(
+                    new THREE.ConeGeometry(5.2, 8.2, 24, 1, true),
+                    new THREE.MeshBasicMaterial({ color: 0xfff0e0, transparent: true, opacity: 0.09, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending })
+                );
+                ringCone.position.set(0, 4.6, 0);
+                group.add(ringCone);
+                return;
+            }
+
+            if (venueType === 'marathon') {
+                // ==================== 3D BOĞAZ KÖPRÜSÜ & MARATON BİTİŞ PARKURU ====================
+                arena3D.scene.background = new THREE.Color(0x0b1628);
+                arena3D.scene.fog = new THREE.FogExp2(0x0b1628, 0.01);
+                arena3D.focalPoint = { x: 0, y: 2.2, z: 0 };
+                arena3D.overviewCam = { theta: 0.46, phi: 0.96, radius: 34, lookX: 0, lookY: 1.5, lookZ: 0 };
+                arena3D.stageCam = { theta: 0.12, phi: 1.16, radius: 17, lookX: 0, lookY: 2.2, lookZ: 0 };
+
+                // Bosphorus Night Sea Surface
+                const sea = new THREE.Mesh(
+                    new THREE.PlaneGeometry(76, 62),
+                    new THREE.MeshStandardMaterial({ color: 0x0b223b, roughness: 0.25, metalness: 0.55 })
+                );
+                sea.rotation.x = -Math.PI / 2;
+                sea.position.y = -0.15;
+                group.add(sea);
+
+                // Bridge Running Roadway with 6 Blue Marathon Lanes + Checkered Finish Line
+                const road = new THREE.Mesh(
+                    new THREE.PlaneGeometry(38.0, 12.4),
+                    new THREE.MeshStandardMaterial({ map: createMarathonTrackTexture(), roughness: 0.72 })
+                );
+                road.rotation.x = -Math.PI / 2;
+                road.position.y = 0.04;
+                group.add(road);
+
+                // Iconic Bosphorus Suspension Bridge Towers (Left & Right)
+                const towerMat = new THREE.MeshStandardMaterial({ color: 0xd9dee8, metalness: 0.55, roughness: 0.35 });
+                [-12.5, 12.5].forEach(tx => {
+                    [-5.6, 5.6].forEach(tz => {
+                        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.75, 13.0, 0.75), towerMat);
+                        leg.position.set(tx, 6.5, tz);
+                        group.add(leg);
+                    });
+                    [8.2, 12.2].forEach(ty => {
+                        const cross = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.7, 11.8), towerMat);
+                        cross.position.set(tx, ty, 0);
+                        group.add(cross);
+                    });
+                });
+
+                // Glowing Center FINISH Arch spanning over the marathon lanes
+                const archMat = new THREE.MeshStandardMaterial({ color: 0xe11d48, roughness: 0.35 });
+                [-4.6, 4.6].forEach(az => {
+                    const p = new THREE.Mesh(new THREE.BoxGeometry(0.55, 5.0, 0.55), archMat);
+                    p.position.set(0, 2.5, az);
+                    group.add(p);
+                });
+                const archSign = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.7, 1.35, 9.8),
+                    new THREE.MeshBasicMaterial({ color: 0xf5d6c0 })
+                );
+                archSign.position.set(0, 5.2, 0);
+                group.add(archSign);
+
+                const mLight = new THREE.PointLight(0xfff4e0, 2.0, 48);
+                mLight.position.set(0, 14, 0);
+                group.add(mLight);
+                return;
+            }
+
+            if (venueType === 'symphony') {
+                // ==================== 3D SENFONİ & PİYANO KONSER SALONU (KUYRUKLU PİYANO) ====================
+                arena3D.scene.background = new THREE.Color(0x180a0d);
+                arena3D.scene.fog = new THREE.FogExp2(0x180a0d, 0.013);
+                arena3D.focalPoint = { x: 0, y: 2.8, z: -14.2 };
+                arena3D.overviewCam = { theta: 0.3, phi: 1.0, radius: 30, lookX: 0, lookY: 2.0, lookZ: -2.0 };
+                arena3D.stageCam = { theta: -0.22, phi: 1.15, radius: 14.5, lookX: 0, lookY: 2.4, lookZ: -13.5 };
+
+                const floor = new THREE.Mesh(
+                    new THREE.CircleGeometry(28, 64),
+                    new THREE.MeshStandardMaterial({ color: 0x241015, roughness: 0.85 })
+                );
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = -0.05;
+                group.add(floor);
+
+                const sStage = new THREE.Group();
+                sStage.position.set(0, 0, -14.5);
+
+                // Warm Maple Acoustic Concert Stage
+                const deck = new THREE.Mesh(
+                    new THREE.BoxGeometry(15.6, 1.5, 6.8),
+                    new THREE.MeshStandardMaterial({ color: 0x8f5d38, roughness: 0.35, metalness: 0.12 })
+                );
+                deck.position.y = 0.75;
+                sStage.add(deck);
+
+                // Acoustic Golden Organ / Wall Pipes Behind Stage
+                const pipeMat = new THREE.MeshStandardMaterial({ color: 0xe0ba74, metalness: 0.85, roughness: 0.2 });
+                for (let i = -10; i <= 10; i++) {
+                    const h = 4.2 + Math.cos(i * 0.28) * 2.2;
+                    const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, h, 10), pipeMat);
+                    pipe.position.set(i * 0.62, 1.5 + h / 2, -2.9);
+                    sStage.add(pipe);
+                }
+
+                // 3D Glossy Black Concert Grand Piano right at Center Stage!
+                const piano = new THREE.Group();
+                piano.position.set(0, 1.5, 0.4);
+                piano.rotation.y = 0.32;
+                const pianoMat = new THREE.MeshStandardMaterial({ color: 0x0d0d10, roughness: 0.12, metalness: 0.65 });
+                const body = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.55, 2.8), pianoMat);
+                body.position.y = 1.05;
+                piano.add(body);
+                // Open angled piano lid!
+                const lid = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.08, 2.75), pianoMat);
+                lid.position.set(0.35, 1.75, 0);
+                lid.rotation.z = -0.45;
+                piano.add(lid);
+                // Ivory keyboard strip
+                const keys = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.12, 0.45), new THREE.MeshBasicMaterial({ color: 0xfffdf5 }));
+                keys.position.set(0, 0.92, 1.45);
+                piano.add(keys);
+                // 3 Piano Legs
+                [[-0.85, 1.1], [0.85, 1.1], [0, -1.1]].forEach(([lx, lz]) => {
+                    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 0.9, 8), pianoMat);
+                    leg.position.set(lx, 0.45, lz);
+                    piano.add(leg);
+                });
+                sStage.add(piano);
+
+                // Orchestra Music Stands in semicircle behind piano
+                const standMat = new THREE.MeshStandardMaterial({ color: 0x2b1d18 });
+                [-4.5, -2.8, 2.8, 4.5].forEach(mx => {
+                    const st = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.1, 6), standMat);
+                    st.position.set(mx, 2.05, -0.8);
+                    const sheet = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.4, 0.04), new THREE.MeshBasicMaterial({ color: 0xfff8eb }));
+                    sheet.position.set(mx, 2.6, -0.75);
+                    sheet.rotation.x = -0.4;
+                    sStage.add(st, sheet);
+                });
+
+                // Warm Spotlight straight onto the Grand Piano
+                const pSpot = new THREE.Mesh(
+                    new THREE.ConeGeometry(3.0, 10.5, 24, 1, true),
+                    new THREE.MeshBasicMaterial({ color: 0xffe4b8, transparent: true, opacity: 0.12, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending })
+                );
+                pSpot.position.set(0, 6.2, 0.4);
+                sStage.add(pSpot);
+
+                const pLight = new THREE.PointLight(0xffe0b2, 2.4, 34);
+                pLight.position.set(0, 7.2, 1.0);
+                sStage.add(pLight);
+
+                group.add(sStage);
+                return;
+            }
+
+            if (venueType === 'standup') {
+                // ==================== 3D STAND-UP & KOMEDİ GÖSTERİ SAHNESİ ====================
+                arena3D.scene.background = new THREE.Color(0x190910);
+                arena3D.scene.fog = new THREE.FogExp2(0x190910, 0.013);
+                arena3D.focalPoint = { x: 0, y: 2.8, z: -14.2 };
+                arena3D.overviewCam = { theta: 0.25, phi: 1.0, radius: 29, lookX: 0, lookY: 2.0, lookZ: -2.0 };
+                arena3D.stageCam = { theta: -0.15, phi: 1.16, radius: 14.5, lookX: 0, lookY: 2.6, lookZ: -13.0 };
+
+                const floor = new THREE.Mesh(
+                    new THREE.CircleGeometry(28, 64),
+                    new THREE.MeshStandardMaterial({ color: 0x220c15, roughness: 0.88 })
+                );
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = -0.05;
+                group.add(floor);
+
+                const cStage = new THREE.Group();
+                cStage.position.set(0, 0, -14.5);
+
+                // Warm Club Stage Platform
+                const deck = new THREE.Mesh(
+                    new THREE.BoxGeometry(13.8, 1.4, 5.8),
+                    new THREE.MeshStandardMaterial({ color: 0x3b1a23, roughness: 0.5, metalness: 0.2 })
+                );
+                deck.position.y = 0.7;
+                cStage.add(deck);
+
+                // Warm Glowing Stage Backdrop Banner
+                const backdrop = new THREE.Mesh(
+                    new THREE.PlaneGeometry(11.8, 4.8),
+                    new THREE.MeshBasicMaterial({ map: createStageScreenTexture(eventTitle, 'CANLI STAND-UP & GÖSTERİ SAHNESİ') })
+                );
+                backdrop.position.set(0, 4.3, -2.3);
+                cStage.add(backdrop);
+
+                // Iconic 3D Standing Microphone + Wooden Bar Stool at Center Stage!
+                const chromeMat = new THREE.MeshStandardMaterial({ color: 0xf0ece6, metalness: 0.9, roughness: 0.15 });
+                const micBase = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.08, 16), chromeMat);
+                micBase.position.set(0, 1.44, 0.8);
+                const micStand = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 1.65, 10), chromeMat);
+                micStand.position.set(0, 2.28, 0.8);
+                const micHead = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 12), chromeMat);
+                micHead.position.set(0, 3.15, 0.8);
+                cStage.add(micBase, micStand, micHead);
+
+                // Comedy Stool right beside the mic
+                const stoolTop = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.38, 0.12, 16), new THREE.MeshStandardMaterial({ color: 0x8e2346 }));
+                stoolTop.position.set(1.2, 2.35, 0.3);
+                const stoolLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.22, 0.92, 10), chromeMat);
+                stoolLeg.position.set(1.2, 1.88, 0.3);
+                cStage.add(stoolTop, stoolLeg);
+
+                // Single Dramatic Warm Comedy Spotlight Cone on the Microphone
+                const micSpot = new THREE.Mesh(
+                    new THREE.ConeGeometry(2.6, 9.8, 24, 1, true),
+                    new THREE.MeshBasicMaterial({ color: 0xffe4c4, transparent: true, opacity: 0.15, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending })
+                );
+                micSpot.position.set(0, 5.8, 0.8);
+                cStage.add(micSpot);
+
+                const cLight = new THREE.PointLight(0xffe0c2, 2.5, 32);
+                cLight.position.set(0, 6.8, 1.2);
+                cStage.add(cLight);
+
+                group.add(cStage);
+                return;
+            }
+
+            if (venueType === 'theater') {
+                // ==================== KLASİK KIRMIZI KADİFE TİYATRO & OPERA SALONU ====================
+                arena3D.scene.background = new THREE.Color(0x1c080f);
+                arena3D.scene.fog = new THREE.FogExp2(0x1c080f, 0.013);
+                arena3D.focalPoint = { x: 0, y: 3.4, z: -14.8 };
+                arena3D.overviewCam = { theta: 0.28, phi: 1.0, radius: 30, lookX: 0, lookY: 2.2, lookZ: -1.8 };
+                arena3D.stageCam = { theta: -0.18, phi: 1.16, radius: 16.5, lookX: 0, lookY: 3.0, lookZ: -11.5 };
+
+                const carpet = new THREE.Mesh(
+                    new THREE.CircleGeometry(28, 64),
+                    new THREE.MeshStandardMaterial({ color: 0x2a0b15, roughness: 0.9, metalness: 0.08 })
+                );
+                carpet.rotation.x = -Math.PI / 2;
+                carpet.position.y = -0.05;
+                group.add(carpet);
+
+                // Proscenium Theater Stage
+                const tStage = new THREE.Group();
+                tStage.position.set(0, 0, -14.6);
+
+                // Warm wooden theater stage floor
+                const woodDeck = new THREE.Mesh(
+                    new THREE.BoxGeometry(15.2, 1.5, 6.4),
+                    new THREE.MeshStandardMaterial({ color: 0x5c3420, roughness: 0.45, metalness: 0.15 })
+                );
+                woodDeck.position.y = 0.75;
+                tStage.add(woodDeck);
+
+                // Golden Footlights along front stage lip
+                for (let x = -6.2; x <= 6.2; x += 1.55) {
+                    const bulb = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.14, 10, 10),
+                        new THREE.MeshBasicMaterial({ color: 0xffe4a8 })
+                    );
+                    bulb.position.set(x, 1.58, 3.1);
+                    tStage.add(bulb);
+                }
+
+                // Gilded Proscenium Arch Frame
+                const goldMat = new THREE.MeshStandardMaterial({ color: 0xdcb36a, metalness: 0.82, roughness: 0.25 });
+                [-7.5, 7.5].forEach(px => {
+                    const col = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.58, 8.6, 16), goldMat);
+                    col.position.set(px, 4.3, 2.6);
+                    tStage.add(col);
+                });
+                const archTop = new THREE.Mesh(new THREE.BoxGeometry(16.2, 0.9, 1.0), goldMat);
+                archTop.position.set(0, 8.6, 2.6);
+                tStage.add(archTop);
+
+                // Draped Crimson Velvet Side Curtains (Pleated Cylinders!)
+                const velvetMat = new THREE.MeshStandardMaterial({ color: 0x7d102c, roughness: 0.82, metalness: 0.1 });
+                [-6.4, -5.6, 5.6, 6.4].forEach(cx => {
+                    const pleat = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.68, 7.2, 14), velvetMat);
+                    pleat.position.set(cx, 4.9, 2.1);
+                    tStage.add(pleat);
+                });
+                // Top Velvet Valance
+                const valance = new THREE.Mesh(new THREE.BoxGeometry(14.0, 1.3, 0.9), velvetMat);
+                valance.position.set(0, 7.65, 2.15);
+                tStage.add(valance);
+
+                // Stage Backdrop Screen
+                const screen = new THREE.Mesh(
+                    new THREE.PlaneGeometry(11.6, 5.2),
+                    new THREE.MeshBasicMaterial({ map: createStageScreenTexture(eventTitle, 'KLASİK TİYATRO & OPERA SAHNESİ') })
+                );
+                screen.position.set(0, 4.5, -2.0);
+                tStage.add(screen);
+
+                // 2 Warm Theater Spotlights
+                const spotGeo = new THREE.ConeGeometry(2.6, 11.0, 20, 1, true);
+                [-3.2, 3.2].forEach((sx, i) => {
+                    const sm = new THREE.Mesh(spotGeo, new THREE.MeshBasicMaterial({
+                        color: 0xffdfad, transparent: true, opacity: 0.1, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending
+                    }));
+                    sm.position.set(sx, 5.2, 1.8);
+                    sm.rotation.x = 0.3;
+                    tStage.add(sm);
+                    arena3D.spotlights.push({ mesh: sm, baseX: sx, phase: i * 2.0 });
+                });
+
+                group.add(tStage);
+
+                // Grand Opera Balcony Support Columns & Golden Balustrade
+                [-9.5, -3.5, 3.5, 9.5].forEach(cx => {
+                    const bCol = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, 4.7, 12), goldMat);
+                    bCol.position.set(cx, 2.35, 5.1);
+                    group.add(bCol);
+                });
+
+                // Sparkling Hanging Crystal Chandelier Overhead
+                const chandGroup = new THREE.Group();
+                chandGroup.position.set(0, 10.2, -2.0);
+                const cRing1 = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.08, 12, 36), goldMat);
+                cRing1.rotation.x = Math.PI / 2;
+                const cRing2 = new THREE.Mesh(new THREE.TorusGeometry(1.3, 0.07, 12, 28), goldMat);
+                cRing2.rotation.x = Math.PI / 2;
+                cRing2.position.y = -0.8;
+                chandGroup.add(cRing1, cRing2);
+                const crystalMat = new THREE.MeshBasicMaterial({ color: 0xfff7e4 });
+                for (let i = 0; i < 12; i++) {
+                    const a = (i / 12) * Math.PI * 2;
+                    const drop = new THREE.Mesh(new THREE.OctahedronGeometry(0.16), crystalMat);
+                    drop.position.set(Math.cos(a) * 2.2, -0.35, Math.sin(a) * 2.2);
+                    chandGroup.add(drop);
+                }
+                const chandLight = new THREE.PointLight(0xffdfba, 2.0, 32);
+                chandGroup.add(chandLight);
+                group.add(chandGroup);
+                arena3D.rotatingProps.push({ mesh: chandGroup, axis: 'y', speed: 0.18 });
+                return;
+            }
+
+            // ==================== VARSAYILAN: KONSER & AÇIKHAVA ARENASI ====================
+            arena3D.scene.background = new THREE.Color(0x14070d);
+            arena3D.scene.fog = new THREE.FogExp2(0x14070d, 0.0135);
+            arena3D.focalPoint = { x: 0, y: 3.8, z: -15.6 };
+            arena3D.overviewCam = { theta: 0.32, phi: 0.98, radius: 32, lookX: 0, lookY: 1.2, lookZ: -1.8 };
+            arena3D.stageCam = { theta: -0.25, phi: 1.18, radius: 17.5, lookX: 0, lookY: 2.4, lookZ: -12.5 };
+
+            const floor = new THREE.Mesh(
+                new THREE.CircleGeometry(30, 64),
+                new THREE.MeshStandardMaterial({ color: 0x1a0a12, roughness: 0.78, metalness: 0.22 })
+            );
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.y = -0.05;
+            group.add(floor);
+
+            const ring = new THREE.Mesh(
+                new THREE.RingGeometry(21.5, 22.0, 64),
+                new THREE.MeshBasicMaterial({ color: 0xd47a8e, side: THREE.DoubleSide, transparent: true, opacity: 0.28 })
+            );
+            ring.rotation.x = -Math.PI / 2;
+            ring.position.y = 0.01;
+            group.add(ring);
+
+            const stageGroup = new THREE.Group();
+            stageGroup.position.set(0, 0, -15.2);
+
+            const deck = new THREE.Mesh(
+                new THREE.BoxGeometry(15.5, 1.8, 5.8),
+                new THREE.MeshStandardMaterial({ color: 0x24101a, roughness: 0.35, metalness: 0.55 })
+            );
+            deck.position.y = 0.9;
+            stageGroup.add(deck);
+
+            const trim = new THREE.Mesh(new THREE.BoxGeometry(15.7, 0.18, 0.2), new THREE.MeshBasicMaterial({ color: 0xf5d6c0 }));
+            trim.position.set(0, 1.82, 2.9);
+            stageGroup.add(trim);
+
+            const catwalk = new THREE.Mesh(
+                new THREE.BoxGeometry(2.6, 1.5, 3.6),
+                new THREE.MeshStandardMaterial({ color: 0x2d1320, roughness: 0.3, metalness: 0.6 })
+            );
+            catwalk.position.set(0, 0.75, 4.4);
+            stageGroup.add(catwalk);
+
+            const screen = new THREE.Mesh(
+                new THREE.PlaneGeometry(13.6, 5.1),
+                new THREE.MeshBasicMaterial({ map: createStageScreenTexture(eventTitle, 'KONSER & AÇIKHAVA ARENASI') })
+            );
+            screen.position.set(0, 4.7, -2.1);
+            stageGroup.add(screen);
+
+            const trussMat = new THREE.MeshStandardMaterial({ color: 0x4a2535, metalness: 0.75, roughness: 0.3 });
+            [-7.4, 7.4].forEach(xPos => {
+                const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.65, 7.8, 0.65), trussMat);
+                pillar.position.set(xPos, 3.9, -2.0);
+                stageGroup.add(pillar);
+
+                const speaker = new THREE.Mesh(
+                    new THREE.BoxGeometry(1.4, 2.8, 1.3),
+                    new THREE.MeshStandardMaterial({ color: 0x16090f, roughness: 0.6, metalness: 0.4 })
+                );
+                speaker.position.set(xPos * 0.92, 3.3, 1.2);
+                stageGroup.add(speaker);
+            });
+
+            const topBeam = new THREE.Mesh(new THREE.BoxGeometry(15.6, 0.45, 0.45), trussMat);
+            topBeam.position.set(0, 7.75, -2.0);
+            stageGroup.add(topBeam);
+
+            const coneGeo = new THREE.ConeGeometry(3.2, 12.5, 24, 1, true);
+            const coneColors = [0xf5d6c0, 0xe6849d, 0xf3c2a4, 0xd46a8e];
+            [-4.8, -1.6, 1.6, 4.8].forEach((xPos, idx) => {
+                const cone = new THREE.Mesh(coneGeo, new THREE.MeshBasicMaterial({
+                    color: coneColors[idx], transparent: true, opacity: 0.11, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending
+                }));
+                cone.position.set(xPos, 4.2, 0.8);
+                cone.rotation.x = 0.42;
+                stageGroup.add(cone);
+                arena3D.spotlights.push({ mesh: cone, baseX: xPos, phase: idx * 1.4 });
+            });
+
+            const stageGlow = new THREE.PointLight(0xe89ca8, 2.2, 34);
+            stageGlow.position.set(0, 6.5, -13);
+            group.add(stageGlow);
+            group.add(stageGroup);
+        }
+
+        function rebuildArena3DVenue(evt) {
+            if (!arena3D.initialized || !arena3D.venueGroup) return;
+
+            // Clear previous venue children cleanly
+            while (arena3D.venueGroup.children.length > 0) {
+                const child = arena3D.venueGroup.children[0];
+                arena3D.venueGroup.remove(child);
+            }
+
+            const venueType = detectVenue3DType(evt);
+            arena3D.venueType = venueType;
+            const eventTitle = evt ? evt.title : 'PassoLive Sahne';
+
+            // Update Venue Type Badge in HUD
+            const venueBadge = document.getElementById('arena3DVenueTypeBadge');
+            const badgeMap = {
+                concert: '🎤 Konser & Açıkhava Arenası',
+                symphony: '🎹 Senfoni & Piyano Konser Salonu',
+                festival: '🎧 360° Elektronik Festival & DJ Sahnesi',
+                stadium: '⚽ Futbol Stadyumu (4 Tribün)',
+                basketball: '🏀 Basketbol & EuroLeague Arenası',
+                volleyball: '🏐 Voleybol Arenası',
+                tennis: '🎾 Toprak Kort Tenis Arenası',
+                boxing_ring: '🥊 Kickboxing & Dövüş Ringi Arenası',
+                racetrack: '🏎️ Formula 1 & Yarış Pisti',
+                marathon: '🏃‍♂️ Boğaz Köprüsü & Maraton Parkuru',
+                theater: '🎭 Klasik Kadife Tiyatro & Opera Salonu',
+                standup: '🎙️ Stand-Up & Gösteri Sahnesi'
+            };
+            if (venueBadge) venueBadge.innerText = badgeMap[venueType] || badgeMap.concert;
+
+            // 1. Build Stage / Pitch / DJ Booth / Theater Proscenium
+            buildVenueArchitecture3D(arena3D.venueGroup, venueType, eventTitle);
+
+            // 2. Build 15 Tiered 3D Seating Blocks tailored to this venue
+            const blocks = getBlocksForVenue3D(venueType);
+            arena3D.activeBlocks = blocks;
+            arena3D.seatMeshes = [];
+
+            const seatBaseGeo = new THREE.BoxGeometry(0.46, 0.24, 0.46);
+            const seatBackGeo = new THREE.BoxGeometry(0.46, 0.42, 0.12);
+            const rows = ['A', 'B', 'C', 'D'];
+
+            blocks.forEach(blk => {
+                const blkGroup = new THREE.Group();
+                blkGroup.position.set(blk.x, 0, blk.z);
+                blkGroup.rotation.y = blk.rotY;
+
+                const riserColor = blk.soldout
+                    ? 0x22171d
+                    : (venueType === 'theater'
+                        ? (blk.zone === 'VIP' ? 0x4a1220 : 0x36101b)
+                        : (blk.zone === 'VIP' ? 0x3b2218 : (blk.zone === 'CAT1' ? 0x341628 : 0x1b2436)));
+                const riserMat = new THREE.MeshStandardMaterial({ color: riserColor, roughness: 0.72, metalness: 0.25 });
+                const rimColor = blk.soldout ? 0x4b3b44 : (blk.zone === 'VIP' ? 0xf2c97d : (blk.zone === 'CAT1' ? 0xd980a8 : 0x73b0e8));
+
+                for (let rIdx = 0; rIdx < 4; rIdx++) {
+                    const riserH = Math.max(0.25, blk.baseY + rIdx * blk.rowStepY);
+                    const riser = new THREE.Mesh(new THREE.BoxGeometry(6.0, riserH, blk.rowStepZ), riserMat);
+                    riser.position.set(0, riserH / 2, (rIdx - 1.5) * blk.rowStepZ);
+                    blkGroup.add(riser);
+                }
+
+                const edgeBar = new THREE.Mesh(
+                    new THREE.BoxGeometry(6.0, 0.09, 0.09),
+                    new THREE.MeshBasicMaterial({ color: rimColor, transparent: true, opacity: blk.soldout ? 0.3 : 0.78 })
+                );
+                edgeBar.position.set(0, blk.baseY + 0.05, -2.0 * blk.rowStepZ);
+                blkGroup.add(edgeBar);
+
+                rows.forEach((row, rIdx) => {
+                    const seatY = blk.baseY + rIdx * blk.rowStepY + 0.14;
+                    const seatZ = (rIdx - 1.5) * blk.rowStepZ;
+
+                    for (let s = 1; s <= 10; s++) {
+                        const isReserved = blk.soldout || ((rIdx + s + parseInt(blk.code)) % 6 === 0);
+                        const seatX = (s - 5.5) * 0.55;
+
+                        const baseColor = isReserved
+                            ? 0x3b313a
+                            : (venueType === 'theater'
+                                ? (blk.zone === 'VIP' ? 0xd4a44a : (blk.zone === 'CAT1' ? 0xb52b4f : 0x8e3b5c))
+                                : (blk.zone === 'VIP' ? 0xeab348 : (blk.zone === 'CAT1' ? 0xc2648f : 0x5c9bd6)));
+
+                        const mat = new THREE.MeshStandardMaterial({
+                            color: baseColor,
+                            roughness: isReserved ? 0.85 : 0.42,
+                            metalness: isReserved ? 0.1 : 0.28,
+                            emissive: 0x000000,
+                            emissiveIntensity: 0
+                        });
+
+                        const seatMesh = new THREE.Mesh(seatBaseGeo, mat);
+                        seatMesh.position.set(seatX, seatY, seatZ);
+
+                        const backMesh = new THREE.Mesh(seatBackGeo, mat);
+                        backMesh.position.set(0, 0.22, 0.18);
+                        seatMesh.add(backMesh);
+
+                        seatMesh.userData = {
+                            blockCode: blk.code,
+                            zone: blk.zone,
+                            blockLabel: blk.label,
+                            row: row,
+                            seat: s,
+                            reserved: isReserved,
+                            soldout: blk.soldout,
+                            baseColor: baseColor,
+                            baseY: seatY
+                        };
+
+                        blkGroup.add(seatMesh);
+                        arena3D.seatMeshes.push(seatMesh);
+                    }
+                });
+
+                arena3D.venueGroup.add(blkGroup);
+            });
+
+            arena3D.venueGroup.updateMatrixWorld(true);
+            syncArena3DSelection();
+            setArena3DCameraPreset('overview');
+        }
+
+        function initArena3D() {
+            const container = document.getElementById('arena3DContainer');
+            if (!container || typeof THREE === 'undefined') return;
+
+            if (arena3D.initialized) {
+                rebuildArena3DVenue(activeDetailEvent);
+                resizeArena3D();
+                startArena3DLoop();
+                return;
+            }
+
+            const w = container.clientWidth || 720;
+            const h = container.clientHeight || 410;
+
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x14070d);
+            scene.fog = new THREE.FogExp2(0x14070d, 0.0135);
+
+            const camera = new THREE.PerspectiveCamera(46, w / h, 0.2, 180);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            container.insertBefore(renderer.domElement, container.firstChild);
+
+            // Global Lights
+            scene.add(new THREE.AmbientLight(0xf6d8c8, 0.68));
+            scene.add(new THREE.HemisphereLight(0xffe7d6, 0x2d0e1d, 0.58));
+            const dirLight = new THREE.DirectionalLight(0xfff0e0, 0.85);
+            dirLight.position.set(14, 26, 16);
+            scene.add(dirLight);
+
+            const venueGroup = new THREE.Group();
+            scene.add(venueGroup);
+
+            // Glowing Selected Seat Beacon Ring
+            const beacon = new THREE.Mesh(
+                new THREE.RingGeometry(0.32, 0.46, 24),
+                new THREE.MeshBasicMaterial({ color: 0xfff0e4, side: THREE.DoubleSide, transparent: true, opacity: 0.92 })
+            );
+            beacon.rotation.x = -Math.PI / 2;
+            scene.add(beacon);
+
+            arena3D.scene = scene;
+            arena3D.venueGroup = venueGroup;
+            arena3D.camera = camera;
+            arena3D.renderer = renderer;
+            arena3D.raycaster = new THREE.Raycaster();
+            arena3D.mouse = new THREE.Vector2();
+            arena3D.beaconMesh = beacon;
+            arena3D.lookTarget = new THREE.Vector3(0, 1.5, -1.8);
+            arena3D.targetLook = new THREE.Vector3(0, 1.5, -1.8);
+            arena3D.initialized = true;
+
+            // Pointer Orbit + Hover Tooltip + Click Seat Picking
+            const domEl = renderer.domElement;
+            const tooltip = document.getElementById('arena3DTooltip');
+
+            domEl.addEventListener('pointerdown', (e) => {
+                arena3D.isDragging = true;
+                arena3D.dragStartX = e.clientX;
+                arena3D.dragStartY = e.clientY;
+                arena3D.dragMoved = 0;
+            });
+
+            window.addEventListener('pointerup', () => {
+                arena3D.isDragging = false;
+            });
+
+            domEl.addEventListener('pointermove', (e) => {
+                const rect = domEl.getBoundingClientRect();
+                if (arena3D.isDragging) {
+                    const dx = e.clientX - arena3D.dragStartX;
+                    const dy = e.clientY - arena3D.dragStartY;
+                    arena3D.dragMoved += Math.abs(dx) + Math.abs(dy);
+                    arena3D.dragStartX = e.clientX;
+                    arena3D.dragStartY = e.clientY;
+
+                    if (arena3D.camMode === 'seat_pov') {
+                        arena3D.camMode = 'overview';
+                        updateArena3DCamButtons();
+                    }
+                    arena3D.targetTheta -= dx * 0.0075;
+                    arena3D.targetPhi = Math.max(0.28, Math.min(1.42, arena3D.targetPhi - dy * 0.0065));
+                    if (tooltip) tooltip.style.display = 'none';
+                    return;
+                }
+
+                arena3D.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                arena3D.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+                arena3D.raycaster.setFromCamera(arena3D.mouse, arena3D.camera);
+                const hits = arena3D.raycaster.intersectObjects(arena3D.seatMeshes, false);
+
+                if (hits.length > 0) {
+                    const hitSeat = hits[0].object;
+                    const u = hitSeat.userData;
+                    arena3D.hoveredSeat = hitSeat;
+                    domEl.style.cursor = u.reserved ? 'not-allowed' : 'pointer';
+
+                    if (tooltip) {
+                        const baseP = activeDetailEvent ? parseFloat(activeDetailEvent.price) : 500;
+                        const mult = u.zone === 'VIP' ? 1.8 : (u.zone === 'CAT1' ? 1.2 : 0.8);
+                        const seatP = Math.round(baseP * mult);
+                        tooltip.innerHTML = u.reserved
+                            ? `🔒 Blok ${u.blockCode} • Sıra ${u.row}-${u.seat} (Dolu)`
+                            : `✦ Blok ${u.blockCode} (${u.blockLabel}) • Sıra ${u.row} - Koltuk ${u.seat} • <span style="color:#f5d6c0;">₺${seatP}</span>`;
+                        tooltip.style.left = `${e.clientX - rect.left}px`;
+                        tooltip.style.top = `${e.clientY - rect.top}px`;
+                        tooltip.style.display = 'block';
+                    }
+                } else {
+                    arena3D.hoveredSeat = null;
+                    domEl.style.cursor = 'grab';
+                    if (tooltip) tooltip.style.display = 'none';
+                }
+            });
+
+            domEl.addEventListener('pointerleave', () => {
+                arena3D.hoveredSeat = null;
+                if (tooltip) tooltip.style.display = 'none';
+            });
+
+            domEl.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                if (arena3D.camMode === 'seat_pov') {
+                    arena3D.camMode = 'overview';
+                    updateArena3DCamButtons();
+                }
+                arena3D.targetRadius = Math.max(10, Math.min(48, arena3D.targetRadius + e.deltaY * 0.025));
+            }, { passive: false });
+
+            domEl.addEventListener('click', (e) => {
+                if (arena3D.dragMoved > 7) return;
+                const rect = domEl.getBoundingClientRect();
+                arena3D.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                arena3D.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+                arena3D.raycaster.setFromCamera(arena3D.mouse, arena3D.camera);
+                const hits = arena3D.raycaster.intersectObjects(arena3D.seatMeshes, false);
+                if (hits.length > 0) {
+                    const u = hits[0].object.userData;
+                    if (u.reserved) return;
+
+                    if (selectedBlockCode !== u.blockCode) {
+                        selectBlock(u.blockCode, u.zone, u.blockLabel, true);
+                        selectedSeats = [{ row: u.row, seat: u.seat }];
+                        lastFocusedSeat = { row: u.row, seat: u.seat };
+                        renderSeatMatrix();
+                        updateSeatingSummary();
+                        syncArena3DSelection();
+                    } else {
+                        toggleSeatSelection(u.row, u.seat);
+                    }
+                }
+            });
+
+            window.addEventListener('resize', resizeArena3D);
+            rebuildArena3DVenue(activeDetailEvent);
+            startArena3DLoop();
+        }
+
+        function resizeArena3D() {
+            if (!arena3D.initialized || !arena3D.renderer || !arena3D.camera) return;
+            const container = document.getElementById('arena3DContainer');
+            if (!container || container.clientWidth === 0) return;
+            const w = container.clientWidth;
+            const h = container.clientHeight || 410;
+            arena3D.camera.aspect = w / h;
+            arena3D.camera.updateProjectionMatrix();
+            arena3D.renderer.setSize(w, h);
+        }
+
+        function startArena3DLoop() {
+            if (arena3D.running || !arena3D.initialized) return;
+            arena3D.running = true;
+            let t = 0;
+
+            function animate() {
+                if (!arena3D.running) return;
+                arena3D.animId = requestAnimationFrame(animate);
+                t += 0.016;
+
+                arena3D.spotlights.forEach(sp => {
+                    if (sp.isRadial) {
+                        sp.mesh.rotation.y = t * 0.4 + sp.phase;
+                    } else {
+                        sp.mesh.rotation.z = Math.sin(t * 0.9 + sp.phase) * 0.24;
+                        sp.mesh.rotation.x = 0.36 + Math.cos(t * 0.65 + sp.phase) * 0.1;
+                    }
+                });
+
+                arena3D.rotatingProps.forEach(rp => {
+                    rp.mesh.rotation[rp.axis] += rp.speed * 0.016;
+                });
+
+                // Animate 3D Formula 1 Cars around oval circuit
+                if (arena3D.trackCars && arena3D.trackCars.length > 0) {
+                    const rxBase = 11.4;
+                    const rzBase = 6.1;
+                    arena3D.trackCars.forEach(tc => {
+                        tc.progress = (tc.progress + tc.speed * 0.016) % 1;
+                        const ang = tc.progress * Math.PI * 2;
+                        const rx = rxBase + tc.laneOffset;
+                        const rz = rzBase + tc.laneOffset * 0.7;
+                        const x = Math.cos(ang) * rx;
+                        const z = Math.sin(ang) * rz;
+                        const nextAng = ang + 0.05;
+                        const nx = Math.cos(nextAng) * rx;
+                        const nz = Math.sin(nextAng) * rz;
+                        tc.mesh.position.set(x, 0.05, z);
+                        tc.mesh.lookAt(nx, 0.05, nz);
+                    });
+                }
+
+                if (arena3D.beaconMesh && arena3D.beaconMesh.visible) {
+                    const sc = 1 + Math.sin(t * 4.5) * 0.18;
+                    arena3D.beaconMesh.scale.set(sc, sc, 1);
+                }
+
+                if (arena3D.camMode === 'seat_pov' && arena3D.directCamPos && arena3D.directLookAt) {
+                    arena3D.camera.position.lerp(arena3D.directCamPos, 0.085);
+                    arena3D.lookTarget.lerp(arena3D.directLookAt, 0.1);
+                    arena3D.camera.lookAt(arena3D.lookTarget);
+                } else {
+                    arena3D.theta += (arena3D.targetTheta - arena3D.theta) * 0.09;
+                    arena3D.phi += (arena3D.targetPhi - arena3D.phi) * 0.09;
+                    arena3D.radius += (arena3D.targetRadius - arena3D.radius) * 0.09;
+                    arena3D.lookTarget.lerp(arena3D.targetLook, 0.09);
+
+                    const cx = arena3D.lookTarget.x + arena3D.radius * Math.sin(arena3D.phi) * Math.sin(arena3D.theta);
+                    const cy = arena3D.lookTarget.y + arena3D.radius * Math.cos(arena3D.phi);
+                    const cz = arena3D.lookTarget.z + arena3D.radius * Math.sin(arena3D.phi) * Math.cos(arena3D.theta);
+                    arena3D.camera.position.set(cx, Math.max(1.2, cy), cz);
+                    arena3D.camera.lookAt(arena3D.lookTarget);
+                }
+
+                arena3D.renderer.render(arena3D.scene, arena3D.camera);
+            }
+            animate();
+        }
+
+        function stopArena3DLoop() {
+            arena3D.running = false;
+            if (arena3D.animId) {
+                cancelAnimationFrame(arena3D.animId);
+                arena3D.animId = null;
+            }
+        }
+
+        function updateArena3DCamButtons() {
+            ['camBtnOverview', 'camBtnSeatPov', 'camBtnStage'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('active');
+            });
+            const map = { overview: 'camBtnOverview', seat_pov: 'camBtnSeatPov', stage: 'camBtnStage' };
+            const activeEl = document.getElementById(map[arena3D.camMode]);
+            if (activeEl) activeEl.classList.add('active');
+        }
+
+        function getPrimarySelectedSeat3D() {
+            if (!arena3D.initialized || !selectedSeats || selectedSeats.length === 0) return null;
+            const target = selectedSeats[0];
+            return arena3D.seatMeshes.find(m =>
+                m.userData.blockCode === selectedBlockCode &&
+                m.userData.row === target.row &&
+                m.userData.seat === target.seat
+            ) || null;
+        }
+
+        function setArena3DCameraPreset(mode) {
+            arena3D.camMode = mode;
+            updateArena3DCamButtons();
+            if (!arena3D.initialized) return;
+
+            if (mode === 'overview') {
+                const c = arena3D.overviewCam;
+                arena3D.targetTheta = c.theta;
+                arena3D.targetPhi = c.phi;
+                arena3D.targetRadius = c.radius;
+                arena3D.targetLook.set(c.lookX, c.lookY, c.lookZ);
+            } else if (mode === 'stage') {
+                const c = arena3D.stageCam;
+                arena3D.targetTheta = c.theta;
+                arena3D.targetPhi = c.phi;
+                arena3D.targetRadius = c.radius;
+                arena3D.targetLook.set(c.lookX, c.lookY, c.lookZ);
+            } else if (mode === 'seat_pov') {
+                const seatMesh = getPrimarySelectedSeat3D();
+                if (seatMesh) {
+                    const wp = new THREE.Vector3();
+                    seatMesh.getWorldPosition(wp);
+                    const fp = arena3D.focalPoint;
+                    arena3D.directCamPos = new THREE.Vector3(wp.x, wp.y + 1.35, wp.z);
+                    arena3D.directLookAt = new THREE.Vector3(fp.x, fp.y, fp.z);
+                }
+            }
+        }
+
+        function syncArena3DSelection() {
+            if (!arena3D.initialized) return;
+            let primaryMesh = null;
+
+            arena3D.seatMeshes.forEach(mesh => {
+                const u = mesh.userData;
+                const isSel = u.blockCode === selectedBlockCode && isSeatSelected(u.row, u.seat);
+                if (isSel) {
+                    mesh.material.color.setHex(0xff5286);
+                    mesh.material.emissive.setHex(0x8a1c42);
+                    mesh.material.emissiveIntensity = 0.85;
+                    mesh.position.y = u.baseY + 0.14;
+                    if (!primaryMesh) primaryMesh = mesh;
+                } else {
+                    mesh.material.color.setHex(u.baseColor);
+                    mesh.material.emissive.setHex(0x000000);
+                    mesh.material.emissiveIntensity = 0;
+                    mesh.position.y = u.baseY;
+                }
+            });
+
+            if (arena3D.beaconMesh) {
+                if (primaryMesh) {
+                    const wp = new THREE.Vector3();
+                    primaryMesh.getWorldPosition(wp);
+                    arena3D.beaconMesh.position.set(wp.x, wp.y + 0.55, wp.z);
+                    arena3D.beaconMesh.visible = true;
+                    if (arena3D.camMode === 'seat_pov') {
+                        const fp = arena3D.focalPoint;
+                        arena3D.directCamPos = new THREE.Vector3(wp.x, wp.y + 1.35, wp.z);
+                        arena3D.directLookAt = new THREE.Vector3(fp.x, fp.y, fp.z);
+                    }
+                } else {
+                    arena3D.beaconMesh.visible = false;
+                }
+            }
+
+            const badge = document.getElementById('arena3DActiveBadge');
+            if (badge && selectedSeats.length > 0) {
+                const sList = [...selectedSeats].sort((a, b) => a.seat - b.seat).map(s => s.seat).join(', ');
+                badge.innerText = `✦ Blok ${selectedBlockCode} • Sıra ${selectedSeats[0].row} - Koltuk ${sList}`;
+            }
+        }
+
+        function switchSeatingViewMode(mode) {
+            activeSeatingViewMode = mode;
+            const box3d = document.getElementById('arena3DContainer');
+            const box2d = document.getElementById('arena2DContainer');
+            const btn3d = document.getElementById('btnMode3D');
+            const btn2d = document.getElementById('btnMode2D');
+
+            if (mode === '3d') {
+                if (box3d) box3d.style.display = 'block';
+                if (box2d) box2d.style.display = 'none';
+                if (btn3d) btn3d.classList.add('active');
+                if (btn2d) btn2d.classList.remove('active');
+                setTimeout(() => { initArena3D(); resizeArena3D(); }, 30);
+            } else {
+                if (box3d) box3d.style.display = 'none';
+                if (box2d) box2d.style.display = 'block';
+                if (btn3d) btn3d.classList.remove('active');
+                if (btn2d) btn2d.classList.add('active');
+                stopArena3DLoop();
+            }
+        }
+
+        function openSeatingView(eventId) {
+            const evt = allEvents.find(e => e.id === eventId);
+            if (!evt) return;
+            activeDetailEvent = evt;
+            openSeatingFromDetail();
+        }
+
         function openSeatingFromDetail() {
             closeEventDetailModal();
             if (!activeDetailEvent) return;
@@ -5000,17 +7164,24 @@
 
             selectBlock('001', 'VIP', 'Sahne Önü VIP');
             document.getElementById('seatingViewModal').classList.add('active');
+            switchSeatingViewMode(activeSeatingViewMode || '3d');
         }
 
         function closeSeatingModal() {
+            stopArena3DLoop();
             document.getElementById('seatingViewModal').classList.remove('active');
         }
 
-        function selectBlock(blockCode, zone, blockLabel) {
+        function selectBlock(blockCode, zone, blockLabel, skipCamFly) {
             selectedBlockCode = blockCode;
             selectedBlockName = blockLabel;
             selectedZone = zone;
-            selectedSeats = [{ row: 'A', seat: 1 }];
+            // Pick first non-reserved seat in row A
+            let firstFree = 1;
+            for (let s = 1; s <= 10; s++) {
+                if ((0 + s + parseInt(blockCode)) % 6 !== 0) { firstFree = s; break; }
+            }
+            selectedSeats = [{ row: 'A', seat: firstFree }];
 
             // Clear selected class from all block cards
             document.querySelectorAll('.block-card').forEach(card => card.classList.remove('selected'));
@@ -5036,6 +7207,15 @@
             updateSeatPOV(zone);
             renderSeatMatrix();
             updateSeatingSummary();
+            syncArena3DSelection();
+
+            if (!skipCamFly && arena3D.initialized && arena3D.camMode !== 'seat_pov') {
+                const blk = (arena3D.activeBlocks || []).find(b => b.code === blockCode);
+                if (blk) {
+                    arena3D.targetLook.set(blk.x * 0.45, blk.baseY + 0.5, blk.z * 0.45);
+                    arena3D.targetRadius = blk.zone === 'VIP' ? 23 : (blk.zone === 'CAT1' ? 27 : 33);
+                }
+            }
         }
 
         let isPovZoomed = false;
@@ -5496,6 +7676,7 @@
             }
             renderSeatMatrix();
             updateSeatingSummary();
+            syncArena3DSelection();
         }
 
         let calculatedFinalPrice = 850;
@@ -5753,6 +7934,7 @@
                 lastFocusedSeat = { row: bestMatch.row, seat: bestMatch.startSeat };
                 renderSeatMatrix();
                 updateSeatingSummary();
+                syncArena3DSelection();
                 if (typeof confetti === 'function') confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
 
                 if (badge) {
