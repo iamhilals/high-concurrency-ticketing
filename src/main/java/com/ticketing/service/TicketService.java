@@ -70,7 +70,7 @@ public class TicketService {
                     .success(false)
                     .riskScore(botResult.getRiskScore())
                     .riskLevel(botResult.getRiskLevel())
-                    .message("🚨 Karaborsacı / Bot Algılama Koruması: Şüpheli ve otomatik bilet alma davranışı tespit edildi. İşleminiz engellendi! (Risk Puanı: " + botResult.getRiskScore() + "/100)")
+                    .message("🚨 Güvenlik Koruması: Olağandışı hızlı işlem tespit edildiği için talebiniz geçici olarak engellendi.")
                     .build();
         }
 
@@ -102,7 +102,7 @@ public class TicketService {
                 .expiresAt(expiresAt)
                 .riskScore(botResult.getRiskScore())
                 .riskLevel(botResult.getRiskLevel())
-                .message("Koltuk 10 dakikalığına başarıyla rezerve edildi. Lütfen ödemeyi tamamlayın. (AI Risk Puanı: " + botResult.getRiskScore() + "/100 - " + botResult.getRiskLevel() + ")")
+                .message("Koltuk 10 dakikalığına başarıyla rezerve edildi. Lütfen ödemeyi tamamlayın.")
                 .build();
     }
 
@@ -150,7 +150,7 @@ public class TicketService {
         String lockVal = redisTemplate.opsForValue().get(seatLockKey);
 
         if (lockVal == null || !lockVal.contains(request.getReservationId())) {
-            throw new IllegalStateException("Koltuk rezervasyon süresi doldu (10 dk) veya geçersiz rezervasyon ID!");
+            throw new IllegalStateException("Koltuk rezervasyon süreniz doldu veya geçersiz rezervasyon!");
         }
 
         // Genel satın alma akışına yönlendir
@@ -177,19 +177,19 @@ public class TicketService {
         Long remaining = redisTemplate.opsForValue().decrement(redisKey);
         
         if (remaining == null) {
-            throw new IllegalStateException("Redis capacity counter is missing for key: " + redisKey);
+            throw new IllegalStateException("Etkinlik kontenjan bilgisine şu an ulaşılamıyor.");
         }
 
         if (remaining < 0) {
             redisTemplate.opsForValue().increment(redisKey);
-            throw new IllegalStateException("No available tickets left in cache for event: " + request.getEventId());
+            throw new IllegalStateException("Bu etkinlik için tüm biletler tükendi!");
         }
 
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + request.getUserId()));
+                .orElseThrow(() -> new IllegalArgumentException("Kullanıcı bilgisi bulunamadı."));
 
         Event event = eventRepository.findById(request.getEventId())
-                .orElseThrow(() -> new IllegalArgumentException("Event not found with id: " + request.getEventId()));
+                .orElseThrow(() -> new IllegalArgumentException("Etkinlik bilgisi bulunamadı."));
 
         TicketBookingEvent bookingEvent = TicketBookingEvent.builder()
                 .eventId(event.getId())

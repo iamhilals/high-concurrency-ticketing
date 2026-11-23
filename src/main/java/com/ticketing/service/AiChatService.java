@@ -57,9 +57,9 @@ public class AiChatService {
 
         if (message.isEmpty()) {
             return AiChatResponse.builder()
-                    .reply("Merhaba! 👋 Ben PassoBot 🤖. Size konser, tiyatro, festival ve maç biletleri arama konusunda yardımcı olabilirim. Nasıl bir etkinlik arıyorsunuz?")
+                    .reply("Merhaba! 👋 Ben PassoBot. Size konser, tiyatro, festival ve maç biletleri arama konusunda yardımcı olabilirim. Nasıl bir etkinlik arıyorsunuz?")
                     .suggestedEvents(new ArrayList<>())
-                    .usedEngine("Lokal NLP Asistanı")
+                    .usedEngine("PassoBot Bilet Asistanı")
                     .build();
         }
 
@@ -100,9 +100,10 @@ public class AiChatService {
                     e.getAvailableCapacity() != null ? e.getAvailableCapacity() : 0));
         }
 
-        String systemPrompt = "Sen PassoLive Bilet Satış Platformu'nun süper akıllı ve samimi AI Bilet Asistanısın (PassoBot 🤖).\n\n" +
-                "KURAL 1 (SELAMLAŞMA & SOHBET): Kullanıcı 'selam', 'merhaba', 'nasılsın' gibi genel selamlaşma/sohbet ifadeleri kullandığında SADECE kibarca karşılık ver, kendinizi tanıt ve ne tür bir etkinlik (konser, tiyatro, maç, bütçe) aradığını sor. Asla etkinlik arama hatası verme ve zoraki bilet önerme!\n\n" +
+        String systemPrompt = "Sen PassoLive Bilet Satış Platformu'nun samimi ve yardımcı Bilet Asistanısın (PassoBot).\n\n" +
+                "KURAL 1 (SELAMLAŞMA & SOHBET): Kullanıcı 'selam', 'merhaba', 'nasılsın' gibi genel selamlaşma/sohbet ifadeleri kullandığında SADECE kibarca karşılık ver, kendini tanıt ve ne tür bir etkinlik (konser, tiyatro, maç, bütçe) aradığını sor. Asla etkinlik arama hatası verme ve zoraki bilet önerme!\n\n" +
                 "KURAL 2 (BİLET & ETKİNLİK ARAMASI): Kullanıcı spesifik bir kategori, şehir, bütçe veya sanatçı sorduğunda aşağıdaki canlı katalogdan en uygun etkinlikleri öner.\n\n" +
+                "KURAL 3 (ÜSLUP): Yanıtlarında hiçbir zaman yapay zeka modeli, yazılım teknolojisi veya teknik terim adı geçirme; tamamen doğal bir bilet danışmanı gibi konuş.\n\n" +
                 "CANLI ETKİNLİK KATALOĞUMUZ:\n" +
                 eventsCatalogue.toString() + "\n" +
                 "KULLANICI MESAJI: \"" + userMessage + "\"\n\n" +
@@ -163,7 +164,7 @@ public class AiChatService {
             return AiChatResponse.builder()
                     .reply(aiReply)
                     .suggestedEvents(matchedEvents)
-                    .usedEngine("Google Gemini LLM (" + modelName + ")")
+                    .usedEngine("PassoBot Bilet Asistanı")
                     .build();
         }
 
@@ -179,9 +180,9 @@ public class AiChatService {
         // 1. Direct Greeting Matcher (Selam, Merhaba, Nasılsın)
         if (isGreetingOnly(message)) {
             return AiChatResponse.builder()
-                    .reply("Harika bir gün! 👋 Ben **PassoBot AI**. Size en sevdiğiniz konserler, spor maçları, tiyatrolar veya bütçenize uygun etkinlikleri bulmak için buradayım.\n\nNasıl bir etkinlik arıyorsunuz? (Örn: *'500 TL altı rock konserleri'*, *'İstanbul tiyatroları'* veya *'Derbi maçlar'*)")
+                    .reply("Harika bir gün! 👋 Ben **PassoBot**. Size en sevdiğiniz konserler, spor maçları, tiyatrolar veya bütçenize uygun etkinlikleri bulmak için buradayım.\n\nNasıl bir etkinlik arıyorsunuz? (Örn: *'500 TL altı rock konserleri'*, *'İstanbul tiyatroları'* veya *'Derbi maçlar'*)")
                     .suggestedEvents(new ArrayList<>())
-                    .usedEngine("Lokal NLP Asistanı")
+                    .usedEngine("PassoBot Bilet Asistanı")
                     .build();
         }
 
@@ -234,7 +235,7 @@ public class AiChatService {
         return AiChatResponse.builder()
                 .reply(replyBuilder.toString())
                 .suggestedEvents(matchedEvents)
-                .usedEngine("Lokal NLP Asistanı (Fallback)")
+                .usedEngine("PassoBot Bilet Asistanı")
                 .build();
     }
 

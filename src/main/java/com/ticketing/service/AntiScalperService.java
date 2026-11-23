@@ -43,8 +43,8 @@ public class AntiScalperService {
                 .eventId(101L)
                 .seatId("B-14")
                 .riskScore(92)
-                .riskLevel("KARABORSACI_BOT")
-                .riskFactors(Arrays.asList("İnsansı olmayan ultra-hızlı istek (42 ms aralık)", "Son 10 saniyede 12 bilet denemesi", "Otomatik headless tarayıcı imzası"))
+                .riskLevel("YÜKSEK_RİSK")
+                .riskFactors(Arrays.asList("Olağandışı hızlı toplu talep", "Son 10 saniyede 12 bilet denemesi", "Otomatik işlem şüphesi"))
                 .actionTaken("BLOCKED")
                 .timestamp(LocalDateTime.now().minusMinutes(3))
                 .build());
@@ -56,8 +56,8 @@ public class AntiScalperService {
                 .eventId(102L)
                 .seatId("A-01")
                 .riskScore(84)
-                .riskLevel("KARABORSACI_BOT")
-                .riskFactors(Arrays.asList("Çapraz etkinlik toplu koltuk kapatma (3 farklı etkinlik)", "Hızlı IP döngüsü (Proxy)"))
+                .riskLevel("YÜKSEK_RİSK")
+                .riskFactors(Arrays.asList("Birden fazla etkinlikte toplu koltuk denemesi (3 farklı etkinlik)", "Farklı bağlantılardan seri işlem"))
                 .actionTaken("BLOCKED")
                 .timestamp(LocalDateTime.now().minusMinutes(12))
                 .build());
@@ -70,7 +70,7 @@ public class AntiScalperService {
                 .seatId("VIP-04")
                 .riskScore(58)
                 .riskLevel("ŞÜPHELİ")
-                .riskFactors(Arrays.asList("Yüksek tıklama frekansı (Son 10sn'de 5 deneme)"))
+                .riskFactors(Arrays.asList("Hızlı ardışık bilet denemesi (Son 10 saniyede 5 deneme)"))
                 .actionTaken("WARNED")
                 .timestamp(LocalDateTime.now().minusMinutes(25))
                 .build());
@@ -100,10 +100,10 @@ public class AntiScalperService {
 
                 if (delta < 150) { // Sub-150ms interval is physically impossible for a human clicking manually
                     riskScore += 45;
-                    riskFactors.add("İnsansı olmayan ultra-hızlı istek tespiti (" + delta + " ms aralık)");
+                    riskFactors.add("Olağandışı hızlı toplu talep");
                 } else if (delta < 400) {
                     riskScore += 25;
-                    riskFactors.add("Yüksek hızlı seri tıklama hızı (" + delta + " ms)");
+                    riskFactors.add("Çok hızlı ardışık işlem denemesi");
                 }
             }
 
@@ -115,10 +115,10 @@ public class AntiScalperService {
             long recentCount10s = history.stream().filter(t -> (nowMs - t) <= 10000).count();
             if (recentCount10s >= 8) {
                 riskScore += 40;
-                riskFactors.add("Son 10 saniyede aşırı bilet denemesi (" + recentCount10s + " istek/10sn)");
+                riskFactors.add("Son 10 saniyede aşırı bilet denemesi (" + recentCount10s + " deneme)");
             } else if (recentCount10s >= 4) {
                 riskScore += 20;
-                riskFactors.add("Hızlı rezervasyon frekansı (" + recentCount10s + " istek/10sn)");
+                riskFactors.add("Hızlı ardışık rezervasyon denemesi (" + recentCount10s + " deneme)");
             }
         }
 
@@ -128,7 +128,7 @@ public class AntiScalperService {
             events.add(eventId);
             if (events.size() >= 3) {
                 riskScore += 30;
-                riskFactors.add("Çapraz etkinlik toplu koltuk kapatma deseni (" + events.size() + " farklı etkinlik)");
+                riskFactors.add("Birden fazla etkinlikte toplu koltuk denemesi (" + events.size() + " farklı etkinlik)");
             }
         }
 
@@ -144,22 +144,22 @@ public class AntiScalperService {
         String recommendation;
 
         if (riskScore >= 75) {
-            riskLevel = "KARABORSACI_BOT";
+            riskLevel = "YÜKSEK_RİSK";
             blocked = true;
             actionTaken = "BLOCKED";
-            recommendation = "🚨 Karaborsacı / Otomatik Bot Girişimi Tespiti! Koltuk Rezervasyonu Engellendi.";
+            recommendation = "🚨 Şüpheli toplu bilet alım girişimi nedeniyle rezervasyon engellendi.";
             blockedBotsCount.incrementAndGet();
         } else if (riskScore >= 45) {
             riskLevel = "ŞÜPHELİ";
-            blocked = false; // Flagged for monitoring / captcha check
+            blocked = false;
             actionTaken = "WARNED";
-            recommendation = "⚠️ Şüpheli Kullanıcı Davranışı Tespiti. CAPTCHA doğrulaması istenebilir.";
+            recommendation = "⚠️ Olağandışı işlem tespit edildi. Ek doğrulama gerekebilir.";
             suspiciousFlagCount.incrementAndGet();
         } else {
             riskLevel = "TEMİZ";
             blocked = false;
             actionTaken = "CLEARED";
-            recommendation = "✅ Güvenli Kullanıcı Davranışı.";
+            recommendation = "✅ Güvenli işlem.";
         }
 
         // Log suspicious or blocked threats
@@ -202,7 +202,7 @@ public class AntiScalperService {
 
         // Send 5 lightning fast request simulations
         for (int i = 0; i < 5; i++) {
-            BotDetectionResult res = analyzeReservationAttempt(botUserId, botIp, 101L, "BOT-SEAT-" + (i + 1));
+            BotDetectionResult res = analyzeReservationAttempt(botUserId, botIp, 101L, "Koltuk-" + (i + 1));
             if (!recentThreats.isEmpty()) {
                 simulated.add(recentThreats.get(0));
             }
