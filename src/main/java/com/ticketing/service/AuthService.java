@@ -71,7 +71,7 @@ public class AuthService {
 
         User user = userOpt.get();
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (user.getPassword() == null || !user.getPassword().equals(request.getPassword())) {
             return AuthResponse.builder().success(false).message("Hatalı şifre!").build();
         }
 

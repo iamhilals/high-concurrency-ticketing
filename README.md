@@ -206,13 +206,54 @@ Tarayıcınızdan şu adrese gidin:
 | `POST` | `/api/tickets` | Doğrudan bilet talebi (`Redis DECR` + `Kafka`) |
 | `GET` | `/api/tickets/user/{userId}` | Kullanıcının onaylanmış bilet geçmişini döner |
 
-### Akıllı Asistan & Güvenlik Merkezi
+### Akıllı Asistan, Güvenlik & Sağlık Kontrolü
 | Metot | Uç Nokta | Açıklama |
 | --- | --- | --- |
 | `POST` | `/api/ai/chat` | PassoBot bilet asistanı ile etkinlik arama & öneri sohbeti |
 | `GET` | `/api/ai/anti-scalper/stats` | Anlık güvenlik analizi ve şüpheli işlem istatistikleri |
 | `POST` | `/api/ai/anti-scalper/simulate-attack` | Yönetim paneli üzerinden güvenlik koruma testi başlatır |
 | `POST` | `/api/ai/anti-scalper/toggle-defense` | Yüksek koruma modunu açar / kapatır |
+| `GET` | `/api/health` | Bulut sağlık kontrolü ve 7/24 uyanık tutma (UptimeRobot / Render) ucu |
+
+---
+
+## 🧪 Yüksek Eşzamanlılık (500 Kullanıcı) Test & Benchmark Sonuçları
+
+Sistemin yoğun trafik altında **çifte koltuk kilidi** ve **fazla satış (overselling)** üretmediği hem **JUnit 5 çoklu iş parçacığı testleri** (`src/test/java/com/ticketing/TicketConcurrencyTest.java`) hem de çalışan tam yığın (Spring Boot + PostgreSQL + Redis + Apache Kafka) sunucuya paralel 500 HTTP isteği atan **`load-test/stress-test.js`** ile doğrulanmıştır.
+
+### 1. Canlı Tam Yığın HTTP Stres Testi (`node load-test/stress-test.js`)
+
+| # | Test Senaryosu | Paralel İstek | Başarılı (`200 OK`) | Reddedilen / Engellenen | Toplam Süre | Ort. / P95 Yanıt | Sonuç |
+| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1** | **500 Farklı Kullanıcı → Aynı 1 Koltuk (`SETNX` Lock)** | 500 | **1** *(Beklenen: 1)* | **499** (`409 Conflict`) | **4.370 ms** | 2.664 ms / 4.273 ms | ✅ **0 Çifte Rezervasyon** |
+| **2** | **500 Farklı Kullanıcı → 50 Biletlik Flash-Sale (`DECR` + Kafka)** | 500 | **50** *(Beklenen: 50)* | **450** *(Tükendi)* | **2.160 ms** | 1.257 ms / 1.799 ms | ✅ **0 Overselling • DB Son Stok: `0`** |
+| **3** | **Tek Bot IP → 25 Seri Saldırı (Rate Limiter + Anti-Scalper)** | 25 | 3 | **7 Anti-Scalper** + **15 HTTP 429** | < 300 ms | — | ✅ **Bot Anında Durduruldu** |
+
+### 2. Otomatik JUnit 5 Thread Yarışı Testleri (`.\mvnw.cmd test`)
+
+| Test Senaryosu | Paralel Thread | Sonuç | Süre | Durum |
+| :--- | :---: | :--- | :---: | :---: |
+| Aynı 1 Koltuk İçin Yarış (`SETNX`) | 500 | 1 Başarılı / 499 Reddedilen | 128 ms | ✅ PASS |
+| 50 Biletlik Flash-Sale (`DECR` + Kafka) | 500 | 50 Satılan / 450 Reddedilen / Kalan Stok: `0` | 94 ms | ✅ PASS |
+| Karaborsacı Bot Seri İstek Saldırısı | 12 seri istek | 10 İstek Anında Engellendi | < 20 ms | ✅ PASS |
+
+### Testleri Çalıştırma
+```bash
+# Otomatik JUnit 5 yüksek eşzamanlılık testleri
+./mvnw test
+
+# Çalışan sunucuya karşı canlı 500 eşzamanlı kullanıcı HTTP stres testi
+node load-test/stress-test.js
+```
+
+---
+
+## ☁️ Ücretsiz Bulut Dağıtımı (Docker / Render / Neon / Upstash)
+
+Proje kökünde bulunan `Dockerfile` ve `render.yaml` ile uygulama bulutta sıfır maliyetle yayına hazırdır:
+- Tüm bağlantı ayarları (`PORT`, `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `REDIS_SSL`, `KAFKA_ENABLED`) ortam değişkenleriyle yönetilir.
+- Yerelde (`KAFKA_ENABLED=true`) tam **Apache Kafka** ile çalışırken, ücretsiz bulut ortamında (`KAFKA_ENABLED=false`) Spring `@Async` asenkron kuyruk yedeğine otomatik geçiş yapar.
+- `/api/health` ucu üzerinden UptimeRobot gibi ücretsiz bir monitörle 10 dakikada bir ping atılarak 7/24 uyanık tutulabilir.
 
 ---
 

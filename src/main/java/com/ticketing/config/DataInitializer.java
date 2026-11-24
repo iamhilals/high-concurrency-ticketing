@@ -485,8 +485,13 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // 1. Test kullanıcısını oluştur
-        if (userRepository.count() == 0) {
+        // 1. Test kullanıcısını oluştur (varsa ve şifresi null kalmışsa düzelt)
+        userRepository.findByUsername("johndoe").ifPresentOrElse(existingUser -> {
+            if (existingUser.getPassword() == null || existingUser.getPassword().isBlank()) {
+                existingUser.setPassword("password123");
+                userRepository.save(existingUser);
+            }
+        }, () -> {
             User testUser = User.builder()
                     .username("johndoe")
                     .email("john.doe@example.com")
@@ -494,7 +499,7 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             userRepository.save(testUser);
             System.out.println("Initialized test user: " + testUser.getUsername() + " (ID: " + testUser.getId() + ")");
-        }
+        });
 
         List<Event> catalog = buildCatalogEvents();
 
