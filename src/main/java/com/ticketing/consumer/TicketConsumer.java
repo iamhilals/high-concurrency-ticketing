@@ -7,11 +7,13 @@ import com.ticketing.entity.User;
 import com.ticketing.repository.EventRepository;
 import com.ticketing.repository.TicketRepository;
 import com.ticketing.repository.UserRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@ConditionalOnProperty(name = "app.kafka.enabled", havingValue = "true", matchIfMissing = true)
 public class TicketConsumer {
 
     private final TicketRepository ticketRepository;
@@ -51,11 +53,16 @@ public class TicketConsumer {
             // 3. Veritabanındaki kapasiteyi 1 azaltıyoruz (Atomik güncelleme metodumuzu çağırıyoruz).
             eventRepository.decrementCapacity(event.getId());
 
-            // 4. Bilet kaydını veritabanına kalıcı olarak yazıyoruz.
+            // 4. Bilet kaydını gerçek koltuk, blok, kategori, PNR ve tutar bilgileriyle veritabanına yazıyoruz.
             Ticket ticket = Ticket.builder()
                     .event(event)
                     .user(user)
                     .purchaseDate(java.time.LocalDateTime.now())
+                    .pnrCode(eventMsg.getPnrCode())
+                    .seatInfo(eventMsg.getSeatInfo())
+                    .zoneName(eventMsg.getZoneName())
+                    .blockCode(eventMsg.getBlockCode())
+                    .paidPrice(eventMsg.getPaidPrice() != null ? eventMsg.getPaidPrice() : (event.getPrice() != null ? event.getPrice().doubleValue() : null))
                     .build();
 
             Ticket savedTicket = ticketRepository.save(ticket);

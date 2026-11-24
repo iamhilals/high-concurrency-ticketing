@@ -30,6 +30,9 @@ public class EventService {
                 try {
                     event.setAvailableCapacity(Integer.parseInt(liveCapacity));
                 } catch (NumberFormatException ignored) {}
+            } else if (event.getAvailableCapacity() != null) {
+                // Redis anahtarı yoksa DB'deki gerçek kapasiteyi atomik olarak Redis'e yükle
+                redisTemplate.opsForValue().setIfAbsent(redisKey, String.valueOf(event.getAvailableCapacity()));
             }
         }
         return events;

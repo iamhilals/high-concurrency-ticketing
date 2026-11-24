@@ -6,6 +6,8 @@ import com.ticketing.entity.User;
 import com.ticketing.repository.EventRepository;
 import com.ticketing.repository.TicketRepository;
 import com.ticketing.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -26,30 +28,60 @@ public class TicketService {
     private final StringRedisTemplate redisTemplate;
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final AntiScalperService antiScalperService;
+    private final AsyncTicketProcessor asyncTicketProcessor;
+    private final boolean kafkaEnabled;
 
-    public TicketService(TicketRepository ticketRepository, EventRepository eventRepository, UserRepository userRepository, StringRedisTemplate redisTemplate, KafkaTemplate<String, Object> kafkaTemplate, AntiScalperService antiScalperService) {
+    public TicketService(
+            TicketRepository ticketRepository,
+            EventRepository eventRepository,
+            UserRepository userRepository,
+            StringRedisTemplate redisTemplate,
+            @Autowired(required = false) KafkaTemplate<String, Object> kafkaTemplate,
+            AntiScalperService antiScalperService,
+            AsyncTicketProcessor asyncTicketProcessor,
+            @Value("${app.kafka.enabled:true}") boolean kafkaEnabled) {
         this.ticketRepository = ticketRepository;
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.redisTemplate = redisTemplate;
         this.kafkaTemplate = kafkaTemplate;
         this.antiScalperService = antiScalperService;
+        this.asyncTicketProcessor = asyncTicketProcessor;
+        this.kafkaEnabled = kafkaEnabled;
     }
 
     private static final long SEAT_LOCK_MINUTES = 10;
 
     @Transactional(readOnly = true)
     public List<TicketResponse> getUserTickets(Long userId) {
+        LocalDateTime now = LocalDateTime.now();
         return ticketRepository.findByUserId(userId).stream()
-                .map(ticket -> TicketResponse.builder()
-                        .ticketId(ticket.getId())
-                        .eventId(ticket.getEvent().getId())
-                        .eventTitle(ticket.getEvent().getTitle())
-                        .userId(ticket.getUser().getId())
-                        .username(ticket.getUser().getUsername())
-                        .purchaseDate(ticket.getPurchaseDate())
-                        .status("CONFIRMED")
-                        .build())
+                .map(ticket -> {
+                    Event ev = ticket.getEvent();
+                    boolean isExpired = ev != null && ev.getDateTime() != null && ev.getDateTime().isBefore(now);
+                    String fallbackPnr = "PSLV-" + String.format("%06d", ticket.getId() != null ? ticket.getId() : 0L);
+                    Double priceVal = ticket.getPaidPrice() != null
+                            ? ticket.getPaidPrice()
+                            : (ev != null && ev.getPrice() != null ? ev.getPrice().doubleValue() : null);
+
+                    return TicketResponse.builder()
+                            .ticketId(ticket.getId())
+                            .eventId(ev != null ? ev.getId() : null)
+                            .eventTitle(ev != null ? ev.getTitle() : "Etkinlik")
+                            .eventVenue(ev != null ? ev.getVenue() : null)
+                            .eventDateTime(ev != null ? ev.getDateTime() : null)
+                            .userId(ticket.getUser().getId())
+                            .username(ticket.getUser().getUsername())
+                            .purchaseDate(ticket.getPurchaseDate())
+                            .status(isExpired ? "EXPIRED" : "CONFIRMED")
+                            .pnrCode(ticket.getPnrCode() != null && !ticket.getPnrCode().isEmpty() ? ticket.getPnrCode() : fallbackPnr)
+                            .seatInfo(ticket.getSeatInfo())
+                            .zoneName(ticket.getZoneName())
+                            .blockCode(ticket.getBlockCode())
+                            .paidPrice(priceVal)
+                            .expired(isExpired)
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 
@@ -173,10 +205,18 @@ public class TicketService {
             throw new IllegalStateException("Koltuk rezervasyon süreniz doldu veya geçersiz rezervasyon!");
         }
 
-        // Genel satın alma akışına yönlendir
+        // Genel satın alma akışına gerçek koltuk, blok, kategori ve fiyat bilgileriyle yönlendir
+        String resolvedSeat = (request.getSeatInfo() != null && !request.getSeatInfo().isEmpty())
+                ? request.getSeatInfo()
+                : request.getSeatId();
+
         TicketRequest ticketRequest = TicketRequest.builder()
                 .eventId(request.getEventId())
                 .userId(request.getUserId())
+                .seatInfo(resolvedSeat)
+                .zoneName(request.getZoneName())
+                .blockCode(request.getBlockCode())
+                .paidPrice(request.getPaidPrice())
                 .build();
 
         TicketResponse response = purchaseTicket(ticketRequest);
@@ -188,10 +228,29 @@ public class TicketService {
     }
 
     /**
-     * Bilet satın alma talebini karşılayan metot (Redis DECR + Kafka).
+     * Redis'te kapasite anahtarı yoksa (ör. Redis yeniden başladıysa) PostgreSQL'den
+     * atomik (setIfAbsent) olarak senkronize eder. Böylece DECR komutu olmayan anahtarı
+     * -1 yapıp sahte "tükendi" durumuna düşürmez.
+     */
+    private void ensureRedisCapacityInitialized(Long eventId) {
+        String redisKey = "event:" + eventId + ":capacity";
+        String existing = redisTemplate.opsForValue().get(redisKey);
+        if (existing == null) {
+            int dbCap = eventRepository.findById(eventId)
+                    .map(e -> e.getAvailableCapacity() != null ? e.getAvailableCapacity() : 0)
+                    .orElse(0);
+            redisTemplate.opsForValue().setIfAbsent(redisKey, String.valueOf(dbCap));
+        }
+    }
+
+    /**
+     * Bilet satın alma talebini karşılayan metot (Redis DECR + Kafka / Async Fallback).
      */
     public TicketResponse purchaseTicket(TicketRequest request) {
         String redisKey = "event:" + request.getEventId() + ":capacity";
+
+        // 0. Redis anahtarı eksikse DB'den otomatik tamamla
+        ensureRedisCapacityInitialized(request.getEventId());
 
         // 1. Redis'ten kapasiteyi atomik olarak 1 azaltıyoruz (DECR)
         Long remaining = redisTemplate.opsForValue().decrement(redisKey);
@@ -205,27 +264,64 @@ public class TicketService {
             throw new IllegalStateException("Bu etkinlik için tüm biletler tükendi!");
         }
 
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("Kullanıcı bilgisi bulunamadı."));
+        User user;
+        Event event;
+        try {
+            user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new IllegalArgumentException("Oturum kullanıcısı veritabanında bulunamadı. Lütfen çıkış yapıp tekrar giriş yapın."));
 
-        Event event = eventRepository.findById(request.getEventId())
-                .orElseThrow(() -> new IllegalArgumentException("Etkinlik bilgisi bulunamadı."));
+            event = eventRepository.findById(request.getEventId())
+                    .orElseThrow(() -> new IllegalArgumentException("Etkinlik bilgisi bulunamadı."));
+        } catch (RuntimeException ex) {
+            // Kullanıcı veya etkinlik bulunamazsa Redis stoğunu geri iade et
+            redisTemplate.opsForValue().increment(redisKey);
+            throw ex;
+        }
+
+        String generatedPnr = "PSLV-" + UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+        Double effectivePrice = request.getPaidPrice() != null
+                ? request.getPaidPrice()
+                : (event.getPrice() != null ? event.getPrice().doubleValue() : null);
 
         TicketBookingEvent bookingEvent = TicketBookingEvent.builder()
                 .eventId(event.getId())
                 .userId(user.getId())
+                .pnrCode(generatedPnr)
+                .seatInfo(request.getSeatInfo())
+                .zoneName(request.getZoneName())
+                .blockCode(request.getBlockCode())
+                .paidPrice(effectivePrice)
                 .build();
 
-        kafkaTemplate.send("ticket-bookings", String.valueOf(event.getId()), bookingEvent);
+        if (kafkaEnabled && kafkaTemplate != null) {
+            try {
+                kafkaTemplate.send("ticket-bookings", String.valueOf(event.getId()), bookingEvent);
+            } catch (Exception kafkaErr) {
+                System.err.println("⚠️ Kafka gönderimi başarısız, Async kuyruğa düşülüyor: " + kafkaErr.getMessage());
+                asyncTicketProcessor.processBookingAsync(bookingEvent);
+            }
+        } else {
+            asyncTicketProcessor.processBookingAsync(bookingEvent);
+        }
+
+        boolean isExpired = event.getDateTime() != null && event.getDateTime().isBefore(LocalDateTime.now());
 
         return TicketResponse.builder()
                 .ticketId(null)
                 .eventId(event.getId())
                 .eventTitle(event.getTitle())
+                .eventVenue(event.getVenue())
+                .eventDateTime(event.getDateTime())
                 .userId(user.getId())
                 .username(user.getUsername())
                 .purchaseDate(LocalDateTime.now())
                 .status("PENDING")
+                .pnrCode(generatedPnr)
+                .seatInfo(request.getSeatInfo())
+                .zoneName(request.getZoneName())
+                .blockCode(request.getBlockCode())
+                .paidPrice(effectivePrice)
+                .expired(isExpired)
                 .build();
     }
 }

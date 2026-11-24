@@ -2926,6 +2926,44 @@
             border-color: rgba(236, 72, 153, 0.5);
         }
 
+        .bubilet-ticket-pass.expired {
+            background: linear-gradient(145deg, #1e222b, #272b36);
+            border: 1px solid rgba(148, 163, 184, 0.32);
+            filter: grayscale(0.95);
+            opacity: 0.74;
+            box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .bubilet-ticket-pass.expired:hover {
+            transform: none;
+            box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.5);
+            border-color: rgba(148, 163, 184, 0.42);
+        }
+
+        .bubilet-ticket-pass.expired .bubilet-pass-header {
+            background: linear-gradient(135deg, #475569, #334155);
+            color: #e2e8f0;
+        }
+
+        .ticket-expired-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-12deg);
+            background: rgba(51, 65, 85, 0.94);
+            color: #f1f5f9;
+            border: 2px solid rgba(203, 213, 225, 0.75);
+            padding: 0.32rem 0.95rem;
+            border-radius: 0.45rem;
+            font-size: 0.8rem;
+            font-weight: 900;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            pointer-events: none;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+        }
+
         .bubilet-pass-header {
             background: linear-gradient(135deg, #ec4899, #8b5cf6);
             padding: 1rem 1.25rem;
@@ -3007,6 +3045,12 @@
             background: rgba(251, 191, 36, 0.15);
             color: #fbbf24;
             border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .mini-ticket-badge.expired {
+            background: rgba(148, 163, 184, 0.22);
+            color: #e2e8f0;
+            border: 1px solid rgba(203, 213, 225, 0.45);
         }
 
         .barcode-strip {
@@ -4712,26 +4756,113 @@
             }
         }
 
-        function renderPendingTickets() {
+        function reconcilePendingWithConfirmed(confirmedTickets) {
+            if (!Array.isArray(pendingTickets) || pendingTickets.length === 0) return;
+            const confirmedList = Array.isArray(confirmedTickets) ? confirmedTickets : [];
+            const nowMs = Date.now();
+
+            pendingTickets = pendingTickets.filter(p => {
+                // 1. PNR kodu PostgreSQL'de onaylanan biletlerle eşleşiyorsa bekleme listesinden çıkar
+                if (p.pnrCode && confirmedList.some(c => c.pnrCode && c.pnrCode === p.pnrCode)) {
+                    return false;
+                }
+                // 2. Aynı etkinlik için aynı zaman aralığında onaylanmış bilet varsa çıkar
+                const pTime = new Date(p.time).getTime();
+                const matchedByEvent = confirmedList.some(c => {
+                    const sameEvent = (p.eventId && c.eventId === p.eventId) || (p.title && c.eventTitle === p.title);
+                    if (!sameEvent) return false;
+                    const cTime = c.purchaseDate ? new Date(c.purchaseDate).getTime() : nowMs;
+                    return cTime >= (pTime - 15000);
+                });
+                if (matchedByEvent) return false;
+
+                // 3. 30 saniyeden eski hayalet bekleyen kayıtları temizle
+                if ((nowMs - pTime) > 30000) return false;
+
+                return true;
+            });
+        }
+
+        async function syncPendingTicketsFromServer() {
+            if (!currentUser || !currentUser.id) return;
+            try {
+                const res = await fetch(`${API_BASE}/tickets/user/${currentUser.id}`);
+                if (res.ok) {
+                    const confirmed = await res.json();
+                    reconcilePendingWithConfirmed(confirmed);
+                }
+            } catch (_) {}
+        }
+
+        async function renderPendingTickets() {
             const grid = document.getElementById('pendingTicketsGrid');
+            if (!grid) return;
+            grid.innerHTML = '<p style="color:#64748b;">Güncel durum kontrol ediliyor...</p>';
+
+            // Önce sunucudaki onaylı biletlerle senkronize et — onaylananlar asla burada kalmaz
+            await syncPendingTicketsFromServer();
             grid.innerHTML = '';
-            
-            if (pendingTickets.length === 0) {
-                grid.innerHTML = '<p style="color:#64748b;">Sırada olan biletiniz bulunmuyor.</p>';
+
+            const hasActiveUnpaidHold = Boolean(activeReservation && reservationSecondsLeft > 0 && activeDetailEvent);
+
+            if (!hasActiveUnpaidHold && pendingTickets.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1 / -1; background:rgba(139,92,246,0.08); border:1px dashed rgba(167,139,250,0.32); border-radius:1rem; padding:1.5rem; text-align:center;">
+                        <div style="font-size:1.6rem; margin-bottom:0.4rem;">✅</div>
+                        <div style="font-weight:700; color:var(--text-main); font-size:0.96rem;">Onay bekleyen veya ödeme aşamasında biletiniz bulunmuyor.</div>
+                        <p style="color:var(--text-muted); font-size:0.82rem; margin:0.35rem 0 1rem;">Onaylanan tüm dijital QR biletlerinize Satın Alınan Biletler sekmesinden ulaşabilirsiniz.</p>
+                        <button type="button" class="btn-buy" style="width:auto; margin:0; padding:0.55rem 1.25rem; font-size:0.82rem; border-radius:9999px;" onclick="switchDashboardTab('purchased_tickets')">
+                            📜 Satın Alınan Biletlerimi Gör
+                        </button>
+                    </div>
+                `;
                 return;
             }
 
+            // 1. Ödeme aşamasında bekleyen aktif 10 dakikalık koltuk rezervasyonu varsa göster
+            if (hasActiveUnpaidHold) {
+                const mins = Math.floor(reservationSecondsLeft / 60).toString().padStart(2, '0');
+                const secs = (reservationSecondsLeft % 60).toString().padStart(2, '0');
+                const holdCard = document.createElement('div');
+                holdCard.className = 'mini-ticket-card';
+                holdCard.style.borderColor = 'rgba(56, 189, 248, 0.45)';
+                holdCard.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+                        <span class="mini-ticket-badge pending" style="background:rgba(56,189,248,0.16); color:#38bdf8; border-color:rgba(56,189,248,0.4);">⏱️ ÖDEME BEKLİYOR</span>
+                        <span style="font-size:0.78rem; font-weight:800; color:#fbbf24; font-family:monospace;">${mins}:${secs}</span>
+                    </div>
+                    <div style="font-weight:700; font-size:1rem; color:#f8fafc;">${activeDetailEvent.title}</div>
+                    <div style="font-size:0.78rem; color:#94a3b8;">🪑 ${activeReservation.zoneName || selectedBlockName} • ${activeReservation.seatId || selectedBlockCode}</div>
+                    <button type="button" class="btn-buy" style="margin-top:0.5rem; padding:0.55rem 0.9rem; font-size:0.8rem;" onclick="closeDashboardModal(); document.getElementById('paymentModal').classList.add('active');">
+                        💳 Ödemeye Devam Et
+                    </button>
+                `;
+                grid.appendChild(holdCard);
+            }
+
+            // 2. Henüz veritabanına işlenmemiş anlık kuyruk talepleri
             pendingTickets.forEach(t => {
                 const card = document.createElement('div');
                 card.className = 'mini-ticket-card';
                 card.innerHTML = `
-                    <span class="mini-ticket-badge pending">⏳ ONAY BEKLİYOR</span>
+                    <span class="mini-ticket-badge pending">⏳ ONAY BEKLİYOR (İŞLENİYOR)</span>
                     <div style="font-weight:700; font-size:1rem; color:#f8fafc;">${t.title}</div>
-                    <div style="font-size:0.8rem; color:#94a3b8;">Tarih: ${new Date(t.time).toLocaleTimeString()}</div>
-                    <div class="barcode-strip">||| |||| ||| |||</div>
+                    ${t.seatInfo ? `<div style="font-size:0.78rem; color:#cbd5e1;">🪑 ${t.seatInfo}</div>` : ''}
+                    ${t.pnrCode ? `<div style="font-size:0.74rem; color:#38bdf8; font-family:monospace;">PNR: ${t.pnrCode}</div>` : ''}
+                    <div style="font-size:0.75rem; color:#94a3b8;">Talep Saati: ${new Date(t.time).toLocaleTimeString('tr-TR')}</div>
                 `;
                 grid.appendChild(card);
             });
+
+            // Kuyrukta işlenen bilet varsa 1.5 sn sonra otomatik tekrar kontrol et
+            if (pendingTickets.length > 0) {
+                setTimeout(() => {
+                    const pendingView = document.getElementById('viewPendingTickets');
+                    if (pendingView && pendingView.style.display === 'block') {
+                        renderPendingTickets();
+                    }
+                }, 1500);
+            }
         }
 
         async function fetchPurchasedTickets() {
@@ -4741,33 +4872,63 @@
             try {
                 const res = await fetch(`${API_BASE}/tickets/user/${currentUser.id}`);
                 const tickets = await res.json();
+                reconcilePendingWithConfirmed(tickets);
                 grid.innerHTML = '';
 
-                if (tickets.length === 0) {
-                    grid.innerHTML = '<p style="color:#64748b;">Henüz onaylanmış biletiniz bulunmuyor.</p>';
+                if (!tickets || tickets.length === 0) {
+                    grid.innerHTML = '<p style="color:#64748b;">Henüz satın alınmış biletiniz bulunmuyor.</p>';
                     return;
                 }
 
-                tickets.forEach(t => {
+                // Aktif (yaklaşan) biletleri üstte, süresi geçmiş biletleri altta sırala
+                const nowMs = Date.now();
+                const enriched = tickets.map(t => {
+                    const evDateObj = t.eventDateTime ? new Date(t.eventDateTime) : null;
+                    const isExpired = Boolean(t.expired) || (evDateObj && !isNaN(evDateObj.getTime()) && evDateObj.getTime() < nowMs);
+                    return { ...t, _isExpired: isExpired };
+                }).sort((a, b) => {
+                    if (a._isExpired !== b._isExpired) return a._isExpired ? 1 : -1;
+                    return (b.ticketId || 0) - (a.ticketId || 0);
+                });
+
+                enriched.forEach(t => {
+                    const isExpired = t._isExpired;
                     const card = document.createElement('div');
-                    card.className = 'bubilet-ticket-pass';
-                    const pDate = t.purchaseDate ? new Date(t.purchaseDate).toLocaleString('tr-TR') : 'Şimdi';
-                    const pnr = 'PSLV-' + Math.floor(100000 + Math.random() * 900000);
-                    const seatNum = Math.floor(1 + Math.random() * 80);
-                    const rowNum = Math.floor(1 + Math.random() * 20);
-                    const block = ['A1', 'A2', 'B1', 'B2', 'VIP'][Math.floor(Math.random() * 5)];
-                    const gate = Math.floor(1 + Math.random() * 6);
+                    card.className = isExpired ? 'bubilet-ticket-pass expired' : 'bubilet-ticket-pass';
+
+                    const pDate = t.purchaseDate ? new Date(t.purchaseDate).toLocaleString('tr-TR') : 'Kayıtlı';
+                    const evDateStr = t.eventDateTime ? formatTurkishEventDate(t.eventDateTime) : 'Tarih belirtilmedi';
+                    const pnr = t.pnrCode || `PSLV-${String(t.ticketId || 0).padStart(6, '0')}`;
+                    const zoneStr = t.zoneName || 'Genel Kategori';
+                    const blockStr = t.blockCode ? `Blok ${t.blockCode}` : 'Ana Alan';
+                    const seatStr = t.seatInfo || 'Genel Giriş';
+                    const venueStr = t.eventVenue || 'Etkinlik Mekanı';
+                    const priceStr = (t.paidPrice !== null && t.paidPrice !== undefined)
+                        ? `₺${Number(t.paidPrice).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                        : 'Onaylandı';
 
                     card.innerHTML = `
                         <div class="bubilet-pass-header">
-                            <div>
-                                <span style="font-size:0.7rem; font-weight:800; letter-spacing:1px; background:rgba(0,0,0,0.25); padding:0.2rem 0.6rem; border-radius:9999px;">🎟️ PASSOLİVE DİJİTAL BİLET</span>
-                                <div style="font-weight:800; font-size:1.1rem; margin-top:0.3rem;">${t.eventTitle || 'Etkinlik'}</div>
+                            <div style="min-width:0; flex:1;">
+                                <span style="display:inline-block; white-space:nowrap; font-size:0.68rem; font-weight:800; letter-spacing:0.8px; background:rgba(10,6,24,0.42); padding:0.24rem 0.65rem; border-radius:9999px;">
+                                    ${isExpired ? '⌛ SÜRESİ GEÇMİŞ BİLET' : '🎟️ PASSOLİVE DİJİTAL BİLET'}
+                                </span>
+                                <div style="font-weight:800; font-size:1.06rem; margin-top:0.4rem; line-height:1.25;">${t.eventTitle || 'Etkinlik'}</div>
+                                <div style="font-size:0.74rem; opacity:0.9; margin-top:0.2rem;">📍 ${venueStr}</div>
                             </div>
-                            <span class="mini-ticket-badge confirmed">✅ ONAYLANDI</span>
+                            <span class="mini-ticket-badge ${isExpired ? 'expired' : 'confirmed'}" style="white-space:nowrap; flex-shrink:0; background:${isExpired ? 'rgba(30,41,59,0.72)' : 'rgba(6,78,59,0.72)'}; color:${isExpired ? '#e2e8f0' : '#6ee7b7'}; border-color:${isExpired ? 'rgba(203,213,225,0.45)' : 'rgba(110,231,183,0.55)'};">
+                                ${isExpired ? '⌛ SÜRESİ GEÇTİ' : '✅ ONAYLANDI'}
+                            </span>
                         </div>
 
                         <div class="bubilet-pass-body">
+                            ${isExpired ? `
+                            <div style="background:rgba(148,163,184,0.16); border:1px solid rgba(148,163,184,0.35); color:#cbd5e1; border-radius:0.65rem; padding:0.5rem 0.75rem; font-size:0.76rem; font-weight:700; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.45rem;">
+                                <span>⌛</span>
+                                <span>Bu etkinliğin tarihi geçtiği için biletin kullanım süresi dolmuştur.</span>
+                            </div>
+                            ` : ''}
+
                             <div class="bubilet-grid">
                                 <div class="bubilet-grid-item">
                                     <span class="bubilet-grid-label">BİLET SAHİBİ</span>
@@ -4775,45 +4936,52 @@
                                 </div>
                                 <div class="bubilet-grid-item">
                                     <span class="bubilet-grid-label">PNR KODU</span>
-                                    <span class="bubilet-grid-val" style="color:#38bdf8;">${pnr}</span>
+                                    <span class="bubilet-grid-val" style="color:${isExpired ? '#94a3b8' : '#38bdf8'};">${pnr}</span>
+                                </div>
+                                <div class="bubilet-grid-item">
+                                    <span class="bubilet-grid-label">ETKİNLİK TARİHİ</span>
+                                    <span class="bubilet-grid-val">${evDateStr}</span>
                                 </div>
                                 <div class="bubilet-grid-item">
                                     <span class="bubilet-grid-label">KATEGORİ & BLOK</span>
-                                    <span class="bubilet-grid-val">Sahne Önü ${block}</span>
+                                    <span class="bubilet-grid-val">${zoneStr} • ${blockStr}</span>
                                 </div>
                                 <div class="bubilet-grid-item">
-                                    <span class="bubilet-grid-label">SIRA / KOLTUK</span>
-                                    <span class="bubilet-grid-val">Sıra ${rowNum} • K:${seatNum}</span>
+                                    <span class="bubilet-grid-label">SEÇİLEN KOLTUK</span>
+                                    <span class="bubilet-grid-val">${seatStr}</span>
                                 </div>
                                 <div class="bubilet-grid-item">
-                                    <span class="bubilet-grid-label">GİRİŞ KAPISI</span>
-                                    <span class="bubilet-grid-val">Kapı ${gate} Nolu Giriş</span>
-                                </div>
-                                <div class="bubilet-grid-item">
-                                    <span class="bubilet-grid-label">ALIM TARİHİ</span>
-                                    <span class="bubilet-grid-val">${pDate}</span>
+                                    <span class="bubilet-grid-label">ÖDENEN TUTAR</span>
+                                    <span class="bubilet-grid-val">${priceStr}</span>
                                 </div>
                             </div>
+
+                            <div style="font-size:0.7rem; color:#94a3b8; margin-top:0.5rem;">🕒 Satın Alma: ${pDate}</div>
 
                             <div class="perforated-line"></div>
 
-                            <div style="display:flex; flex-direction:column; align-items:center; background:#fff; padding:0.85rem; border-radius:0.75rem; margin-top:0.4rem;">
-                                <canvas id="pass-qr-${t.ticketId}"></canvas>
-                                <div style="font-size:0.72rem; color:#000; font-weight:bold; font-family:monospace; margin-top:0.3rem;">PASS-2026-TK-${t.ticketId || '901'}-${currentUser.id}</div>
+                            <div style="position:relative; display:flex; flex-direction:column; align-items:center; background:#fff; padding:0.85rem; border-radius:0.75rem; margin-top:0.4rem;">
+                                <canvas id="pass-qr-${t.ticketId}" style="${isExpired ? 'opacity:0.32;' : ''}"></canvas>
+                                ${isExpired ? '<div class="ticket-expired-stamp">SÜRESİ GEÇTİ</div>' : ''}
+                                <div style="font-size:0.74rem; color:${isExpired ? '#64748b' : '#0f172a'}; font-weight:800; font-family:monospace; margin-top:0.35rem;">${pnr}</div>
                             </div>
-                            <div style="font-size:0.68rem; color:#94a3b8; margin-top:0.4rem; text-align:center; font-family:monospace;">ETKİNLİK KAPISINDA BU DİJİTAL QR KODU OKUTUNUZ</div>
+                            <div style="font-size:0.68rem; color:#94a3b8; margin-top:0.45rem; text-align:center; font-family:monospace;">
+                                ${isExpired ? 'GEÇMİŞ ETKİNLİK — GİRİŞ İÇİN GEÇERSİZ' : 'ETKİNLİK KAPISINDA BU DİJİTAL QR KODU OKUTUNUZ'}
+                            </div>
                         </div>
                     `;
                     grid.appendChild(card);
 
                     setTimeout(() => {
                         const canvasElem = document.getElementById(`pass-qr-${t.ticketId}`);
-                        if (canvasElem) {
-                            new QRious({
-                                element: canvasElem,
-                                value: `PASS-2026-TK-${t.ticketId || '901'}-${currentUser.id}`,
-                                size: 110
-                            });
+                        if (canvasElem && typeof QRious === 'function') {
+                            try {
+                                new QRious({
+                                    element: canvasElem,
+                                    value: pnr,
+                                    size: 110
+                                });
+                            } catch (e) {}
                         }
                     }, 50);
                 });
@@ -4964,6 +5132,7 @@
             currentUser = null;
             pendingCardToOfferSave = null;
             activeReservation = null;
+            pendingTickets = [];
             localStorage.removeItem('passo_user');
             localStorage.removeItem('passo_favorites');
             if (typeof renderSavedCardsForUser === 'function') renderSavedCardsForUser();
@@ -8983,7 +9152,7 @@
             openOtpModal();
         }
 
-        function showTicketSuccessModal(eventTitle, eventId, ticketId, customMessage) {
+        function showTicketSuccessModal(eventTitle, eventId, ticketId, customMessage, realPnrCode) {
             try {
                 if (typeof confetti === 'function') {
                     confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
@@ -9015,7 +9184,7 @@
             }
 
             const uid = currentUser ? currentUser.id : '1';
-            const ticketCodeStr = `PASS-2026-TK-${ticketId || Math.floor(1000 + Math.random() * 9000)}-${uid}`;
+            const ticketCodeStr = realPnrCode || `PSLV-${ticketId || Math.floor(100000 + Math.random() * 900000)}`;
             const codeElem = document.getElementById('modalTicketCodeStr');
             if (codeElem) codeElem.innerText = ticketCodeStr;
 
@@ -9067,13 +9236,22 @@
                 }
             }
 
-            pendingTickets.push({ title: eventTitle || 'Etkinlik Bileti', time: new Date() });
+            const resolvedSeatSummary = (seatElem && seatElem.innerText) ? seatElem.innerText : `${selectedBlockName} • Blok ${selectedBlockCode}`;
+            pendingTickets.push({
+                pnrCode: ticketCodeStr,
+                eventId: eventId || (activeDetailEvent ? activeDetailEvent.id : null),
+                title: eventTitle || 'Etkinlik Bileti',
+                seatInfo: resolvedSeatSummary,
+                time: Date.now()
+            });
 
             const modal = document.getElementById('ticketModal');
             if (modal) {
                 modal.classList.add('active');
             }
             setTimeout(fetchEvents, 800);
+            setTimeout(syncPendingTicketsFromServer, 1200);
+            setTimeout(syncPendingTicketsFromServer, 3000);
         }
 
         function openOtpModal() {
@@ -9134,8 +9312,21 @@
                 return;
             }
 
+            const sortedForSave = [...selectedSeats].sort((a, b) => a.seat - b.seat);
+            const realSeatStr = sortedForSave.length > 0
+                ? sortedForSave.map(s => `Sıra ${s.row} - Koltuk ${s.seat}`).join(', ')
+                : 'Sıra A - Koltuk 1';
+            const realZoneStr = selectedBlockName || 'Sahne Önü VIP';
+            const realBlockStr = selectedBlockCode || '001';
+            const realPaidPrice = calculatedFinalPrice || (activeDetailEvent.price ? parseFloat(activeDetailEvent.price) : 0);
+
             if (!activeReservation || !activeReservation.reservationId) {
-                await buyTicket(activeDetailEvent.id, activeDetailEvent.title);
+                await buyTicket(activeDetailEvent.id, activeDetailEvent.title, {
+                    seatInfo: realSeatStr,
+                    zoneName: realZoneStr,
+                    blockCode: realBlockStr,
+                    paidPrice: realPaidPrice
+                });
                 return;
             }
 
@@ -9147,7 +9338,11 @@
                         reservationId: activeReservation.reservationId,
                         eventId: activeDetailEvent.id,
                         userId: currentUser.id,
-                        seatId: activeReservation.seatId
+                        seatId: activeReservation.seatId,
+                        seatInfo: realSeatStr,
+                        zoneName: realZoneStr,
+                        blockCode: realBlockStr,
+                        paidPrice: realPaidPrice
                     })
                 });
 
@@ -9160,23 +9355,34 @@
                         activeDetailEvent.title,
                         activeDetailEvent.id,
                         data.ticketId,
-                        `Sayın ${currentUser.username}, SMS doğrulamanız başarıyla gerçekleşti. Dijital biletiniz QR kodlu olarak hazırlandı!`
+                        `Sayın ${currentUser.username}, SMS doğrulamanız başarıyla gerçekleşti. Dijital biletiniz QR kodlu olarak hazırlandı!`,
+                        data.pnrCode
                     );
                 } else if (res.status === 429) {
                     alert(`⚠️ ${data.message || 'Çok fazla bilet isteğinde bulundunuz. Güvenlik nedeniyle lütfen 1 dakika bekleyin.'}`);
                 } else {
                     // If seat lock expired or backend restarted, seamlessly complete via direct ticket purchase
                     activeReservation = null;
-                    await buyTicket(activeDetailEvent.id, activeDetailEvent.title);
+                    await buyTicket(activeDetailEvent.id, activeDetailEvent.title, {
+                        seatInfo: realSeatStr,
+                        zoneName: realZoneStr,
+                        blockCode: realBlockStr,
+                        paidPrice: realPaidPrice
+                    });
                 }
             } catch (err) {
                 console.error('Confirm error:', err);
                 activeReservation = null;
-                await buyTicket(activeDetailEvent.id, activeDetailEvent.title);
+                await buyTicket(activeDetailEvent.id, activeDetailEvent.title, {
+                    seatInfo: realSeatStr,
+                    zoneName: realZoneStr,
+                    blockCode: realBlockStr,
+                    paidPrice: realPaidPrice
+                });
             }
         }
 
-        async function buyTicket(eventId, title) {
+        async function buyTicket(eventId, title, seatMeta = null) {
             if (!currentUser) {
                 openAuthModal('login', 'Bilet satın alabilmek için lütfen önce giriş yapın!');
                 return;
@@ -9184,11 +9390,20 @@
 
             addLog(`[TALEP] ${title} için bilet talebi oluşturuldu (${currentUser.username})`, 'pending');
 
+            const payload = {
+                eventId: eventId,
+                userId: currentUser.id,
+                seatInfo: seatMeta ? seatMeta.seatInfo : null,
+                zoneName: seatMeta ? seatMeta.zoneName : null,
+                blockCode: seatMeta ? seatMeta.blockCode : null,
+                paidPrice: seatMeta ? seatMeta.paidPrice : null
+            };
+
             try {
                 const res = await fetch(`${API_BASE}/tickets`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ eventId: eventId, userId: currentUser.id })
+                    body: JSON.stringify(payload)
                 });
 
                 let data = {};
@@ -9200,10 +9415,11 @@
                         title,
                         eventId,
                         data.ticketId,
-                        `Sayın ${currentUser.username}, bilet alma işleminiz başarıyla onaylandı. Dijital biletinizi Profilim → Satın Alınan Biletler sekmesinden de görüntüleyebilirsiniz.`
+                        `Sayın ${currentUser.username}, bilet alma işleminiz başarıyla onaylandı. Dijital biletinizi Profilim → Satın Alınan Biletler sekmesinden de görüntüleyebilirsiniz.`,
+                        data.pnrCode
                     );
                 } else {
-                    const errMsg = data.message || (res.status === 429 ? 'Çok fazla bilet isteğinde bulundunuz. Lütfen 1 dakika bekleyin.' : 'Bilet işlemi tamamlanamadı veya kontenjan tükendi.');
+                    const errMsg = data.message || (res.status === 429 ? 'Çok fazla bilet isteğinde bulundunuz. Lütfen 1 dakika bekleyin.' : (res.status === 400 ? 'Oturum bilginiz doğrulanamadı. Lütfen çıkış yapıp tekrar giriş yapın.' : `Bilet işlemi tamamlanamadı (HTTP ${res.status}).`));
                     addLog(`[BAŞARISIZ] ${errMsg}`, 'error');
                     alert(`⚠️ ${errMsg}`);
                 }
