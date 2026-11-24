@@ -13,69 +13,69 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            /* WARM VELVET BURGUNDY & CREAM HOLOGRAPHIC AURORA — DARK THEME */
-            --bg-outer-space: #190910;
-            --bg-main: #210c16;
-            --bg-card: rgba(45, 17, 29, 0.56);
-            --bg-card-solid: #260f1a;
-            --bg-card-hover: rgba(64, 24, 41, 0.68);
-            --bg-nav: rgba(27, 10, 18, 0.78);
-            --bg-modal: rgba(31, 12, 21, 0.95);
-            --bg-input: rgba(252, 234, 220, 0.06);
-            --accent-primary: #f3d2be;
-            --accent-secondary: #fce9da;
-            --accent-cyan: #e8a5b4;
-            --accent-gold: #f5d6c0;
-            --accent-rose: #e69aa9;
-            --btn-text: #fff9f4;
-            --gradient-hero: linear-gradient(125deg, rgba(132, 34, 66, 0.42), rgba(204, 96, 124, 0.28), rgba(247, 215, 192, 0.22));
-            --gradient-btn: linear-gradient(120deg, #8e2346 0%, #be4d6e 45%, #df948e 82%, #f4ccb8 100%);
-            --gradient-btn-hover: linear-gradient(120deg, #a62b54 0%, #cf5d7d 45%, #ebaa9f 82%, #fbe0cf 100%);
-            --gradient-btn-cyan: linear-gradient(120deg, rgba(243, 210, 190, 0.16), rgba(204, 96, 124, 0.22));
-            --gradient-logo: linear-gradient(120deg, #fff8f1 0%, #f5cfb9 48%, #e494a6 82%, #fff3e8 100%);
-            --gradient-promo: linear-gradient(120deg, rgba(122, 29, 60, 0.68) 0%, rgba(186, 78, 108, 0.48) 38%, rgba(235, 173, 154, 0.36) 72%, rgba(132, 34, 66, 0.62) 100%);
-            --gradient-holo-foil: linear-gradient(120deg, transparent 20%, rgba(255, 240, 226, 0.16) 45%, rgba(232, 152, 174, 0.18) 55%, transparent 80%);
-            --text-main: #fff7f0;
-            --text-muted: #dec0c8;
-            --border-color: rgba(248, 222, 206, 0.16);
-            --border-luminous: rgba(247, 212, 192, 0.44);
-            --border-color-subtle: rgba(248, 222, 206, 0.09);
-            --shimmer-line: linear-gradient(90deg, transparent 0%, rgba(255, 242, 230, 0.72) 35%, rgba(235, 160, 178, 0.65) 65%, transparent 100%);
-            --box-shadow: 0 18px 46px -18px rgba(10, 2, 6, 0.75), inset 0 1px 0 rgba(255, 240, 228, 0.15);
-            --glow-hover: 0 22px 52px -14px rgba(196, 82, 114, 0.35), 0 0 28px -8px rgba(247, 215, 192, 0.22), inset 0 1px 0 rgba(255, 244, 234, 0.32);
+            /* DEEP VOID OBSIDIAN & MOODY ULTRAVIOLET STAGE — ULTRA DARK THEME */
+            --bg-outer-space: #030208;
+            --bg-main: #06040e;
+            --bg-card: rgba(11, 8, 22, 0.86);
+            --bg-card-solid: #0a0714;
+            --bg-card-hover: rgba(18, 13, 34, 0.94);
+            --bg-nav: rgba(5, 3, 12, 0.9);
+            --bg-modal: rgba(8, 5, 18, 0.98);
+            --bg-input: rgba(139, 92, 246, 0.06);
+            --accent-primary: #9333ea;
+            --accent-secondary: #22d3ee;
+            --accent-cyan: #06b6d4;
+            --accent-gold: #a78bfa;
+            --accent-rose: #ec4899;
+            --btn-text: #ffffff;
+            --gradient-hero: linear-gradient(125deg, rgba(76, 29, 149, 0.28), rgba(109, 40, 217, 0.16), rgba(6, 182, 212, 0.14));
+            --gradient-btn: linear-gradient(120deg, #4c1d95 0%, #6d28d9 52%, #9333ea 100%);
+            --gradient-btn-hover: linear-gradient(120deg, #5b21b6 0%, #7c3aed 52%, #a855f7 100%);
+            --gradient-btn-cyan: linear-gradient(120deg, #0e7490 0%, #0891b2 55%, #06b6d4 100%);
+            --gradient-logo: linear-gradient(120deg, #f8faff 0%, #a78bfa 50%, #38bdf8 90%, #e0e7ff 100%);
+            --gradient-promo: linear-gradient(108deg, #1e0b45 0%, #3b1478 44%, #5b21b6 74%, #0e7490 100%);
+            --gradient-holo-foil: linear-gradient(120deg, transparent 20%, rgba(167, 139, 250, 0.1) 46%, rgba(34, 211, 238, 0.1) 58%, transparent 80%);
+            --text-main: #f3f5ff;
+            --text-muted: #8f96b8;
+            --border-color: rgba(139, 92, 246, 0.16);
+            --border-luminous: rgba(139, 92, 246, 0.38);
+            --border-color-subtle: rgba(139, 92, 246, 0.09);
+            --shimmer-line: linear-gradient(90deg, transparent 0%, rgba(139, 92, 246, 0.65) 35%, rgba(34, 211, 238, 0.58) 65%, transparent 100%);
+            --box-shadow: 0 22px 54px -18px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(167, 139, 250, 0.1);
+            --glow-hover: 0 24px 56px -14px rgba(109, 40, 217, 0.36), 0 0 26px -8px rgba(6, 182, 212, 0.2), inset 0 1px 0 rgba(196, 181, 253, 0.24);
         }
 
         [data-theme="light"] {
-            /* WARM SILK CREAM & ROSE-BURGUNDY HOLOGRAPHIC AURORA — LIGHT THEME */
-            --bg-outer-space: #fbf3ea;
-            --bg-main: #fdf7f0;
-            --bg-card: rgba(255, 250, 245, 0.76);
-            --bg-card-solid: #fffaf4;
-            --bg-card-hover: rgba(255, 252, 248, 0.92);
-            --bg-nav: rgba(253, 246, 238, 0.82);
-            --bg-modal: rgba(255, 250, 245, 0.97);
-            --bg-input: rgba(138, 36, 68, 0.05);
-            --accent-primary: #93264a;
-            --accent-secondary: #b54567;
-            --accent-cyan: #c4687a;
-            --accent-gold: #8c2345;
-            --accent-rose: #a83c5e;
-            --btn-text: #fff9f4;
-            --gradient-hero: linear-gradient(125deg, rgba(255, 248, 240, 0.82), rgba(244, 206, 194, 0.42), rgba(198, 92, 120, 0.22));
-            --gradient-btn: linear-gradient(120deg, #7e1e3e 0%, #aa3a5d 50%, #d47986 100%);
-            --gradient-btn-hover: linear-gradient(120deg, #912448 0%, #bd476b 50%, #e08d97 100%);
-            --gradient-btn-cyan: linear-gradient(120deg, rgba(147, 38, 74, 0.08), rgba(212, 121, 134, 0.16));
-            --gradient-logo: linear-gradient(120deg, #6e1836 0%, #a8385b 55%, #cf7b80 100%);
-            --gradient-promo: linear-gradient(120deg, rgba(255, 248, 240, 0.92) 0%, rgba(246, 209, 198, 0.72) 42%, rgba(232, 174, 188, 0.56) 72%, rgba(255, 245, 236, 0.92) 100%);
-            --gradient-holo-foil: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.65) 45%, rgba(232, 162, 178, 0.25) 58%, transparent 80%);
-            --text-main: #33101c;
-            --text-muted: #7c4c5c;
-            --border-color: rgba(147, 38, 74, 0.15);
-            --border-luminous: rgba(176, 62, 96, 0.38);
-            --border-color-subtle: rgba(147, 38, 74, 0.09);
-            --shimmer-line: linear-gradient(90deg, transparent 0%, rgba(198, 88, 118, 0.48) 38%, rgba(235, 172, 148, 0.62) 64%, transparent 100%);
-            --box-shadow: 0 14px 38px -16px rgba(132, 34, 66, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.92);
-            --glow-hover: 0 20px 44px -14px rgba(168, 56, 91, 0.22), 0 0 24px -8px rgba(235, 172, 148, 0.35);
+            /* FROSTED SKY-BLUE, PERIWINKLE & LILAC CLOUD GLASS — LIGHT THEME (Ref 2) */
+            --bg-outer-space: #edf2ff;
+            --bg-main: #f3f6ff;
+            --bg-card: rgba(255, 255, 255, 0.74);
+            --bg-card-solid: #ffffff;
+            --bg-card-hover: rgba(255, 255, 255, 0.92);
+            --bg-nav: rgba(255, 255, 255, 0.76);
+            --bg-modal: rgba(250, 252, 255, 0.96);
+            --bg-input: rgba(255, 255, 255, 0.72);
+            --accent-primary: #4f46e5;
+            --accent-secondary: #0ea5e9;
+            --accent-cyan: #0284c7;
+            --accent-gold: #4338ca;
+            --accent-rose: #ec4899;
+            --btn-text: #ffffff;
+            --gradient-hero: linear-gradient(125deg, rgba(255, 255, 255, 0.88), rgba(219, 234, 254, 0.62), rgba(233, 213, 255, 0.56));
+            --gradient-btn: linear-gradient(120deg, #4f46e5 0%, #7c3aed 55%, #a855f7 100%);
+            --gradient-btn-hover: linear-gradient(120deg, #4338ca 0%, #6d28d9 55%, #9333ea 100%);
+            --gradient-btn-cyan: linear-gradient(120deg, #0ea5e9 0%, #38bdf8 100%);
+            --gradient-logo: linear-gradient(120deg, #1e1b4b 0%, #4f46e5 52%, #0ea5e9 100%);
+            --gradient-promo: linear-gradient(108deg, rgba(79, 70, 229, 0.92) 0%, rgba(124, 58, 237, 0.88) 52%, rgba(56, 189, 248, 0.86) 100%);
+            --gradient-holo-foil: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.82) 45%, rgba(199, 210, 254, 0.32) 58%, transparent 80%);
+            --text-main: #141b3d;
+            --text-muted: #5a658c;
+            --border-color: rgba(255, 255, 255, 0.92);
+            --border-luminous: rgba(99, 102, 241, 0.34);
+            --border-color-subtle: rgba(99, 102, 241, 0.14);
+            --shimmer-line: linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.45) 38%, rgba(56, 189, 248, 0.55) 64%, transparent 100%);
+            --box-shadow: 0 14px 36px -14px rgba(79, 70, 229, 0.13), 0 2px 6px rgba(99, 102, 241, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.96);
+            --glow-hover: 0 20px 44px -14px rgba(79, 70, 229, 0.22), 0 0 24px -8px rgba(56, 189, 248, 0.28), inset 0 1px 0 rgba(255, 255, 255, 1);
         }
 
         @keyframes holoFlow {
@@ -93,15 +93,15 @@
             position: absolute;
             pointer-events: none;
             z-index: 2;
-            color: #fff3e4;
-            filter: drop-shadow(0 0 8px rgba(255, 224, 200, 0.85)) drop-shadow(0 0 16px rgba(224, 128, 152, 0.6));
+            color: #e0e7ff;
+            filter: drop-shadow(0 0 8px rgba(196, 181, 253, 0.92)) drop-shadow(0 0 16px rgba(56, 189, 248, 0.72));
             animation: twinkleSparkle 3.6s ease-in-out infinite;
             user-select: none;
         }
 
         [data-theme="light"] .holo-sparkle {
-            color: #c25574;
-            filter: drop-shadow(0 0 8px rgba(235, 168, 146, 0.85)) drop-shadow(0 0 14px rgba(186, 74, 108, 0.45));
+            color: #6366f1;
+            filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.65)) drop-shadow(0 0 14px rgba(56, 189, 248, 0.45));
         }
 
         .app-outer-wrapper {
@@ -115,7 +115,6 @@
             display: flex;
             flex-direction: column;
             align-items: stretch;
-            z-index: 1;
         }
 
         /* Holographic Luminous Feature Card */
@@ -173,29 +172,304 @@
         }
 
         .feature-icon-tile {
-            width: 44px;
-            height: 44px;
-            border-radius: 13px;
-            background: linear-gradient(135deg, rgba(190, 74, 108, 0.26), rgba(246, 212, 190, 0.16));
-            border: 1px solid var(--border-luminous);
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.28), rgba(56, 189, 248, 0.2));
+            border: 1px solid rgba(167, 139, 250, 0.42);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            color: var(--accent-primary);
-            box-shadow: inset 0 1px 0 rgba(255, 245, 236, 0.35), 0 8px 20px -6px rgba(190, 74, 108, 0.28);
+            font-size: 1.25rem;
+            color: #e0e7ff;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 8px 20px -6px rgba(124, 58, 237, 0.42);
+        }
+
+        /* 4 Pastel Squircle Icon Variants (Inspired by Ref 2 ShopWave KPI Cards & Ref 1 Neon Glow) */
+        .feature-icon-tile.tile-blue {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.34), rgba(99, 102, 241, 0.2));
+            border-color: rgba(129, 140, 248, 0.5);
+            color: #c7d2fe;
+        }
+        .feature-icon-tile.tile-cyan {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.32), rgba(56, 189, 248, 0.2));
+            border-color: rgba(56, 189, 248, 0.5);
+            color: #bae6fd;
+        }
+        .feature-icon-tile.tile-violet {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.34), rgba(192, 132, 252, 0.2));
+            border-color: rgba(192, 132, 252, 0.5);
+            color: #e9d5ff;
+        }
+        .feature-icon-tile.tile-pink {
+            background: linear-gradient(135deg, rgba(219, 39, 119, 0.3), rgba(244, 114, 182, 0.2));
+            border-color: rgba(244, 114, 182, 0.5);
+            color: #fbcfe8;
+        }
+
+        [data-theme="light"] .feature-icon-tile.tile-blue {
+            background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+            border-color: rgba(99, 102, 241, 0.22);
+            color: #4f46e5;
+            box-shadow: 0 8px 18px -6px rgba(79, 70, 229, 0.22);
+        }
+        [data-theme="light"] .feature-icon-tile.tile-cyan {
+            background: linear-gradient(135deg, #e0f2fe, #cffafe);
+            border-color: rgba(14, 165, 233, 0.22);
+            color: #0284c7;
+            box-shadow: 0 8px 18px -6px rgba(14, 165, 233, 0.22);
+        }
+        [data-theme="light"] .feature-icon-tile.tile-violet {
+            background: linear-gradient(135deg, #ede9fe, #f3e8ff);
+            border-color: rgba(139, 92, 246, 0.22);
+            color: #7c3aed;
+            box-shadow: 0 8px 18px -6px rgba(124, 58, 237, 0.22);
+        }
+        [data-theme="light"] .feature-icon-tile.tile-pink {
+            background: linear-gradient(135deg, #fce7f3, #fae8ff);
+            border-color: rgba(236, 72, 153, 0.22);
+            color: #db2777;
+            box-shadow: 0 8px 18px -6px rgba(219, 39, 119, 0.2);
         }
 
         .feature-pill-badge {
             font-size: 0.68rem;
             font-weight: 700;
-            padding: 0.26rem 0.72rem;
+            padding: 0.28rem 0.75rem;
             border-radius: 9999px;
-            background: linear-gradient(120deg, rgba(243, 210, 190, 0.14), rgba(214, 110, 138, 0.14));
-            color: var(--accent-primary);
-            border: 1px solid var(--border-luminous);
+            background: rgba(139, 92, 246, 0.16);
+            color: #d8b4fe;
+            border: 1px solid rgba(167, 139, 250, 0.36);
             text-transform: uppercase;
-            letter-spacing: 0.7px;
+            letter-spacing: 0.65px;
+        }
+
+        [data-theme="light"] .feature-pill-badge {
+            background: rgba(79, 70, 229, 0.08);
+            color: #4f46e5;
+            border-color: rgba(99, 102, 241, 0.22);
+        }
+
+        .feature-metric-num {
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            color: var(--text-main);
+            line-height: 1.1;
+            margin-bottom: 0.2rem;
+        }
+
+        .feature-metric-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #34d399;
+        }
+
+        [data-theme="light"] .feature-metric-trend {
+            color: #059669;
+        }
+
+        /* Electric Cyan CTA Button (Ref 1 Signature Pair) */
+        .btn-cyan {
+            width: auto;
+            padding: 0.84rem 1.65rem;
+            font-size: 0.92rem;
+            font-weight: 700;
+            border-radius: 9999px;
+            background: var(--gradient-btn-cyan);
+            color: #ffffff;
+            border: 1px solid rgba(186, 230, 253, 0.4);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 0 12px 28px -8px rgba(6, 182, 212, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+        }
+
+        .btn-cyan:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+            box-shadow: 0 16px 34px -8px rgba(56, 189, 248, 0.65), 0 0 22px -4px rgba(34, 211, 238, 0.45);
+        }
+
+        /* 4-Column Editorial Category Spotlight Cards (Inspired by Ref 1 "НАШИ НАПРАВЛЕНИЯ") */
+        .category-spotlight-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.2rem;
+            width: 100%;
+            margin-bottom: 2.25rem;
+        }
+
+        @media (max-width: 1024px) {
+            .category-spotlight-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 560px) {
+            .category-spotlight-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cat-spot-card {
+            position: relative;
+            height: 255px;
+            border-radius: 1.35rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.25rem;
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s, box-shadow 0.35s;
+            background: var(--bg-card-solid);
+        }
+
+        .cat-spot-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-luminous);
+            box-shadow: var(--glow-hover);
+        }
+
+        .cat-spot-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 0;
+        }
+
+        .cat-spot-card:hover .cat-spot-bg {
+            transform: scale(1.08);
+        }
+
+        .cat-spot-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(4, 2, 10, 0.78) 0%, rgba(7, 4, 18, 0.42) 45%, rgba(3, 2, 9, 0.97) 100%);
+            z-index: 1;
+        }
+
+        [data-theme="light"] .cat-spot-overlay {
+            background: linear-gradient(180deg, rgba(20, 27, 61, 0.52) 0%, rgba(30, 27, 75, 0.22) 45%, rgba(20, 27, 61, 0.88) 100%);
+        }
+
+        .cat-spot-top, .cat-spot-bottom {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cat-spot-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cat-spot-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+        }
+
+        .cat-spot-count {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.26rem 0.68rem;
+            border-radius: 9999px;
+            background: rgba(139, 92, 246, 0.32);
+            border: 1px solid rgba(196, 181, 253, 0.5);
+            color: #f5f3ff;
+            backdrop-filter: blur(8px);
+        }
+
+        .cat-spot-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 0.75rem;
+        }
+
+        .cat-spot-desc {
+            font-size: 0.8rem;
+            color: rgba(241, 245, 255, 0.86);
+            line-height: 1.45;
+        }
+
+        .cat-spot-arrow {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed, #38bdf8);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.55);
+            transition: transform 0.25s;
+        }
+
+        .cat-spot-card:hover .cat-spot-arrow {
+            transform: translateX(3px) scale(1.08);
+        }
+
+        /* Navbar Integrated Frosted Search Pill (Inspired by Ref 2 ShopWave Top Bar) */
+        .nav-search-wrap {
+            flex: 1;
+            max-width: 390px;
+            margin: 0 1.25rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-search-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            padding: 0.52rem 1.05rem 0.52rem 2.45rem;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.25s;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-search-input:focus {
+            border-color: var(--border-luminous);
+            background: var(--bg-card-hover);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.16);
+        }
+
+        .nav-search-icon {
+            position: absolute;
+            left: 0.92rem;
+            font-size: 0.88rem;
+            opacity: 0.72;
+            pointer-events: none;
+        }
+
+        @media (max-width: 960px) {
+            .nav-search-wrap {
+                display: none;
+            }
         }
 
         .promo-banner-card {
@@ -235,7 +509,7 @@
             font-size: 0.92rem;
             font-weight: 600;
             border-radius: 9999px;
-            background: linear-gradient(125deg, rgba(255, 244, 234, 0.12), rgba(226, 138, 156, 0.14));
+            background: linear-gradient(125deg, rgba(167, 139, 250, 0.14), rgba(56, 189, 248, 0.14));
             color: var(--text-main);
             border: 1px solid var(--border-luminous);
             backdrop-filter: blur(14px);
@@ -245,25 +519,26 @@
             justify-content: center;
             gap: 0.5rem;
             transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-            box-shadow: inset 0 1px 0 rgba(255, 245, 236, 0.25);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
         }
 
         .btn-glass:hover {
-            background: linear-gradient(125deg, rgba(255, 244, 234, 0.2), rgba(226, 138, 156, 0.24));
+            background: linear-gradient(125deg, rgba(167, 139, 250, 0.26), rgba(56, 189, 248, 0.26));
             border-color: var(--accent-secondary);
             transform: translateY(-2px);
-            box-shadow: 0 12px 28px -10px rgba(214, 112, 140, 0.38);
+            box-shadow: 0 12px 28px -10px rgba(124, 58, 237, 0.48);
         }
 
         [data-theme="light"] .btn-glass {
-            background: rgba(255, 250, 245, 0.76);
-            border-color: rgba(147, 38, 74, 0.24);
-            color: #4a1527;
+            background: rgba(255, 255, 255, 0.82);
+            border-color: rgba(99, 102, 241, 0.26);
+            color: #1e1b4b;
         }
 
         [data-theme="light"] .btn-glass:hover {
-            background: #fffaf5;
+            background: #ffffff;
             border-color: var(--accent-primary);
+            box-shadow: 0 12px 26px -10px rgba(79, 70, 229, 0.24);
         }
 
         /* Netflix-Style Horizontal Carousel CSS */
@@ -357,10 +632,10 @@
 
         .netflix-card-badge {
             align-self: flex-start;
-            background: rgba(15, 15, 20, 0.72);
+            background: rgba(13, 9, 28, 0.76);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(232, 201, 155, 0.35);
-            color: #f6e7ce;
+            border: 1px solid rgba(167, 139, 250, 0.45);
+            color: #e0e7ff;
             font-weight: 700;
             font-size: 0.68rem;
             padding: 0.25rem 0.65rem;
@@ -441,11 +716,11 @@
             position: fixed;
             bottom: 1.75rem;
             right: 1.75rem;
-            background: linear-gradient(120deg, rgba(132, 34, 66, 0.88), rgba(196, 86, 114, 0.88), rgba(226, 152, 144, 0.9));
+            background: linear-gradient(120deg, #5b21b6, #7c3aed, #0ea5e9);
             background-size: 200% 200%;
             animation: holoFlow 8s ease-in-out infinite;
             backdrop-filter: blur(18px);
-            color: #fff9f4;
+            color: #ffffff;
             padding: 0.78rem 1.35rem;
             border-radius: 9999px;
             font-weight: 700;
@@ -454,7 +729,7 @@
             align-items: center;
             gap: 0.55rem;
             cursor: pointer;
-            box-shadow: 0 12px 32px -6px rgba(132, 34, 66, 0.55), 0 0 0 1px rgba(247, 215, 192, 0.45), inset 0 1px 0 rgba(255, 245, 236, 0.35);
+            box-shadow: 0 12px 32px -6px rgba(124, 58, 237, 0.62), 0 0 0 1px rgba(196, 181, 253, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
             z-index: 1000;
             transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
             border: none;
@@ -462,12 +737,12 @@
 
         .passobot-trigger:hover {
             transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 16px 40px -6px rgba(190, 74, 108, 0.65), 0 0 24px rgba(247, 215, 192, 0.35);
+            box-shadow: 0 16px 40px -6px rgba(124, 58, 237, 0.72), 0 0 24px rgba(56, 189, 248, 0.45);
         }
 
         [data-theme="light"] .passobot-trigger {
-            background: linear-gradient(120deg, #7e1e3e, #b03d60, #d47b86);
-            color: #fff9f4;
+            background: linear-gradient(120deg, #4f46e5, #7c3aed, #0ea5e9);
+            color: #ffffff;
         }
 
         .passobot-window {
@@ -669,11 +944,11 @@
         body {
             background-color: var(--bg-outer-space);
             background-image: 
-                radial-gradient(ellipse 75% 50% at 18% 12%, rgba(168, 50, 86, 0.34) 0%, transparent 58%),
-                radial-gradient(ellipse 65% 48% at 84% 18%, rgba(235, 168, 146, 0.24) 0%, transparent 55%),
-                radial-gradient(ellipse 70% 55% at 52% 58%, rgba(145, 42, 76, 0.26) 0%, transparent 62%),
-                radial-gradient(ellipse 60% 45% at 22% 88%, rgba(242, 198, 178, 0.18) 0%, transparent 55%),
-                radial-gradient(ellipse 55% 45% at 82% 85%, rgba(182, 74, 108, 0.24) 0%, transparent 58%);
+                radial-gradient(ellipse 70% 48% at 15% 10%, rgba(88, 28, 135, 0.18) 0%, transparent 56%),
+                radial-gradient(ellipse 62% 45% at 86% 16%, rgba(8, 145, 178, 0.12) 0%, transparent 54%),
+                radial-gradient(ellipse 66% 52% at 50% 56%, rgba(76, 29, 149, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 56% 42% at 20% 88%, rgba(14, 116, 144, 0.09) 0%, transparent 54%),
+                radial-gradient(ellipse 52% 42% at 84% 84%, rgba(107, 33, 168, 0.13) 0%, transparent 56%);
             background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
@@ -688,14 +963,14 @@
 
         [data-theme="light"] body {
             background-image:
-                radial-gradient(ellipse 75% 50% at 15% 10%, rgba(226, 148, 164, 0.34) 0%, transparent 58%),
-                radial-gradient(ellipse 65% 45% at 85% 16%, rgba(247, 204, 182, 0.48) 0%, transparent 56%),
-                radial-gradient(ellipse 70% 55% at 50% 56%, rgba(196, 98, 126, 0.16) 0%, transparent 62%),
-                radial-gradient(ellipse 65% 45% at 20% 88%, rgba(248, 214, 194, 0.45) 0%, transparent 58%),
-                radial-gradient(ellipse 60% 45% at 85% 84%, rgba(222, 152, 170, 0.28) 0%, transparent 55%);
+                radial-gradient(ellipse 75% 52% at 12% 8%, rgba(191, 219, 254, 0.85) 0%, transparent 58%),
+                radial-gradient(ellipse 68% 48% at 88% 12%, rgba(221, 214, 254, 0.82) 0%, transparent 56%),
+                radial-gradient(ellipse 72% 56% at 50% 54%, rgba(224, 231, 255, 0.72) 0%, transparent 62%),
+                radial-gradient(ellipse 64% 48% at 18% 88%, rgba(251, 207, 232, 0.56) 0%, transparent 58%),
+                radial-gradient(ellipse 62% 48% at 86% 86%, rgba(186, 230, 253, 0.72) 0%, transparent 55%);
         }
 
-        /* Dreamy Flowing Holographic Aurora Wave Layer */
+        /* Dreamy Flowing Atmospheric Mist Layer */
         body::before {
             content: '';
             position: fixed;
@@ -704,13 +979,20 @@
             width: 140vw;
             height: 140vh;
             background: 
-                radial-gradient(ellipse 55% 38% at 28% 24%, rgba(245, 202, 182, 0.2), transparent 55%),
-                radial-gradient(ellipse 50% 42% at 72% 32%, rgba(206, 88, 120, 0.22), transparent 55%),
-                radial-gradient(ellipse 58% 40% at 46% 76%, rgba(247, 224, 208, 0.14), transparent 52%);
-            filter: blur(85px);
+                radial-gradient(ellipse 52% 36% at 28% 24%, rgba(88, 28, 135, 0.12), transparent 55%),
+                radial-gradient(ellipse 48% 40% at 74% 30%, rgba(8, 145, 178, 0.1), transparent 55%),
+                radial-gradient(ellipse 54% 38% at 46% 76%, rgba(107, 33, 168, 0.08), transparent 52%);
+            filter: blur(90px);
             pointer-events: none;
             z-index: 0;
             animation: floatShimmerMists 20s ease-in-out infinite alternate;
+        }
+
+        [data-theme="light"] body::before {
+            background:
+                radial-gradient(ellipse 55% 40% at 25% 22%, rgba(147, 197, 253, 0.32), transparent 55%),
+                radial-gradient(ellipse 52% 42% at 76% 32%, rgba(216, 180, 254, 0.34), transparent 55%),
+                radial-gradient(ellipse 58% 42% at 50% 78%, rgba(249, 168, 212, 0.24), transparent 55%);
         }
 
         /* Subtle Holographic Poster Film-Grain Texture */
@@ -735,9 +1017,9 @@
         }
 
         @keyframes pulseGlow {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(243, 210, 190, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(243, 210, 190, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(243, 210, 190, 0); }
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.72); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(56, 189, 248, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
         }
 
         /* Full-Width Edge-to-Edge Sticky Top Navigation */
@@ -792,7 +1074,7 @@
             color: var(--btn-text);
             border-color: transparent;
             transform: translateY(-1px);
-            box-shadow: 0 8px 22px -6px rgba(190, 74, 108, 0.48);
+            box-shadow: 0 8px 22px -6px rgba(124, 58, 237, 0.55);
         }
 
         .top-calendar-popover {
@@ -1109,10 +1391,14 @@
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;
-            background: rgba(25, 9, 16, 0.72);
+            background: rgba(13, 9, 28, 0.8);
             border: 1px solid var(--border-luminous);
             padding: 0.25rem;
             border-radius: 9999px;
+        }
+
+        [data-theme="light"] .seating-mode-switcher {
+            background: rgba(238, 242, 255, 0.9);
         }
 
         .seating-mode-btn {
@@ -1137,7 +1423,7 @@
         .seating-mode-btn.active {
             background: var(--gradient-btn);
             color: var(--btn-text);
-            box-shadow: 0 4px 14px -4px rgba(196, 82, 114, 0.65);
+            box-shadow: 0 4px 16px -4px rgba(124, 58, 237, 0.68);
         }
 
         .arena-3d-viewport {
@@ -1146,9 +1432,9 @@
             border-radius: 1.15rem;
             position: relative;
             overflow: hidden;
-            background: radial-gradient(circle at 50% 25%, #2b101e 0%, #12060c 72%, #090306 100%);
+            background: radial-gradient(circle at 50% 25%, #110926 0%, #06030f 72%, #020107 100%);
             border: 1px solid var(--border-luminous);
-            box-shadow: inset 0 1px 0 rgba(255, 240, 228, 0.22), 0 20px 45px -18px rgba(0, 0, 0, 0.8);
+            box-shadow: inset 0 1px 0 rgba(167, 139, 250, 0.16), 0 20px 45px -18px rgba(0, 0, 0, 0.95);
             cursor: grab;
             user-select: none;
             touch-action: none;
@@ -1186,10 +1472,10 @@
         }
 
         .arena-3d-cam-btn {
-            background: rgba(20, 8, 14, 0.76);
+            background: rgba(13, 9, 28, 0.78);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(247, 215, 192, 0.3);
-            color: #fff5ec;
+            border: 1px solid rgba(196, 181, 253, 0.36);
+            color: #f5f3ff;
             padding: 0.38rem 0.8rem;
             border-radius: 9999px;
             font-size: 0.74rem;
@@ -1206,7 +1492,7 @@
             color: var(--btn-text);
             border-color: transparent;
             transform: translateY(-1px);
-            box-shadow: 0 6px 18px -4px rgba(196, 82, 114, 0.6);
+            box-shadow: 0 6px 18px -4px rgba(124, 58, 237, 0.65);
         }
 
         .arena-3d-hud-bottom {
@@ -1224,10 +1510,10 @@
         }
 
         .arena-3d-hint {
-            background: rgba(16, 6, 11, 0.74);
+            background: rgba(11, 7, 24, 0.78);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(248, 222, 206, 0.16);
-            color: #dec0c8;
+            border: 1px solid rgba(167, 139, 250, 0.28);
+            color: #c7d2fe;
             font-size: 0.71rem;
             font-weight: 600;
             padding: 0.32rem 0.75rem;
@@ -1238,10 +1524,10 @@
             position: absolute;
             pointer-events: none;
             z-index: 10;
-            background: rgba(24, 9, 16, 0.92);
+            background: rgba(16, 10, 36, 0.94);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(247, 215, 192, 0.5);
-            color: #fff8f2;
+            border: 1px solid rgba(56, 189, 248, 0.58);
+            color: #f8faff;
             padding: 0.45rem 0.78rem;
             border-radius: 0.7rem;
             font-size: 0.74rem;
@@ -1399,27 +1685,35 @@
             border: none;
         }
 
-        /* Hero Banner — Warm Burgundy-Cream Holographic Aurora */
+        /* Hero Banner — Split Stage (Ref 1 Neon Mist Dark / Ref 2 Cloud Glass Light) */
         .hero {
             width: 100%;
             margin: 0 0 1.75rem 0;
-            padding: 3.75rem clamp(1.75rem, 4vw, 3.5rem);
-            border-radius: 1.5rem;
+            padding: 2.75rem clamp(1.75rem, 3.8vw, 3.25rem);
+            border-radius: 1.6rem;
             background: 
-                radial-gradient(ellipse 60% 80% at 88% 18%, rgba(247, 212, 192, 0.34) 0%, transparent 62%),
-                radial-gradient(ellipse 55% 70% at 62% 82%, rgba(206, 86, 118, 0.38) 0%, transparent 60%),
-                linear-gradient(110deg, rgba(31, 10, 20, 0.92) 0%, rgba(74, 21, 41, 0.78) 50%, rgba(168, 66, 94, 0.45) 100%),
+                radial-gradient(ellipse 54% 78% at 84% 22%, rgba(8, 145, 178, 0.2) 0%, transparent 58%),
+                radial-gradient(ellipse 54% 74% at 52% 88%, rgba(88, 28, 135, 0.28) 0%, transparent 60%),
+                linear-gradient(115deg, rgba(4, 2, 10, 0.97) 0%, rgba(10, 6, 24, 0.92) 55%, rgba(22, 10, 44, 0.78) 100%),
                 url('https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1800&q=85');
             background-size: cover;
             background-position: center 35%;
             position: relative;
             border: 1px solid var(--border-luminous);
-            box-shadow: inset 0 1px 0 rgba(255, 242, 232, 0.25), 0 24px 60px -22px rgba(24, 5, 13, 0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            min-height: 330px;
+            box-shadow: inset 0 1px 0 rgba(167, 139, 250, 0.16), 0 28px 70px -18px rgba(0, 0, 0, 0.96);
+            display: grid;
+            grid-template-columns: 1.25fr 0.92fr;
+            align-items: center;
+            gap: 2.25rem;
+            min-height: 365px;
             overflow: hidden;
+        }
+
+        @media (max-width: 980px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 2.25rem 1.5rem;
+            }
         }
 
         .hero::before {
@@ -1435,33 +1729,89 @@
 
         [data-theme="light"] .hero {
             background: 
-                radial-gradient(ellipse 60% 80% at 86% 18%, rgba(245, 202, 182, 0.65) 0%, transparent 62%),
-                radial-gradient(ellipse 55% 75% at 60% 85%, rgba(226, 146, 166, 0.48) 0%, transparent 60%),
-                linear-gradient(110deg, rgba(254, 247, 239, 0.95) 0%, rgba(250, 234, 224, 0.85) 52%, rgba(224, 166, 176, 0.48) 100%),
-                url('https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1800&q=85');
-            background-size: cover;
-            background-position: center 35%;
+                radial-gradient(ellipse 58% 82% at 85% 18%, rgba(186, 230, 253, 0.78) 0%, transparent 62%),
+                radial-gradient(ellipse 58% 76% at 52% 88%, rgba(221, 214, 254, 0.72) 0%, transparent 60%),
+                linear-gradient(115deg, rgba(255, 255, 255, 0.92) 0%, rgba(238, 242, 255, 0.88) 54%, rgba(243, 232, 255, 0.78) 100%);
             box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.96);
+        }
+
+        .hero-left {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .hero-spotlight-card {
+            position: relative;
+            z-index: 3;
+            border-radius: 1.4rem;
+            overflow: hidden;
+            border: 1px solid rgba(139, 92, 246, 0.32);
+            background: rgba(8, 5, 18, 0.88);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 24px 55px -16px rgba(0, 0, 0, 0.92), 0 0 34px -14px rgba(6, 182, 212, 0.26);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s;
+        }
+
+        .hero-spotlight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 28px 62px -14px rgba(124, 58, 237, 0.55), 0 0 42px -10px rgba(56, 189, 248, 0.45);
+        }
+
+        [data-theme="light"] .hero-spotlight-card {
+            background: rgba(255, 255, 255, 0.84);
+            border: 1px solid rgba(255, 255, 255, 0.98);
+            box-shadow: 0 22px 48px -16px rgba(79, 70, 229, 0.2), inset 0 1px 0 #ffffff;
+        }
+
+        .hero-spotlight-img-wrap {
+            position: relative;
+            height: 190px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .hero-spotlight-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.55s ease;
+        }
+
+        .hero-spotlight-card:hover .hero-spotlight-img {
+            transform: scale(1.06);
+        }
+
+        .hero-spotlight-body {
+            padding: 1.15rem 1.3rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
         }
 
         .hero-title {
-            font-size: clamp(2rem, 3.4vw, 3.05rem);
+            font-size: clamp(2rem, 3.2vw, 2.95rem);
             font-weight: 800;
             letter-spacing: -0.025em;
-            line-height: 1.12;
-            margin-bottom: 0.75rem;
-            background: linear-gradient(120deg, #fffaf4 0%, #f8d7c2 38%, #eab0be 70%, #fff4ea 100%);
+            line-height: 1.1;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(120deg, #ffffff 0%, #ddd6fe 42%, #7dd3fc 76%, #ffffff 100%);
             background-size: 200% auto;
             animation: holoFlow 9s ease-in-out infinite;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            max-width: 920px;
+            max-width: 720px;
             position: relative;
             z-index: 3;
         }
 
         [data-theme="light"] .hero-title {
-            background: linear-gradient(120deg, #4f1227 0%, #99294d 48%, #c96c7b 85%, #691934 100%);
+            background: linear-gradient(120deg, #141b3d 0%, #4338ca 48%, #0284c7 85%, #312e81 100%);
             background-size: 200% auto;
             animation: holoFlow 9s ease-in-out infinite;
             -webkit-background-clip: text;
@@ -1470,10 +1820,72 @@
 
         .hero-subtitle {
             color: var(--text-muted);
-            font-size: 1.05rem;
-            max-width: 580px;
+            font-size: 1.02rem;
+            max-width: 560px;
             line-height: 1.6;
             font-weight: 400;
+        }
+
+        /* Split Feature Spotlight Card (Ref 1 "ЗАПИШИСЬ СО СКИДКОЙ" + Ref 2 Glass) */
+        .split-showcase-banner {
+            width: 100%;
+            background: var(--bg-card);
+            backdrop-filter: blur(22px);
+            border: 1px solid var(--border-color);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            display: grid;
+            grid-template-columns: 0.95fr 1.25fr;
+            align-items: center;
+            gap: 1.75rem;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 860px) {
+            .split-showcase-banner {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .split-showcase-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            right: 10%;
+            height: 1.5px;
+            background: var(--shimmer-line);
+        }
+
+        .split-showcase-media {
+            position: relative;
+            height: 225px;
+            border-radius: 1.15rem;
+            overflow: hidden;
+            border: 1px solid var(--border-luminous);
+        }
+
+        .split-showcase-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .split-discount-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899);
+            color: #ffffff;
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 0.34rem 0.85rem;
+            border-radius: 9999px;
+            box-shadow: 0 8px 22px -4px rgba(168, 85, 247, 0.58);
+            transform: rotate(-2deg);
         }
 
         /* Categories Filter */
@@ -1505,7 +1917,7 @@
             background: var(--gradient-btn);
             color: var(--btn-text);
             border-color: transparent;
-            box-shadow: 0 6px 20px -6px rgba(229, 198, 151, 0.42);
+            box-shadow: 0 6px 20px -6px rgba(124, 58, 237, 0.52);
         }
 
         /* Filter Section & Control Panel */
@@ -1701,14 +2113,14 @@
             position: absolute;
             top: 0.9rem;
             left: 0.9rem;
-            background: rgba(12, 12, 16, 0.72);
+            background: rgba(13, 9, 28, 0.76);
             backdrop-filter: blur(10px);
-            color: #f6e7ce;
+            color: #e0e7ff;
             font-size: 0.72rem;
             font-weight: 700;
             padding: 0.32rem 0.78rem;
             border-radius: 9999px;
-            border: 1px solid rgba(229, 198, 151, 0.3);
+            border: 1px solid rgba(167, 139, 250, 0.45);
             letter-spacing: 0.3px;
         }
 
@@ -1755,7 +2167,7 @@
         .capacity-badge {
             font-size: 0.8rem;
             font-weight: 600;
-            background: linear-gradient(120deg, rgba(243, 210, 190, 0.12), rgba(206, 88, 120, 0.14));
+            background: linear-gradient(120deg, rgba(139, 92, 246, 0.14), rgba(56, 189, 248, 0.14));
             color: var(--accent-gold);
             padding: 0.35rem 0.78rem;
             border-radius: 9999px;
@@ -1764,10 +2176,72 @@
         }
 
         .capacity-badge.low {
-            background: rgba(217, 167, 176, 0.12);
-            color: #f0b8be;
-            border-color: rgba(217, 167, 176, 0.35);
+            background: rgba(244, 114, 182, 0.14);
+            color: #f472b6;
+            border-color: rgba(244, 114, 182, 0.42);
             animation: pulse 2s infinite;
+        }
+
+        .capacity-badge.soldout {
+            background: rgba(239, 68, 68, 0.16);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.48);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .card.sold-out {
+            opacity: 0.86;
+            border-color: rgba(239, 68, 68, 0.28);
+        }
+
+        .card.sold-out .card-img,
+        .netflix-card.sold-out .netflix-card-img {
+            filter: grayscale(0.65) brightness(0.62);
+        }
+
+        .sold-out-ribbon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-8deg);
+            background: linear-gradient(120deg, rgba(185, 28, 28, 0.94), rgba(225, 29, 72, 0.94));
+            color: #ffffff;
+            font-size: 0.92rem;
+            font-weight: 900;
+            letter-spacing: 2.2px;
+            padding: 0.42rem 1.35rem;
+            border-radius: 0.55rem;
+            border: 1.5px solid rgba(254, 202, 202, 0.72);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65);
+            z-index: 4;
+            pointer-events: none;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .btn-soldout {
+            width: 100%;
+            margin-top: 0.9rem;
+            background: rgba(100, 116, 139, 0.22);
+            color: #94a3b8;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            padding: 0.82rem 1.1rem;
+            border-radius: 0.85rem;
+            font-weight: 800;
+            font-size: 0.88rem;
+            cursor: not-allowed;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        [data-theme="light"] .btn-soldout {
+            background: rgba(226, 232, 240, 0.8);
+            color: #64748b;
+            border-color: rgba(239, 68, 68, 0.35);
         }
 
         @keyframes pulse {
@@ -1781,9 +2255,9 @@
             background: var(--gradient-btn);
             background-size: 200% 200%;
             color: var(--btn-text);
-            border: 1px solid rgba(255, 240, 228, 0.28);
+            border: 1px solid rgba(221, 214, 254, 0.32);
             padding: 0.85rem 1.25rem;
-            border-radius: 0.8rem;
+            border-radius: 0.85rem;
             font-weight: 700;
             font-size: 0.94rem;
             cursor: pointer;
@@ -1792,14 +2266,14 @@
             justify-content: center;
             align-items: center;
             gap: 0.5rem;
-            box-shadow: 0 10px 26px -8px rgba(168, 52, 86, 0.45), inset 0 1px 0 rgba(255, 245, 236, 0.45);
-            text-shadow: 0 1px 2px rgba(48, 10, 22, 0.28);
+            box-shadow: 0 10px 26px -8px rgba(109, 40, 217, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            text-shadow: 0 1px 2px rgba(15, 7, 38, 0.28);
         }
 
         .btn-buy:hover {
             background-position: 100% 50%;
             transform: translateY(-2px);
-            box-shadow: 0 16px 34px -8px rgba(196, 82, 114, 0.58), 0 0 20px -4px rgba(247, 215, 192, 0.32), inset 0 1px 0 rgba(255, 248, 240, 0.65);
+            box-shadow: 0 16px 34px -8px rgba(124, 58, 237, 0.62), 0 0 22px -4px rgba(56, 189, 248, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.55);
         }
 
         .btn-buy:disabled {
@@ -1868,15 +2342,23 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(10px);
+            background: rgba(6, 4, 18, 0.78);
+            backdrop-filter: blur(12px);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 1200;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s;
+            transition: opacity 0.28s ease;
+        }
+
+        #otpModal {
+            z-index: 1300;
+        }
+
+        #ticketModal {
+            z-index: 1400;
         }
 
         .modal-overlay.active {
@@ -2689,12 +3171,16 @@
 
     <!-- Full-Width Edge-to-Edge Sticky Navigation -->
     <nav>
-        <div style="display:flex; align-items:center; gap:1.1rem;">
+        <div style="display:flex; align-items:center; gap:0.95rem; flex-shrink:0;">
             <div class="logo" onclick="resetFilters()">✦ PassoLive</div>
-            <div class="system-status-pill" style="display:inline-flex; align-items:center; gap:0.45rem; background:var(--gradient-btn-cyan); border:1px solid var(--border-luminous); padding:0.3rem 0.82rem; border-radius:9999px; font-size:0.73rem; font-weight:700; letter-spacing:0.4px; color:var(--accent-primary);">
-                <span style="width:7px; height:7px; border-radius:50%; background:var(--accent-primary); box-shadow:0 0 8px var(--accent-primary); animation: pulseGlow 2.4s infinite;"></span>
-                <span>CANLI BİLET SATIŞI AKTİF</span>
+            <div class="system-status-pill" style="display:inline-flex; align-items:center; gap:0.45rem; background:rgba(139,92,246,0.14); border:1px solid var(--border-luminous); padding:0.3rem 0.82rem; border-radius:9999px; font-size:0.72rem; font-weight:700; letter-spacing:0.4px; color:var(--accent-primary);">
+                <span style="width:7px; height:7px; border-radius:50%; background:var(--accent-secondary); box-shadow:0 0 8px var(--accent-secondary); animation: pulseGlow 2.4s infinite;"></span>
+                <span>CANLI BİLET SATIŞI</span>
             </div>
+        </div>
+        <div class="nav-search-wrap">
+            <span class="nav-search-icon">🔍</span>
+            <input type="text" id="navSearchInput" class="nav-search-input" placeholder="Etkinlik, sanatçı, şehir veya 3D mekan ara..." oninput="syncNavSearch(this.value)">
         </div>
         <div class="user-status">
             <button class="calendar-nav-btn" id="calendarNavBtn" onclick="toggleTopCalendar(event)" title="1 Yıllık Etkinlik Takvimi">
@@ -2752,106 +3238,220 @@
     <!-- Full-Width Fluid Main Content Wrapper -->
     <div class="app-outer-wrapper">
 
-        <!-- Hero Section -->
+        <!-- Hero Section — Split Cinematic Stage (Ref 1 Dark Neon / Ref 2 Light Frosted Cloud) -->
         <div class="hero">
-            <!-- Delicate Twinkling Holographic 4-Point Sparkles -->
-            <svg class="holo-sparkle" style="top:18%; right:14%; width:26px; height:26px; animation-delay:0s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/></svg>
-            <svg class="holo-sparkle" style="top:34%; right:26%; width:14px; height:14px; animation-delay:1.2s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/></svg>
-            <svg class="holo-sparkle" style="bottom:22%; right:8%; width:18px; height:18px; animation-delay:2.1s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/></svg>
-            <svg class="holo-sparkle" style="top:14%; left:42%; width:12px; height:12px; animation-delay:0.7s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/></svg>
+            <!-- Delicate Twinkling Stardust Sparkles -->
+            <svg class="holo-sparkle" style="top:14%; right:44%; width:24px; height:24px; animation-delay:0s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/></svg>
+            <svg class="holo-sparkle" style="top:32%; right:39%; width:13px; height:13px; animation-delay:1.2s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/></svg>
+            <svg class="holo-sparkle" style="bottom:18%; left:46%; width:17px; height:17px; animation-delay:2.1s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/></svg>
 
-            <div style="position:relative; z-index:3; display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(120deg, rgba(243,210,190,0.16), rgba(206,88,120,0.18)); backdrop-filter:blur(12px); border:1px solid var(--border-luminous); border-radius:9999px; padding:0.4rem 1.05rem; width:fit-content; margin-bottom:1.1rem;">
-                <span style="font-size:0.74rem; font-weight:700; letter-spacing:0.8px; color:var(--accent-secondary);">✦ SEZON SEÇKİSİ • SEÇİLİ BİLETLERDE 10 DK REZERVASYON GARANTİSİ</span>
+            <div class="hero-left">
+                <div style="display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(120deg, rgba(139,92,246,0.22), rgba(56,189,248,0.2)); backdrop-filter:blur(12px); border:1px solid var(--border-luminous); border-radius:9999px; padding:0.4rem 1.05rem; width:fit-content; margin-bottom:1.1rem;">
+                    <span style="font-size:0.74rem; font-weight:700; letter-spacing:0.8px; color:var(--accent-gold);">✦ SEZON SEÇKİSİ • 12 ÖZGÜN 3D SALON & 10 DK REZERVASYON</span>
+                </div>
+                <h1 class="hero-title">CANLI ETKİNLİK HEYECANINI 3D SALONLA KEŞFET</h1>
+                <p class="hero-subtitle">Konserler, festivaller, derbiler, Formula 1 ve tiyatro sahnelerinde koltuğunu 3D modelden seç; 10 dakikalık güvenli kilit ve anında QR biletle yerini ayırt.</p>
+
+                <div style="display:flex; gap:0.85rem; margin-top:1.65rem; flex-wrap:wrap; align-items:center;">
+                    <button class="btn-buy" style="width:auto; margin-top:0; padding:0.85rem 1.8rem; font-size:0.93rem; border-radius:9999px;" onclick="jumpToCategory('all')">
+                        ✦ Etkinlikleri Keşfet
+                    </button>
+                    <button class="btn-cyan" onclick="openFeatured3DPreview('formula')">
+                        🧊 3D Salon Önizle
+                    </button>
+                    <button class="btn-glass" onclick="togglePassoBot()">
+                        💬 PassoBot
+                    </button>
+                </div>
+
+                <div style="display:flex; gap:1.4rem; margin-top:1.55rem; flex-wrap:wrap; font-size:0.8rem; font-weight:600; color:var(--text-muted);">
+                    <span style="display:inline-flex; align-items:center; gap:0.4rem;"><strong style="color:var(--text-main);">40+</strong> Güncel Etkinlik</span>
+                    <span style="opacity:0.4;">•</span>
+                    <span style="display:inline-flex; align-items:center; gap:0.4rem;"><strong style="color:var(--text-main);">12</strong> Farklı 3D Mekan</span>
+                    <span style="opacity:0.4;">•</span>
+                    <span style="display:inline-flex; align-items:center; gap:0.4rem;"><strong style="color:var(--text-main);">%100</strong> Anında QR Bilet</span>
+                </div>
             </div>
-            <h1 class="hero-title">TÜRKİYE'NİN EN HIZLI VE GÜVENİLİR BİLET PLATFORMU</h1>
-            <p class="hero-subtitle" style="position:relative; z-index:3;">En sevdiğin konserler, tiyatrolar, gösteriler ve spor etkinlikleri için biletini saniyeler içinde güvenle ayırt.</p>
-            
-            <div style="position:relative; z-index:3; display:flex; gap:0.9rem; margin-top:1.75rem; flex-wrap:wrap; align-items:center;">
-                <button class="btn-buy" style="width:auto; margin-top:0; padding:0.85rem 1.8rem; font-size:0.93rem; border-radius:9999px;" onclick="filterCat('all')">
-                    ✦ Tüm Etkinlikleri Keşfet
-                </button>
-                <button class="btn-glass" onclick="togglePassoBot()">
-                    💬 PassoBot Asistan ile Ara
-                </button>
+
+            <!-- Right Floating Spotlight Stage Card -->
+            <div class="hero-spotlight-card">
+                <div class="hero-spotlight-img-wrap">
+                    <img class="hero-spotlight-img" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1000&q=85" alt="Öne Çıkan Canlı Sahne">
+                    <div style="position:absolute; inset:0; background:linear-gradient(to top, rgba(11,7,24,0.88) 0%, rgba(11,7,24,0.18) 55%, transparent 100%);"></div>
+                    <div style="position:absolute; top:0.85rem; left:0.85rem; display:inline-flex; align-items:center; gap:0.35rem; background:linear-gradient(120deg,#7c3aed,#38bdf8); color:#fff; font-size:0.7rem; font-weight:800; padding:0.28rem 0.72rem; border-radius:9999px; letter-spacing:0.5px;">
+                        🧊 3D KOLTUK GÖRÜŞÜ AKTİF
+                    </div>
+                    <div style="position:absolute; bottom:0.75rem; left:0.9rem; right:0.9rem; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:0.76rem; font-weight:700; color:#e0e7ff;">✦ Haftanın Yıldız Deneyimi</span>
+                        <span style="font-size:0.72rem; font-weight:700; color:#38bdf8; background:rgba(14,165,233,0.18); border:1px solid rgba(56,189,248,0.45); padding:0.2rem 0.6rem; border-radius:9999px;">360° İnteraktif</span>
+                    </div>
+                </div>
+                <div class="hero-spotlight-body">
+                    <div style="font-size:1.05rem; font-weight:800; color:var(--text-main); letter-spacing:-0.01em;">Kendi Koltuğundan Sahneyi Gör!</div>
+                    <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.48;">Formula 1 pisti, toprak tenis kortu, voleybol arenası, kuyruklu piyano salonu ve 360° DJ sahnesi dahil 12 özel 3D model.</div>
+                    <div style="display:flex; gap:0.55rem; margin-top:0.35rem;">
+                        <button class="btn-buy" style="margin-top:0; padding:0.62rem 1rem; font-size:0.82rem; border-radius:0.75rem; flex:1;" onclick="openFeatured3DPreview('atp')">
+                            🎾 Tenis 3D
+                        </button>
+                        <button class="btn-cyan" style="padding:0.62rem 1rem; font-size:0.82rem; border-radius:0.75rem; flex:1;" onclick="openFeatured3DPreview('fazıl')">
+                            🎹 Senfoni 3D
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- 4 Minimalist Luminous Feature Cards Grid -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1.2rem; width:100%; margin-bottom:1.75rem;">
-            <!-- Card 1 -->
-            <div class="quick-feature-card">
+        <!-- 4 Color-Coded Glass KPI / Highlight Cards (Ref 1 Dark Strip + Ref 2 ShopWave Frosted KPI Cards) -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:1.15rem; width:100%; margin-bottom:2.1rem;">
+            <!-- Card 1 — Royal Blue -->
+            <div class="quick-feature-card" style="cursor:pointer;" onclick="jumpToCategory('all')">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div class="feature-icon-tile">⚡</div>
-                    <span class="feature-pill-badge">Anında İşlem</span>
+                    <div class="feature-icon-tile tile-blue">🎟️</div>
+                    <span class="feature-pill-badge">1 Yıllık Sezon</span>
                 </div>
                 <div>
-                    <h4 style="font-size:1.02rem; font-weight:700; color:var(--text-main); margin-bottom:0.35rem; letter-spacing:-0.01em;">Hızlı Bilet & 10 Dk Rezervasyon</h4>
-                    <p style="font-size:0.84rem; color:var(--text-muted); line-height:1.5;">Koltuk çakışması olmadan 10 dakikalık güvenli koltuk rezervasyon garantisi.</p>
+                    <div class="feature-metric-num">40 Etkinlik</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+                        <span style="font-size:0.82rem; color:var(--text-muted);">Konser, Festival, Spor & Sahne</span>
+                        <span class="feature-metric-trend">↑ Güncel</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Card 2 -->
-            <div class="quick-feature-card">
+            <!-- Card 2 — Sky Cyan -->
+            <div class="quick-feature-card" style="cursor:pointer;" onclick="openFeatured3DPreview('formula')">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div class="feature-icon-tile">🛡️</div>
-                    <span class="feature-pill-badge">%100 Adil Satış</span>
+                    <div class="feature-icon-tile tile-cyan">🧊</div>
+                    <span class="feature-pill-badge">360° Görüş</span>
                 </div>
                 <div>
-                    <h4 style="font-size:1.02rem; font-weight:700; color:var(--text-main); margin-bottom:0.35rem; letter-spacing:-0.01em;">Adil Bilet Koruması</h4>
-                    <p style="font-size:0.84rem; color:var(--text-muted); line-height:1.5;">Olağandışı ve toplu alım girişimlerini anında engelleyerek gerçek katılımcıları korur.</p>
+                    <div class="feature-metric-num">12 3D Mekan</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+                        <span style="font-size:0.82rem; color:var(--text-muted);">Etkinliğe özel 3D koltuk seçimi</span>
+                        <span class="feature-metric-trend">✦ Dene</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Card 3 -->
-            <div class="quick-feature-card">
+            <!-- Card 3 — Soft Violet -->
+            <div class="quick-feature-card" style="cursor:pointer;" onclick="toggleTopCalendar(event)">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div class="feature-icon-tile">💬</div>
+                    <div class="feature-icon-tile tile-violet">⏱️</div>
+                    <span class="feature-pill-badge">Güvenli Kilit</span>
+                </div>
+                <div>
+                    <div class="feature-metric-num">10 Dk Rezerve</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+                        <span style="font-size:0.82rem; color:var(--text-muted);">Çakışmasız koltuk & +3 dk uzatma</span>
+                        <span class="feature-metric-trend">%100 Adil</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4 — Soft Orchid Pink -->
+            <div class="quick-feature-card" style="cursor:pointer;" onclick="togglePassoBot()">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="feature-icon-tile tile-pink">✨</div>
                     <span class="feature-pill-badge">Akıllı Asistan</span>
                 </div>
                 <div>
-                    <h4 style="font-size:1.02rem; font-weight:700; color:var(--text-main); margin-bottom:0.35rem; letter-spacing:-0.01em;">PassoBot Bilet Asistanı</h4>
-                    <p style="font-size:0.84rem; color:var(--text-muted); line-height:1.5;">İstediğiniz konser, tiyatro ve maçı saniyeler içinde bulan akıllı bilet danışmanı.</p>
-                </div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="quick-feature-card">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div class="feature-icon-tile">💳</div>
-                    <span class="feature-pill-badge">Güvenli Ödeme</span>
-                </div>
-                <div>
-                    <h4 style="font-size:1.02rem; font-weight:700; color:var(--text-main); margin-bottom:0.35rem; letter-spacing:-0.01em;">Güvenli Ödeme & Mobil Bilet</h4>
-                    <p style="font-size:0.84rem; color:var(--text-muted); line-height:1.5;">Doğrulamalı güvenli ödeme ve kapıda anında okutulabilen dijital bilet kolaylığı.</p>
+                    <div class="feature-metric-num">PassoBot AI</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+                        <span style="font-size:0.82rem; color:var(--text-muted);">Bütçe ve şehre göre anlık öneri</span>
+                        <span class="feature-metric-trend">● Aktif</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Luminous Minimalist Promo Ribbon -->
+        <!-- 4-Column Editorial Category Showcase (Inspired by Ref 1 "НАШИ НАПРАВЛЕНИЯ") -->
+        <div style="width:100%; margin-bottom:0.85rem; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:0.75rem;">
+            <div>
+                <div style="font-size:0.74rem; font-weight:700; color:var(--accent-primary); text-transform:uppercase; letter-spacing:1.5px;">✦ KATEGORİ VİTRİNİ</div>
+                <h2 style="font-size:1.5rem; font-weight:800; color:var(--text-main); margin-top:0.2rem; letter-spacing:-0.015em;">Hangi Deneyimi Arıyorsun?</h2>
+            </div>
+            <span style="font-size:0.82rem; color:var(--text-muted);">Bir kategoriye dokunarak anında filtrele</span>
+        </div>
+
+        <div class="category-spotlight-grid">
+            <div class="cat-spot-card" onclick="jumpToCategory('Müzik & Konser')">
+                <img class="cat-spot-bg" src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=800&q=80" alt="Müzik & Konser">
+                <div class="cat-spot-overlay"></div>
+                <div class="cat-spot-top">
+                    <span class="cat-spot-title">MÜZİK & KONSER</span>
+                    <span class="cat-spot-count">10 Etkinlik</span>
+                </div>
+                <div class="cat-spot-bottom">
+                    <div class="cat-spot-desc">Açıkhava konserleri, rock şovları ve kuyruklu piyano senfoni geceleri.</div>
+                    <div class="cat-spot-arrow">→</div>
+                </div>
+            </div>
+
+            <div class="cat-spot-card" onclick="jumpToCategory('Festival & DJ')">
+                <img class="cat-spot-bg" src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80" alt="Festival & DJ">
+                <div class="cat-spot-overlay"></div>
+                <div class="cat-spot-top">
+                    <span class="cat-spot-title">FESTİVAL & DJ</span>
+                    <span class="cat-spot-count">10 Etkinlik</span>
+                </div>
+                <div class="cat-spot-bottom">
+                    <div class="cat-spot-desc">360° elektronik DJ sahnesi, lazer şovları ve açık hava müzik festivalleri.</div>
+                    <div class="cat-spot-arrow">→</div>
+                </div>
+            </div>
+
+            <div class="cat-spot-card" onclick="jumpToCategory('Spor')">
+                <img class="cat-spot-bg" src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80" alt="Spor & Arena">
+                <div class="cat-spot-overlay"></div>
+                <div class="cat-spot-top">
+                    <span class="cat-spot-title">SPOR & ARENA</span>
+                    <span class="cat-spot-count">10 Etkinlik</span>
+                </div>
+                <div class="cat-spot-bottom">
+                    <div class="cat-spot-desc">Derbiler, Formula 1 pisti, ATP Tenis, EuroLeague, Voleybol ve Kickboxing.</div>
+                    <div class="cat-spot-arrow">→</div>
+                </div>
+            </div>
+
+            <div class="cat-spot-card" onclick="jumpToCategory('Komedi & Tiyatro')">
+                <img class="cat-spot-bg" src="https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=800&q=80" alt="Komedi & Tiyatro">
+                <div class="cat-spot-overlay"></div>
+                <div class="cat-spot-top">
+                    <span class="cat-spot-title">KOMEDİ & TİYATRO</span>
+                    <span class="cat-spot-count">10 Etkinlik</span>
+                </div>
+                <div class="cat-spot-bottom">
+                    <div class="cat-spot-desc">Kadife opera salonları, klasik oyunlar ve canlı stand-up gösterileri.</div>
+                    <div class="cat-spot-arrow">→</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Luminous Vivid Violet-Sky Promo Ribbon (Inspired by Ref 1 "РАСПИСАНИЕ ТРЕНИРОВОК") -->
         <div class="promo-banner-card">
             <svg class="holo-sparkle" style="top:14%; right:24%; width:18px; height:18px; animation-delay:0.4s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/></svg>
             <svg class="holo-sparkle" style="bottom:16%; right:31%; width:11px; height:11px; animation-delay:1.8s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z"/></svg>
             <div style="position:relative; z-index:3; display:flex; align-items:center; gap:1.15rem;">
-                <div class="feature-icon-tile" style="width:48px; height:48px; font-size:1.35rem; flex-shrink:0;">🎟️</div>
+                <div style="width:50px; height:50px; border-radius:15px; background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.38); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; backdrop-filter:blur(8px);">📅</div>
                 <div>
-                    <div style="font-size:0.72rem; font-weight:700; color:var(--accent-primary); text-transform:uppercase; letter-spacing:1.2px;">✦ HIZLI REZERVASYON GARANTİSİ</div>
-                    <h3 style="font-size:1.18rem; font-weight:700; color:var(--text-main); margin-top:0.2rem; letter-spacing:-0.01em;">Koltuk Rezervasyonunuz 10 Dakika Boyunca Size Özel Saklanır!</h3>
-                    <div style="font-size:0.84rem; color:var(--text-muted); margin-top:0.2rem;">Ödemenizi tamamlayana kadar koltuğunuz yalnızca sizin için ayrılır.</div>
+                    <div style="font-size:0.72rem; font-weight:800; color:#e0f2fe; text-transform:uppercase; letter-spacing:1.3px;">✦ 1 YILLIK ETKİNLİK TAKVİMİ</div>
+                    <h3 style="font-size:1.22rem; font-weight:800; color:#ffffff; margin-top:0.2rem; letter-spacing:-0.01em;">Tüm Yılın Etkinliklerini Ay Ay Gör ve Gününü Planla!</h3>
+                    <div style="font-size:0.84rem; color:rgba(241,245,255,0.88); margin-top:0.2rem;">Hangi konserin hangi güne denk geldiğini tek tıkla incele ve yerini hemen ayırt.</div>
                 </div>
             </div>
-            <button class="btn-buy" style="width:auto; margin-top:0; padding:0.75rem 1.55rem; font-size:0.88rem; border-radius:9999px;" onclick="filterCat('all')">
-                Hemen Koltuk Seç →
+            <button style="position:relative; z-index:3; background:rgba(15,10,36,0.86); color:#ffffff; border:1px solid rgba(255,255,255,0.35); padding:0.78rem 1.65rem; font-size:0.88rem; font-weight:700; border-radius:9999px; cursor:pointer; transition:all 0.25s; box-shadow:0 10px 24px rgba(10,5,28,0.4);" onmouseover="this.style.transform='translateY(-2px)'; this.style.background='#0f0a24';" onmouseout="this.style.transform='none'; this.style.background='rgba(15,10,36,0.86)';" onclick="toggleTopCalendar(event)">
+                Takvimi Aç →
             </button>
         </div>
 
         <!-- Horizontal Scroll Carousel Section -->
-        <div class="netflix-carousel-section" style="width:100%; margin-bottom:2.75rem;">
+        <div class="netflix-carousel-section" style="width:100%; margin-bottom:2.5rem;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.15rem;">
                 <div>
                     <div style="font-size:0.75rem; font-weight:700; color:var(--accent-primary); text-transform:uppercase; letter-spacing:1.6px; display:flex; align-items:center; gap:0.5rem;">
                         <span>✦ ÖNE ÇIKAN SEÇKİ</span> • <span>EN ÇOK İLGİ GÖRENLER</span>
                     </div>
-                    <h2 style="font-size:1.5rem; font-weight:700; color:var(--text-main); margin-top:0.25rem; letter-spacing:-0.015em;">Önerilen & Çok Satan Trend Etkinlikler</h2>
+                    <h2 style="font-size:1.5rem; font-weight:800; color:var(--text-main); margin-top:0.25rem; letter-spacing:-0.015em;">Önerilen & Çok Satan Trend Etkinlikler</h2>
                 </div>
                 <div style="display:flex; gap:0.6rem;">
                     <button class="carousel-nav-btn" onclick="scrollNetflixCarousel(-380)" title="Sola Kaydır">‹</button>
@@ -2862,6 +3462,34 @@
             <!-- Scroll Track Container -->
             <div class="netflix-carousel-track" id="netflixCarouselTrack">
                 <!-- Rendered dynamically by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Split 3D Experience Banner (Inspired by Ref 1 Dual-Column Promo Card & Ref 2 Glass) -->
+        <div class="split-showcase-banner">
+            <div class="split-showcase-media">
+                <img src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&w=1000&q=85" alt="3D Salon Deneyimi">
+                <div style="position:absolute; inset:0; background:linear-gradient(135deg, rgba(76,29,149,0.45), rgba(14,165,233,0.22));"></div>
+                <div style="position:absolute; bottom:0.85rem; left:0.85rem; background:rgba(11,7,24,0.82); backdrop-filter:blur(10px); border:1px solid rgba(196,181,253,0.45); color:#f5f3ff; font-size:0.74rem; font-weight:700; padding:0.35rem 0.8rem; border-radius:9999px;">
+                    🧊 360° Döndür • Yakınlaştır • Koltuğundan Gör
+                </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:0.85rem;">
+                <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                    <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-main); letter-spacing:-0.02em;">BİLETİNİ ALMADAN ÖNCE KOLTUĞUNDAN SAHNEYİ GÖR</h3>
+                    <span class="split-discount-pill">✦ 12 ÖZGÜN 3D SALON</span>
+                </div>
+                <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.6;">
+                    Her etkinlik türüne özel 3D mimari! Tenis toprak kortu, voleybol filesi, canlı F1 pisti, kickboxing ringi, piyano senfoni salonu veya kadife tiyatroda koltuğuna tıklayıp gerçek görüş açını anında keşfet.
+                </p>
+                <div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:0.25rem;">
+                    <button class="btn-buy" style="width:auto; margin-top:0; padding:0.75rem 1.5rem; font-size:0.88rem; border-radius:9999px;" onclick="openFeatured3DPreview('filenin')">
+                        🏐 3D Arenayı Dene
+                    </button>
+                    <button class="btn-cyan" style="padding:0.75rem 1.5rem; font-size:0.88rem;" onclick="togglePassoBot()">
+                        💬 PassoBot ile Öneri Al
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -3081,7 +3709,7 @@
                     </div>
                 </div>
 
-                <button class="btn-buy" style="margin-top:auto; padding:1rem; font-size:1.1rem; background:linear-gradient(135deg, #10b981, #059669);" onclick="openSeatingFromDetail()">
+                <button id="detailBuySeatBtn" class="btn-buy" style="margin-top:auto; padding:1rem; font-size:1.1rem; background:linear-gradient(135deg, #10b981, #059669);" onclick="openSeatingFromDetail()">
                     🎟️ Bilet Seç & Koltuk Haritasını Aç
                 </button>
             </div>
@@ -3364,30 +3992,41 @@
                         </div>
                     </div>
 
+                    <!-- Saved Cards Quick Picker (Only shown if user previously consented) -->
+                    <div id="savedCardsContainer" style="display:none; flex-direction:column; gap:0.5rem;">
+                        <div style="font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.6px;">💳 Kayıtlı Kartlarım</div>
+                        <div id="savedCardsList" style="display:flex; flex-wrap:wrap; gap:0.5rem;"></div>
+                    </div>
+
                     <!-- Input Form -->
-                    <form id="paymentForm" onsubmit="handleFinalPayment(event)" style="display:flex; flex-direction:column; gap:1rem;">
+                    <form id="paymentForm" autocomplete="off" onsubmit="handleFinalPayment(event)" style="display:flex; flex-direction:column; gap:1rem;">
                         <div class="form-group">
                             <label style="font-size:0.8rem; font-weight:700; color:#cbd5e1;">Kart Sahibinin Adı Soyadı</label>
-                            <input type="text" id="payName" class="filter-input" placeholder="Örn: Ahmet Yılmaz" required oninput="updateCardPreview()">
+                            <input type="text" id="payName" name="pl_card_holder" autocomplete="off" class="filter-input" placeholder="Örn: Ahmet Yılmaz" required oninput="updateCardPreview()">
                         </div>
 
                         <div class="form-group">
                             <label style="font-size:0.8rem; font-weight:700; color:#cbd5e1;">Kart Numarası</label>
-                            <input type="text" id="payCardNum" class="filter-input" maxlength="19" placeholder="4543 •••• •••• ••••" required oninput="formatCardInput(this); updateCardPreview()">
+                            <input type="text" id="payCardNum" name="pl_card_number" autocomplete="off" inputmode="numeric" class="filter-input" maxlength="19" placeholder="4543 •••• •••• ••••" required oninput="formatCardInput(this); updateCardPreview()">
                         </div>
 
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.85rem;">
                             <div class="form-group">
                                 <label style="font-size:0.8rem; font-weight:700; color:#cbd5e1;">Son Kullanma (AA/YY)</label>
-                                <input type="text" id="payExpiry" class="filter-input" maxlength="5" placeholder="12/28" required oninput="formatExpiryInput(this); updateCardPreview()">
+                                <input type="text" id="payExpiry" name="pl_card_exp" autocomplete="off" inputmode="numeric" class="filter-input" maxlength="5" placeholder="12/28" required oninput="formatExpiryInput(this); updateCardPreview()">
                             </div>
                             <div class="form-group">
                                 <label style="font-size:0.8rem; font-weight:700; color:#cbd5e1;">CVV / CVC</label>
-                                <input type="password" id="payCvv" class="filter-input" maxlength="4" placeholder="•••" required>
+                                <input type="password" id="payCvv" name="pl_card_cvc" autocomplete="new-password" inputmode="numeric" class="filter-input" maxlength="4" placeholder="•••" required>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn-buy" style="margin-top:0.5rem; padding:1.1rem; font-size:1.05rem; background:linear-gradient(135deg, #10b981, #059669); border-radius:0.75rem; box-shadow:0 4px 20px rgba(16,185,129,0.4);">
+                        <label style="display:flex; align-items:flex-start; gap:0.6rem; padding:0.72rem 0.85rem; border-radius:0.75rem; background:rgba(139,92,246,0.1); border:1px solid rgba(167,139,250,0.28); cursor:pointer; font-size:0.78rem; color:#cbd5e1; line-height:1.4;">
+                            <input type="checkbox" id="saveCardCheck" style="margin-top:2px; accent-color:#8b5cf6; width:15px; height:15px; cursor:pointer;">
+                            <span>Kart bilgilerimi (CVV hariç) sonraki işlemlerimde kullanmak üzere <strong>onayımla kaydetmek</strong> istiyorum.</span>
+                        </label>
+
+                        <button type="submit" class="btn-buy" style="margin-top:0.35rem; padding:1.1rem; font-size:1.05rem; background:linear-gradient(135deg, #10b981, #059669); border-radius:0.75rem; box-shadow:0 4px 20px rgba(16,185,129,0.4);">
                             💳 <span id="payBtnAmount">₺850,00</span> Ödemeyi Onayla ve Bileti Al
                         </button>
                     </form>
@@ -3627,22 +4266,37 @@
         </div>
     </div>
 
-    <!-- Ticket Stub Modal with Scannable QR Code -->
+    <!-- Ticket Stub Modal with Scannable QR Code & Optional Card Save Consent -->
     <div class="modal-overlay" id="ticketModal">
-        <div class="ticket-stub">
-            <div style="font-size:2rem; margin-bottom:0.4rem;">🎉</div>
-            <div class="stub-header" style="font-size:1.3rem;">BİLETİNİZ BAŞARIYLA ONAYLANDI!</div>
-            <p style="color:#cbd5e1; font-weight:800; font-size:1rem; margin-bottom:0.75rem;" id="modalEventTitle">Rock Concert 2026</p>
+        <div class="ticket-stub" style="max-width:470px; max-height:92vh; overflow-y:auto;">
+            <button onclick="closeModal()" title="Kapat" style="position:absolute; top:1rem; right:1.1rem; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); color:#e2e8f0; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:0.95rem;">✕</button>
+            <div style="font-size:2.1rem; margin-bottom:0.35rem;">🎉</div>
+            <div class="stub-header" style="font-size:1.28rem; color:#c4b5fd;">BİLETİNİZ BAŞARIYLA ONAYLANDI!</div>
+            <p style="color:#f8faff; font-weight:800; font-size:1.05rem; margin-bottom:0.3rem;" id="modalEventTitle">Etkinlik Bileti</p>
+            <div style="font-size:0.78rem; color:#7dd3fc; font-weight:700; margin-bottom:0.85rem;" id="modalSeatSummary">Sahne Önü VIP • Blok 001 • Sıra A - Koltuk 1</div>
             
-            <div style="background:#fff; padding:1rem; border-radius:1rem; display:inline-flex; flex-direction:column; align-items:center; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
-                <canvas id="modalTicketQrCanvas"></canvas>
-                <div style="font-size:0.75rem; color:#000; font-weight:bold; font-family:monospace; margin-top:0.5rem;" id="modalTicketCodeStr">PASS-2026-TK-9481</div>
+            <div style="background:#fff; padding:1rem 1.15rem; border-radius:1rem; display:inline-flex; flex-direction:column; align-items:center; box-shadow:0 10px 28px rgba(0,0,0,0.45);">
+                <canvas id="modalTicketQrCanvas" width="136" height="136"></canvas>
+                <div style="font-size:0.78rem; color:#0f172a; font-weight:800; font-family:monospace; margin-top:0.5rem; letter-spacing:0.6px;" id="modalTicketCodeStr">PASS-2026-TK-9481</div>
             </div>
 
-            <p style="color:#cbd5e1; font-size:0.85rem; margin-top:1rem;" id="modalStatusMsg">Bilet alma işleminiz ve koltuk rezervasyonunuz onaylandı.</p>
-            <div style="display:flex; gap:0.5rem; justify-content:center; margin-top:1rem;">
-                <button class="btn-close" style="margin-top:0;" onclick="closeModal()">📱 Biletlerime Git</button>
-                <button class="btn-close" style="margin-top:0; background:linear-gradient(135deg, #06b6d4, #3b82f6);" onclick="printActiveTicketPass()">📄 PDF Bilet İndir</button>
+            <p style="color:#cbd5e1; font-size:0.84rem; margin-top:0.95rem; line-height:1.5;" id="modalStatusMsg">Bilet alma işleminiz ve koltuk rezervasyonunuz onaylandı.</p>
+
+            <!-- Explicit User Consent Prompt Before Saving Card Details -->
+            <div id="saveCardConsentBox" style="display:none; margin-top:0.95rem; padding:0.85rem 1rem; border-radius:0.95rem; background:rgba(15, 10, 36, 0.72); border:1px solid rgba(56, 189, 248, 0.42); text-align:left;">
+                <div style="font-size:0.8rem; font-weight:800; color:#7dd3fc; margin-bottom:0.3rem;">💳 Kart Bilgilerini Kaydetmek İster misiniz?</div>
+                <div id="saveCardConsentText" style="font-size:0.76rem; color:#cbd5e1; line-height:1.45; margin-bottom:0.65rem;">
+                    Bu kartı sonraki alışverişlerinizde hızlı kullanmak için kaydetmek ister misiniz? (CVV güvenlik gereği asla kaydedilmez.)
+                </div>
+                <div style="display:flex; gap:0.5rem;">
+                    <button type="button" onclick="confirmSavePendingCard(true)" style="flex:1; background:linear-gradient(120deg, #6d28d9, #38bdf8); color:#fff; border:none; padding:0.5rem 0.75rem; border-radius:0.6rem; font-size:0.78rem; font-weight:700; cursor:pointer;">✅ Evet, Kaydet</button>
+                    <button type="button" onclick="confirmSavePendingCard(false)" style="flex:1; background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18); padding:0.5rem 0.75rem; border-radius:0.6rem; font-size:0.78rem; font-weight:700; cursor:pointer;">✕ Hayır, Kaydetme</button>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:0.55rem; justify-content:center; margin-top:1.1rem; flex-wrap:wrap;">
+                <button class="btn-close" style="margin-top:0; background:linear-gradient(120deg, #6d28d9, #8b5cf6);" onclick="goToMyTicketsFromStub()">📱 Biletlerime Git</button>
+                <button class="btn-close" style="margin-top:0; background:linear-gradient(120deg, #06b6d4, #38bdf8);" onclick="printActiveTicketPass()">📄 PDF Bilet İndir</button>
             </div>
         </div>
     </div>
@@ -4308,8 +4962,11 @@
 
         function handleLogout() {
             currentUser = null;
+            pendingCardToOfferSave = null;
+            activeReservation = null;
             localStorage.removeItem('passo_user');
             localStorage.removeItem('passo_favorites');
+            if (typeof renderSavedCardsForUser === 'function') renderSavedCardsForUser();
             if (activeCategory === 'fav') {
                 activeCategory = 'all';
                 document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
@@ -4524,21 +5181,29 @@
 
             const topEvents = [...allEvents].slice(0, 10);
 
-            track.innerHTML = topEvents.map((evt, idx) => `
-                <div class="netflix-card" onclick="openEventDetailModal(${evt.id})">
+            track.innerHTML = topEvents.map((evt, idx) => {
+                const isSoldOut = !evt.availableCapacity || evt.availableCapacity <= 0;
+                return `
+                <div class="netflix-card ${isSoldOut ? 'sold-out' : ''}" onclick="openEventDetailModal(${evt.id})">
                     <img src="${evt.imageUrl || getCategoryFallbackPhoto(evt.category)}" onerror="this.onerror=null;this.src='${getCategoryFallbackPhoto(evt.category)}'" class="netflix-card-img" alt="${evt.title}">
                     <div class="netflix-card-overlay"></div>
+                    ${isSoldOut ? '<div class="sold-out-ribbon" style="font-size:0.78rem; padding:0.32rem 0.95rem;">🚫 TÜKENDİ</div>' : ''}
                     <div class="netflix-card-content">
-                        <span class="netflix-card-badge">✦ POPÜLER #${idx + 1}</span>
+                        <span class="netflix-card-badge" style="${isSoldOut ? 'background:rgba(185,28,28,0.85); border-color:rgba(254,202,202,0.55); color:#fff;' : ''}">${isSoldOut ? '🚫 SATIŞA KAPALI' : `✦ POPÜLER #${idx + 1}`}</span>
                         <div class="netflix-card-title">${evt.title}</div>
                         <div class="netflix-card-sub">
                             <span>📍 ${evt.venue ? evt.venue.split(',')[0] : 'İstanbul'}</span>
                             <span style="font-weight:800; color:var(--accent-gold);">₺${evt.price}</span>
                         </div>
-                        <button class="netflix-card-btn" onclick="event.stopPropagation(); openEventDetailModal(${evt.id})">Bilet Seç</button>
+                        ${isSoldOut ? `
+                            <button class="netflix-card-btn" disabled style="opacity:0.65; cursor:not-allowed; background:rgba(100,116,139,0.35); border-color:rgba(239,68,68,0.45); color:#fca5a5;">🚫 Tükendi</button>
+                        ` : `
+                            <button class="netflix-card-btn" onclick="event.stopPropagation(); openEventDetailModal(${evt.id})">Bilet Seç</button>
+                        `}
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         function scrollNetflixCarousel(offset) {
@@ -4856,6 +5521,40 @@
             }
         }
 
+        function syncNavSearch(val) {
+            const mainSearch = document.getElementById('searchInput');
+            if (mainSearch && mainSearch.value !== val) {
+                mainSearch.value = val;
+            }
+            applyFilters();
+            if (val && val.trim().length > 1) {
+                const grid = document.getElementById('eventsGrid');
+                if (grid && window.scrollY < 400) {
+                    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        }
+
+        function jumpToCategory(cat) {
+            filterCat(cat);
+            const filterBox = document.querySelector('.filter-section-container');
+            if (filterBox) {
+                filterBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function openFeatured3DPreview(keyword) {
+            if (!allEvents || allEvents.length === 0) return;
+            const kw = (keyword || '').toLowerCase();
+            const found = allEvents.find(e => (e.title || '').toLowerCase().includes(kw) && e.availableCapacity > 0)
+                || allEvents.find(e => e.availableCapacity > 0);
+            if (found) {
+                openSeatingView(found.id);
+            } else {
+                alert('🚫 Şu anda satışta açık etkinlik bulunmamaktadır.');
+            }
+        }
+
         function filterCat(cat) {
             if (cat === 'fav' && !currentUser) {
                 openAuthModal('login', 'Favori etkinliklerinizi görmek için lütfen giriş yapın.');
@@ -4956,6 +5655,7 @@
             document.getElementById('pillAll').classList.add('active');
 
             if (document.getElementById('searchInput')) document.getElementById('searchInput').value = '';
+            if (document.getElementById('navSearchInput')) document.getElementById('navSearchInput').value = '';
             if (document.getElementById('citySelect')) document.getElementById('citySelect').value = 'all';
             if (document.getElementById('monthSelect')) document.getElementById('monthSelect').value = 'all';
             if (document.getElementById('priceSelect')) document.getElementById('priceSelect').value = 'all';
@@ -4981,17 +5681,18 @@
             }
 
             events.forEach(evt => {
+                const isSoldOut = !evt.availableCapacity || evt.availableCapacity <= 0;
                 const card = document.createElement('div');
-                card.className = 'card';
+                card.className = isSoldOut ? 'card sold-out' : 'card';
                 card.onclick = () => openEventDetailModal(evt.id);
 
-                const isLow = evt.availableCapacity > 0 && evt.availableCapacity <= 30;
+                const isLow = !isSoldOut && evt.availableCapacity <= 30;
                 const fallbackPhoto = getCategoryFallbackPhoto(evt.category);
                 const img = evt.imageUrl || fallbackPhoto;
                 const isFav = isFavorite(evt.id);
 
                 const totalCap = evt.totalCapacity || 500;
-                const soldPct = Math.min(100, Math.max(5, Math.round(((totalCap - evt.availableCapacity) / totalCap) * 100)));
+                const soldPct = isSoldOut ? 100 : Math.min(100, Math.max(5, Math.round(((totalCap - evt.availableCapacity) / totalCap) * 100)));
                 const titleClean = (evt.title || '').replace(/'/g, "\\'");
                 const formattedDateStr = formatTurkishEventDate(evt.dateTime);
 
@@ -4999,7 +5700,8 @@
                     <div class="card-img-wrap" style="position:relative;">
                         <img src="${img}" onerror="this.onerror=null;this.src='${fallbackPhoto}'" class="card-img" alt="${evt.title}">
                         <span class="card-tag">${evt.category || 'Etkinlik'}</span>
-                        <button type="button" onclick="event.stopPropagation(); toggleFavorite(${evt.id})" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.65); border:1px solid rgba(255,255,255,0.2); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; cursor:pointer; backdrop-filter:blur(8px); transition:transform 0.2s;" title="Favorilere Ekle/Çıkar">
+                        ${isSoldOut ? '<div class="sold-out-ribbon">🚫 TÜKENDİ</div>' : ''}
+                        <button type="button" onclick="event.stopPropagation(); toggleFavorite(${evt.id})" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.65); border:1px solid rgba(255,255,255,0.2); border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; cursor:pointer; backdrop-filter:blur(8px); transition:transform 0.2s; z-index:5;" title="Favorilere Ekle/Çıkar">
                             ${isFav ? '❤️' : '🤍'}
                         </button>
                     </div>
@@ -5009,34 +5711,44 @@
                         <div class="card-venue">📍 ${evt.venue || 'İstanbul Stadyum & Sahne'}</div>
                         <p style="color:var(--text-muted); font-size:0.88rem;">${evt.description}</p>
 
-                        ${isLow ? `
-                        <div style="background:rgba(217,167,176,0.1); border:1px solid rgba(217,167,176,0.3); color:#f0b8be; font-size:0.7rem; font-weight:700; padding:0.24rem 0.65rem; border-radius:9999px; width:fit-content; margin-top:0.2rem; letter-spacing:0.4px;">
+                        ${isSoldOut ? `
+                        <div style="background:rgba(239,68,68,0.14); border:1px solid rgba(239,68,68,0.45); color:#f87171; font-size:0.72rem; font-weight:800; padding:0.26rem 0.72rem; border-radius:9999px; width:fit-content; margin-top:0.2rem; letter-spacing:0.5px;">
+                            🚫 TÜKENDİ • ETKİNLİK SATIŞA KAPALI
+                        </div>
+                        ` : (isLow ? `
+                        <div style="background:rgba(244,114,182,0.12); border:1px solid rgba(244,114,182,0.38); color:#f472b6; font-size:0.7rem; font-weight:700; padding:0.24rem 0.65rem; border-radius:9999px; width:fit-content; margin-top:0.2rem; letter-spacing:0.4px;">
                             ✦ YÜKSEK TALEP • SINIRLI KONTENJAN
                         </div>
-                        ` : ''}
+                        ` : '')}
 
                         <!-- Stock Capacity Progress Bar -->
                         <div style="margin-top:0.3rem;">
                             <div style="display:flex; justify-content:space-between; font-size:0.74rem; color:var(--text-muted); font-weight:600; margin-bottom:0.35rem;">
                                 <span>Doluluk Oranı</span>
-                                <span style="color:${isLow ? '#f0b8be' : 'var(--accent-primary)'}; font-weight:700;">%${soldPct} Dolu</span>
+                                <span style="color:${isSoldOut ? '#f87171' : (isLow ? '#f472b6' : 'var(--accent-primary)')}; font-weight:700;">%${soldPct} ${isSoldOut ? 'Tükendi' : 'Dolu'}</span>
                             </div>
                             <div style="width:100%; height:5px; background:var(--border-color-subtle); border-radius:9999px; overflow:hidden;">
-                                <div style="width:${soldPct}%; height:100%; background:${isLow ? 'linear-gradient(90deg, #b83b5e, #f2b5c0)' : 'linear-gradient(90deg, #9e2a4d, #d97a89, #f7dac7)'}; border-radius:9999px; transition:width 0.4s ease;"></div>
+                                <div style="width:${soldPct}%; height:100%; background:${isSoldOut ? 'linear-gradient(90deg, #dc2626, #f43f5e)' : (isLow ? 'linear-gradient(90deg, #9333ea, #f472b6)' : 'linear-gradient(90deg, #6d28d9, #8b5cf6, #38bdf8)')}; border-radius:9999px; transition:width 0.4s ease;"></div>
                             </div>
                         </div>
 
                         <div class="card-footer">
                             <div class="price-tag">₺${evt.price}</div>
-                            <div class="capacity-badge ${isLow ? 'low' : ''}">
-                                <span id="cap-${evt.id}">${evt.availableCapacity}</span> bilet kaldı
-                            </div>
+                            ${isSoldOut ? `
+                                <div class="capacity-badge soldout">
+                                    <span id="cap-${evt.id}" style="display:none;">0</span>🚫 TÜKENDİ
+                                </div>
+                            ` : `
+                                <div class="capacity-badge ${isLow ? 'low' : ''}">
+                                    <span id="cap-${evt.id}">${evt.availableCapacity}</span> bilet kaldı
+                                </div>
+                            `}
                         </div>
 
-                        ${evt.availableCapacity > 0 ? `
-                            <button class="btn-buy" onclick="event.stopPropagation(); openEventDetailModal(${evt.id})">Detay & Bilet Al</button>
+                        ${isSoldOut ? `
+                            <button class="btn-soldout" disabled onclick="event.stopPropagation()">🚫 Biletler Tükendi — Satışa Kapalı</button>
                         ` : `
-                            <button class="btn-glass" style="width:100%; margin-top:0.9rem; border-radius:0.75rem;" onclick="event.stopPropagation(); toggleTicketAlarm(${evt.id}, '${titleClean}')">🔔 Bilet Çıkınca Bildir</button>
+                            <button class="btn-buy" onclick="event.stopPropagation(); openEventDetailModal(${evt.id})">Detay & Bilet Al</button>
                         `}
                     </div>
                 `;
@@ -5103,6 +5815,29 @@
                     chip.innerText = artist;
                     lineupBox.appendChild(chip);
                 });
+            }
+
+            // Close event for sale if tickets are sold out
+            const buyBtn = document.getElementById('detailBuySeatBtn');
+            const isSoldOut = !evt.availableCapacity || evt.availableCapacity <= 0;
+            if (buyBtn) {
+                if (isSoldOut) {
+                    buyBtn.disabled = true;
+                    buyBtn.innerText = '🚫 Biletler Tükendi — Satışa Kapalı';
+                    buyBtn.style.background = 'rgba(100, 116, 139, 0.28)';
+                    buyBtn.style.color = '#f87171';
+                    buyBtn.style.border = '1px solid rgba(239, 68, 68, 0.45)';
+                    buyBtn.style.cursor = 'not-allowed';
+                    buyBtn.style.boxShadow = 'none';
+                } else {
+                    buyBtn.disabled = false;
+                    buyBtn.innerText = '🎟️ Bilet Seç & Koltuk Haritasını Aç';
+                    buyBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    buyBtn.style.color = '#ffffff';
+                    buyBtn.style.border = 'none';
+                    buyBtn.style.cursor = 'pointer';
+                    buyBtn.style.boxShadow = '';
+                }
             }
 
             document.getElementById('eventDetailModal').classList.add('active');
@@ -7138,6 +7873,10 @@
         function openSeatingView(eventId) {
             const evt = allEvents.find(e => e.id === eventId);
             if (!evt) return;
+            if (!evt.availableCapacity || evt.availableCapacity <= 0) {
+                alert('🚫 Bu etkinlik için tüm biletler tükendi. Etkinlik satışa kapatılmıştır.');
+                return;
+            }
             activeDetailEvent = evt;
             openSeatingFromDetail();
         }
@@ -7145,6 +7884,11 @@
         function openSeatingFromDetail() {
             closeEventDetailModal();
             if (!activeDetailEvent) return;
+
+            if (!activeDetailEvent.availableCapacity || activeDetailEvent.availableCapacity <= 0) {
+                alert('🚫 Bu etkinlik için tüm biletler tükendi. Etkinlik satışa kapatılmıştır.');
+                return;
+            }
 
             if (!currentUser) {
                 openAuthModal('login', 'Lütfen önce giriş yapın.');
@@ -7715,19 +8459,127 @@
         let activeReservation = null;
         let reservationTimerInterval = null;
         let reservationSecondsLeft = 600;
+        let pendingCardToOfferSave = null;
+
+        function getSavedCardsKey() {
+            return currentUser && currentUser.id ? `passo_saved_cards_user_${currentUser.id}` : null;
+        }
+
+        function getSavedCards() {
+            const key = getSavedCardsKey();
+            if (!key) return [];
+            try {
+                return JSON.parse(localStorage.getItem(key) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function setSavedCards(cards) {
+            const key = getSavedCardsKey();
+            if (!key) return;
+            localStorage.setItem(key, JSON.stringify(cards));
+        }
+
+        function detectCardBrand(rawNum) {
+            if (rawNum.startsWith('4')) return 'VISA';
+            if (rawNum.startsWith('5')) return 'MASTERCARD';
+            if (rawNum.startsWith('9') || rawNum.startsWith('6')) return 'TROY';
+            return 'KART';
+        }
+
+        function renderSavedCardsForUser() {
+            const container = document.getElementById('savedCardsContainer');
+            const list = document.getElementById('savedCardsList');
+            if (!container || !list) return;
+            const cards = getSavedCards();
+            if (!cards.length) {
+                container.style.display = 'none';
+                list.innerHTML = '';
+                return;
+            }
+            container.style.display = 'flex';
+            list.innerHTML = '';
+            cards.forEach((c, idx) => {
+                const chip = document.createElement('div');
+                chip.style.cssText = 'display:inline-flex; align-items:center; gap:0.45rem; background:rgba(139,92,246,0.16); border:1px solid rgba(167,139,250,0.42); border-radius:9999px; padding:0.36rem 0.72rem; font-size:0.76rem; font-weight:700; color:#e0e7ff; cursor:pointer;';
+                chip.innerHTML = `
+                    <span onclick="applySavedCard(${idx})">💳 ${c.brand} •••• ${c.last4} (${c.expiry})</span>
+                    <button type="button" onclick="event.stopPropagation(); deleteSavedCard(${idx});" title="Kayıtlı Kartı Sil" style="background:none; border:none; color:#f472b6; font-size:0.8rem; cursor:pointer; padding:0 0.1rem;">✕</button>
+                `;
+                list.appendChild(chip);
+            });
+        }
+
+        function applySavedCard(idx) {
+            const cards = getSavedCards();
+            const card = cards[idx];
+            if (!card) return;
+            document.getElementById('payName').value = card.holder || '';
+            const formatted = (card.number || '').replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
+            document.getElementById('payCardNum').value = formatted;
+            document.getElementById('payExpiry').value = card.expiry || '';
+            document.getElementById('payCvv').value = '';
+            const chk = document.getElementById('saveCardCheck');
+            if (chk) chk.checked = false;
+            updateCardPreview();
+            document.getElementById('payCvv').focus();
+        }
+
+        function deleteSavedCard(idx) {
+            const cards = getSavedCards();
+            if (idx < 0 || idx >= cards.length) return;
+            if (!confirm(`"${cards[idx].brand} •••• ${cards[idx].last4}" kayıtlı kartını silmek istiyor musunuz?`)) return;
+            cards.splice(idx, 1);
+            setSavedCards(cards);
+            renderSavedCardsForUser();
+        }
+
+        function confirmSavePendingCard(shouldSave) {
+            const box = document.getElementById('saveCardConsentBox');
+            if (!shouldSave || !pendingCardToOfferSave) {
+                pendingCardToOfferSave = null;
+                if (box) {
+                    box.innerHTML = `<div style="font-size:0.78rem; color:#94a3b8; font-weight:600; text-align:center;">🔒 Kart bilgileriniz kaydedilmedi.</div>`;
+                }
+                return;
+            }
+            const cards = getSavedCards();
+            const exists = cards.some(c => c.number === pendingCardToOfferSave.number && c.expiry === pendingCardToOfferSave.expiry);
+            if (!exists) {
+                cards.unshift(pendingCardToOfferSave);
+                if (cards.length > 4) cards.pop();
+                setSavedCards(cards);
+            }
+            const savedLast4 = pendingCardToOfferSave.last4;
+            const savedBrand = pendingCardToOfferSave.brand;
+            pendingCardToOfferSave = null;
+            if (box) {
+                box.style.borderColor = 'rgba(74, 222, 128, 0.45)';
+                box.innerHTML = `<div style="font-size:0.78rem; color:#4ade80; font-weight:700; text-align:center;">✅ ${savedBrand} •••• ${savedLast4} kartınız onayınızla güvenle kaydedildi (CVV saklanmadı).</div>`;
+            }
+        }
 
         /* Bubilet Payment Checkout Modal Functions */
         async function openPaymentModal() {
             if (!activeDetailEvent) return;
+            if (!activeDetailEvent.availableCapacity || activeDetailEvent.availableCapacity <= 0) {
+                alert('🚫 Bu etkinlik için tüm biletler tükendi. Etkinlik satışa kapatılmıştır.');
+                closeSeatingModal();
+                return;
+            }
             if (!currentUser) {
                 openAuthModal('login', 'Ödemeye geçebilmek için lütfen önce giriş yapın!');
                 return;
             }
 
+            activeReservation = null;
+            pendingCardToOfferSave = null;
+
             const sortedSeats = [...selectedSeats].sort((a,b)=>a.seat-b.seat);
             const mainRow = sortedSeats.length > 0 ? sortedSeats[0].row : 'A';
-            const seatsStr = sortedSeats.map(s => s.seat).join(', ');
-            const seatIdStr = sortedSeats.map(s => `${selectedBlockCode}-${s.row}${s.seat}`).join(',');
+            const seatsStr = sortedSeats.length > 0 ? sortedSeats.map(s => s.seat).join(', ') : '1';
+            const seatIdStr = sortedSeats.length > 0 ? sortedSeats.map(s => `${selectedBlockCode}-${s.row}${s.seat}`).join(',') : `${selectedBlockCode}-A1`;
             const totalCount = selectedSeats.length || 1;
 
             // Call Redis Temporary Seat Lock Endpoint (10-Minute Lock)
@@ -7776,10 +8628,20 @@
             document.getElementById('payTotalReceipt').innerText = priceStr;
             document.getElementById('payBtnAmount').innerText = priceStr;
 
+            // Clear card fields fresh on open so nothing is silently prefilled without user action
+            document.getElementById('payCardNum').value = '';
+            document.getElementById('payExpiry').value = '';
+            document.getElementById('payCvv').value = '';
+            const saveChk = document.getElementById('saveCardCheck');
+            if (saveChk) saveChk.checked = false;
+
             if (currentUser && currentUser.username) {
                 document.getElementById('payName').value = currentUser.username.toUpperCase();
-                document.getElementById('previewCardHolder').innerText = currentUser.username.toUpperCase();
+            } else {
+                document.getElementById('payName').value = '';
             }
+            updateCardPreview();
+            renderSavedCardsForUser();
 
             startReservationTimer();
             document.getElementById('paymentModal').classList.add('active');
@@ -8079,8 +8941,139 @@
 
         function handleFinalPayment(e) {
             e.preventDefault();
-            if (!currentUser) return;
+            if (!currentUser) {
+                openAuthModal('login', 'Ödemeyi tamamlamak için lütfen giriş yapın.');
+                return;
+            }
+
+            const holder = (document.getElementById('payName').value || '').trim();
+            const rawNum = (document.getElementById('payCardNum').value || '').replace(/\D/g, '');
+            const expiry = (document.getElementById('payExpiry').value || '').trim();
+            const cvv = (document.getElementById('payCvv').value || '').replace(/\D/g, '');
+
+            if (rawNum.length < 12) {
+                alert('⚠️ Lütfen geçerli bir kart numarası giriniz.');
+                return;
+            }
+            if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+                alert('⚠️ Lütfen son kullanma tarihini AA/YY formatında giriniz.');
+                return;
+            }
+            if (cvv.length < 3) {
+                alert('⚠️ Lütfen 3 veya 4 haneli CVV güvenlik kodunu giriniz.');
+                return;
+            }
+
+            // Never save card automatically — hold in memory only and ask user explicitly after payment!
+            const savedCards = getSavedCards();
+            const alreadySaved = savedCards.some(c => c.number === rawNum && c.expiry === expiry);
+            if (!alreadySaved) {
+                pendingCardToOfferSave = {
+                    holder: holder.toUpperCase(),
+                    number: rawNum,
+                    last4: rawNum.slice(-4),
+                    expiry: expiry,
+                    brand: detectCardBrand(rawNum),
+                    requestedByCheckbox: !!(document.getElementById('saveCardCheck') && document.getElementById('saveCardCheck').checked)
+                };
+            } else {
+                pendingCardToOfferSave = null;
+            }
+
             openOtpModal();
+        }
+
+        function showTicketSuccessModal(eventTitle, eventId, ticketId, customMessage) {
+            try {
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
+                }
+            } catch (e) {}
+
+            if (eventId) {
+                const memEvt = allEvents.find(e => e.id === eventId);
+                if (memEvt && memEvt.availableCapacity > 0) {
+                    memEvt.availableCapacity = Math.max(0, memEvt.availableCapacity - 1);
+                }
+                const capElem = document.getElementById(`cap-${eventId}`);
+                if (capElem) {
+                    const currentCap = parseInt(capElem.innerText, 10);
+                    if (!isNaN(currentCap) && currentCap > 0) capElem.innerText = currentCap - 1;
+                }
+                // Immediately refresh cards & carousel so 0-stock events flip to TÜKENDİ at once
+                renderNetflixCarousel();
+                applyFilters();
+            }
+
+            const titleElem = document.getElementById('modalEventTitle');
+            if (titleElem) titleElem.innerText = eventTitle || (activeDetailEvent ? activeDetailEvent.title : 'PassoLive Etkinliği');
+
+            const seatElem = document.getElementById('modalSeatSummary');
+            const paySeatInfo = document.getElementById('paySeatInfo');
+            if (seatElem) {
+                seatElem.innerText = (paySeatInfo && paySeatInfo.innerText) ? paySeatInfo.innerText : `${selectedBlockName} • Blok ${selectedBlockCode}`;
+            }
+
+            const uid = currentUser ? currentUser.id : '1';
+            const ticketCodeStr = `PASS-2026-TK-${ticketId || Math.floor(1000 + Math.random() * 9000)}-${uid}`;
+            const codeElem = document.getElementById('modalTicketCodeStr');
+            if (codeElem) codeElem.innerText = ticketCodeStr;
+
+            const statusElem = document.getElementById('modalStatusMsg');
+            if (statusElem) {
+                statusElem.innerText = customMessage || `Sayın ${currentUser ? currentUser.username : 'Misafir'}, ödemeniz ve SMS doğrulamanız başarıyla tamamlandı. QR kodlu dijital biletiniz hazır!`;
+            }
+
+            // Render scannable QR safely
+            setTimeout(() => {
+                const qrCanvas = document.getElementById('modalTicketQrCanvas');
+                if (qrCanvas) {
+                    try {
+                        if (typeof QRious === 'function') {
+                            new QRious({
+                                element: qrCanvas,
+                                value: ticketCodeStr,
+                                size: 136
+                            });
+                        }
+                    } catch (qrErr) {
+                        console.warn('QR render warning:', qrErr);
+                    }
+                }
+            }, 60);
+
+            // Show explicit user consent prompt BEFORE saving card details
+            const consentBox = document.getElementById('saveCardConsentBox');
+            if (consentBox) {
+                if (pendingCardToOfferSave) {
+                    consentBox.style.display = 'block';
+                    consentBox.style.borderColor = 'rgba(56, 189, 248, 0.42)';
+                    const c = pendingCardToOfferSave;
+                    const promptTitle = c.requestedByCheckbox
+                        ? '💳 Kart Kaydetme Onayı'
+                        : '💳 Kart Bilgilerini Kaydetmek İster misiniz?';
+                    consentBox.innerHTML = `
+                        <div style="font-size:0.8rem; font-weight:800; color:#7dd3fc; margin-bottom:0.3rem;">${promptTitle}</div>
+                        <div style="font-size:0.76rem; color:#cbd5e1; line-height:1.45; margin-bottom:0.65rem;">
+                            <strong style="color:#fff;">${c.brand} •••• ${c.last4}</strong> (SKT: ${c.expiry}) kartınızı sonraki alışverişlerinizde hızlı kullanmak için kaydetmek istiyor musunuz? <span style="color:#94a3b8;">(CVV güvenlik gereği asla kaydedilmez.)</span>
+                        </div>
+                        <div style="display:flex; gap:0.5rem;">
+                            <button type="button" onclick="confirmSavePendingCard(true)" style="flex:1; background:linear-gradient(120deg, #6d28d9, #38bdf8); color:#fff; border:none; padding:0.52rem 0.75rem; border-radius:0.6rem; font-size:0.78rem; font-weight:700; cursor:pointer;">✅ Evet, Kartı Kaydet</button>
+                            <button type="button" onclick="confirmSavePendingCard(false)" style="flex:1; background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.18); padding:0.52rem 0.75rem; border-radius:0.6rem; font-size:0.78rem; font-weight:700; cursor:pointer;">✕ Hayır, Kaydetme</button>
+                        </div>
+                    `;
+                } else {
+                    consentBox.style.display = 'none';
+                }
+            }
+
+            pendingTickets.push({ title: eventTitle || 'Etkinlik Bileti', time: new Date() });
+
+            const modal = document.getElementById('ticketModal');
+            if (modal) {
+                modal.classList.add('active');
+            }
+            setTimeout(fetchEvents, 800);
         }
 
         function openOtpModal() {
@@ -8127,7 +9120,7 @@
 
         async function confirm3DSecurePayment(e) {
             e.preventDefault();
-            const inputCode = document.getElementById('otpInput').value.trim();
+            const inputCode = document.getElementById('otpInput').value.replace(/\s+/g, '').trim();
             if (inputCode !== currentSimulatedOtp) {
                 alert("❌ Hatalı SMS Kodu! Lütfen ekrandaki 6 haneli doğrulama kodunu eksiksiz giriniz.");
                 return;
@@ -8136,8 +9129,13 @@
             closeOtpModal();
             closePaymentModal();
 
-            if (!activeReservation || !currentUser) {
-                buyTicket(activeDetailEvent.id, activeDetailEvent.title);
+            if (!activeDetailEvent || !currentUser) {
+                alert("⚠️ Oturum veya etkinlik bilgisi bulunamadı. Lütfen tekrar deneyin.");
+                return;
+            }
+
+            if (!activeReservation || !activeReservation.reservationId) {
+                await buyTicket(activeDetailEvent.id, activeDetailEvent.title);
                 return;
             }
 
@@ -8153,40 +9151,28 @@
                     })
                 });
 
-                const data = await res.json();
+                let data = {};
+                try { data = await res.json(); } catch (_) {}
 
                 if (res.ok) {
-                    confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
-                    const capElem = document.getElementById(`cap-${activeDetailEvent.id}`);
-                    if (capElem) {
-                        let currentCap = parseInt(capElem.innerText);
-                        if (currentCap > 0) capElem.innerText = currentCap - 1;
-                    }
-
-                    document.getElementById('modalEventTitle').innerText = activeDetailEvent.title;
-                    const ticketCodeStr = `PASS-2026-TK-${data.ticketId || Math.floor(1000 + Math.random() * 9000)}-${currentUser.id}`;
-                    document.getElementById('modalTicketCodeStr').innerText = ticketCodeStr;
-
-                    setTimeout(() => {
-                        const qrCanvas = document.getElementById('modalTicketQrCanvas');
-                        if (qrCanvas) {
-                            new QRious({
-                                element: qrCanvas,
-                                value: ticketCodeStr,
-                                size: 130
-                            });
-                        }
-                    }, 100);
-
-                    document.getElementById('modalStatusMsg').innerText = `Sayın ${currentUser.username}, SMS doğrulamanız başarıyla gerçekleşti. Dijital biletiniz QR kodlu olarak hazırlandı!`;
-                    document.getElementById('ticketModal').classList.add('active');
-                    setTimeout(fetchEvents, 800);
+                    activeReservation = null;
+                    showTicketSuccessModal(
+                        activeDetailEvent.title,
+                        activeDetailEvent.id,
+                        data.ticketId,
+                        `Sayın ${currentUser.username}, SMS doğrulamanız başarıyla gerçekleşti. Dijital biletiniz QR kodlu olarak hazırlandı!`
+                    );
+                } else if (res.status === 429) {
+                    alert(`⚠️ ${data.message || 'Çok fazla bilet isteğinde bulundunuz. Güvenlik nedeniyle lütfen 1 dakika bekleyin.'}`);
                 } else {
-                    alert(`⚠️ ${data.message || 'Ödeme onaylanamadı veya rezervasyon süresi doldu.'}`);
+                    // If seat lock expired or backend restarted, seamlessly complete via direct ticket purchase
+                    activeReservation = null;
+                    await buyTicket(activeDetailEvent.id, activeDetailEvent.title);
                 }
             } catch (err) {
-                console.error(err);
-                buyTicket(activeDetailEvent.id, activeDetailEvent.title);
+                console.error('Confirm error:', err);
+                activeReservation = null;
+                await buyTicket(activeDetailEvent.id, activeDetailEvent.title);
             }
         }
 
@@ -8197,7 +9183,6 @@
             }
 
             addLog(`[TALEP] ${title} için bilet talebi oluşturuldu (${currentUser.username})`, 'pending');
-            pendingTickets.push({ title: title, time: new Date() });
 
             try {
                 const res = await fetch(`${API_BASE}/tickets`, {
@@ -8206,40 +9191,31 @@
                     body: JSON.stringify({ eventId: eventId, userId: currentUser.id })
                 });
 
-                const data = await res.json();
+                let data = {};
+                try { data = await res.json(); } catch (_) {}
 
                 if (res.ok) {
                     addLog(`[ONAYLANDI] ${title} bilet talebiniz alındı (${currentUser.username}).`);
-                    
-                    // Trigger Confetti!
-                    confetti({
-                        particleCount: 80,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                    });
-
-                    // Update UI immediately (decrement displayed capacity in real-time)
-                    const capElem = document.getElementById(`cap-${eventId}`);
-                    if (capElem) {
-                        let currentCap = parseInt(capElem.innerText);
-                        if (currentCap > 0) {
-                            capElem.innerText = currentCap - 1;
-                        }
-                    }
-
-                    // Open Success Ticket Modal
-                    document.getElementById('modalEventTitle').innerText = title;
-                    document.getElementById('modalStatusMsg').innerText = `Sayın ${currentUser.username}, bilet alma işleminiz başarıyla onaylandı. Biletinizi Profilim -> Biletlerim sekmesinden görüntüleyebilirsiniz.`;
-                    document.getElementById('ticketModal').classList.add('active');
-
-                    // Refetch from server after 800ms
-                    setTimeout(fetchEvents, 800);
+                    showTicketSuccessModal(
+                        title,
+                        eventId,
+                        data.ticketId,
+                        `Sayın ${currentUser.username}, bilet alma işleminiz başarıyla onaylandı. Dijital biletinizi Profilim → Satın Alınan Biletler sekmesinden de görüntüleyebilirsiniz.`
+                    );
                 } else {
-                    addLog(`[BAŞARISIZ] ${data.message || 'Biletler tükendi!'}`, 'error');
+                    const errMsg = data.message || (res.status === 429 ? 'Çok fazla bilet isteğinde bulundunuz. Lütfen 1 dakika bekleyin.' : 'Bilet işlemi tamamlanamadı veya kontenjan tükendi.');
+                    addLog(`[BAŞARISIZ] ${errMsg}`, 'error');
+                    alert(`⚠️ ${errMsg}`);
                 }
             } catch (err) {
                 addLog(`[HATA] İstek atılamadı: ${err.message}`, 'error');
+                alert(`⚠️ Sunucuya bağlanılamadı: ${err.message}`);
             }
+        }
+
+        function goToMyTicketsFromStub() {
+            closeModal();
+            openProfileTab('purchased_tickets');
         }
 
         function closeModal() {
@@ -8368,14 +9344,17 @@
                 // Render Event Cards if any suggestedEvents
                 if (data.suggestedEvents && data.suggestedEvents.length > 0) {
                     data.suggestedEvents.forEach(ev => {
+                        const isSoldOut = !ev.availableCapacity || ev.availableCapacity <= 0;
                         const card = document.createElement('div');
                         card.className = 'ai-event-card';
                         card.innerHTML = `
                             <div>
                                 <div class="ai-event-title">${ev.title}</div>
-                                <div class="ai-event-sub">📍 ${ev.venue || 'Mekan'} • 💵 ${ev.price} TL</div>
+                                <div class="ai-event-sub">📍 ${ev.venue || 'Mekan'} • 💵 ${ev.price} TL ${isSoldOut ? '• <strong style="color:#f87171;">TÜKENDİ</strong>' : ''}</div>
                             </div>
-                            <button class="ai-event-btn" onclick="openSeatingView(${ev.id})">Koltuk Seç</button>
+                            ${isSoldOut
+                                ? `<button class="ai-event-btn" disabled style="background:rgba(100,116,139,0.4); color:#cbd5e1; cursor:not-allowed;">🚫 Tükendi</button>`
+                                : `<button class="ai-event-btn" onclick="openSeatingView(${ev.id})">Koltuk Seç</button>`}
                         `;
                         aiBubble.appendChild(card);
                     });

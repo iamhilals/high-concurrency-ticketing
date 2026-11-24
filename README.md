@@ -20,7 +20,7 @@
 
 **PassoLive**, binlerce kullanıcının aynı saniyede popüler konser, festival, derbi veya tiyatro bileti almaya çalıştığı (*flash sale* / yüksek trafik) senaryolarda **çifte satışı (overselling)** ve **veritabanı kilitlenmelerini (lock contention)** tamamen önlemek için tasarlanmış uçtan uca bir biletleme platformudur.
 
-Arka uçta **Redis Atomik Kapasite & Geçici Koltuk Kilidi**, **Apache Kafka Asenkron Kuyruğu**, **PostgreSQL**, **Hız Sınırlayıcı (Rate Limiter)**, **Davranışsal Güvenlik Motoru (Anti-Scalper)** ve **PassoBot Akıllı Bilet Asistanı** birlikte çalışır. Ön yüzde ise teknik jargondan tamamen arındırılmış, **bordo–krem hologram estetiğine** sahip, **Koyu & Aydınlık tema** destekli tam genişlikte bir son kullanıcı arayüzü sunar.
+Arka uçta **Redis Atomik Kapasite & Geçici Koltuk Kilidi**, **Apache Kafka Asenkron Kuyruğu**, **PostgreSQL**, **Hız Sınırlayıcı (Rate Limiter)**, **Davranışsal Güvenlik Motoru (Anti-Scalper)** ve **PassoBot Akıllı Bilet Asistanı** birlikte çalışır. Ön yüzde ise teknik jargondan tamamen arındırılmış, **Obsidian Gece Moru–Camgöbeği (Koyu Tema)** ve **Buz Mavisi–Lavanta Frosted Glass (Aydınlık Tema)** tasarımlarına sahip, Three.js 3D salon destekli tam genişlikte bir son kullanıcı arayüzü sunar.
 
 ---
 
@@ -52,18 +52,18 @@ flowchart LR
 ## ✨ Öne Çıkan Özellikler
 
 ### 🎨 Arayüz & Kullanıcı Deneyimi
-- **Bordo–Krem Hologram Tasarım & Çift Tema:** Sıcak kadife bordo (Koyu Tema) ve sıcak krem–gül (Aydınlık Tema) arasında tek tıkla geçiş; akan hologram aurora dalgaları, ince poster dokusu (`grain`), 4 köşeli yıldız ışıltıları (`✦`) ve tam genişlikte (*edge-to-edge*) düzen.
+- **Obsidian Koyu & Buzlu Cam Aydınlık Çift Tema:** Derin obsidian gece moru–elektrik camgöbeği (Koyu Tema) ve buz mavisi–lavanta frosted glass (Aydınlık Tema) arasında tek tıkla geçiş; üst arama çubuğu, çift sütunlu sahne hero, 4'lü kategori vitrini ve renk kodlu özet kartları.
 - **Üst Menüde 1 Yıllık İnteraktif Takvim:** Sağ üstteki `📅 Takvim` butonuyla açılan, 12 ay boyunca ay ay gezilebilen Türkçe takvim. Etkinlik olan günleri ışıltılı noktalarla işaretler, seçilen tarihin **hangi güne denk geldiğini** gösterir ve tek tıkla o ayın etkinliklerini filtreler.
 - **40 Özgün Etkinlik & Sürekli Güncel Tarihler:** Müzik & Konser, Festival & DJ, Spor ve Komedi & Tiyatro kategorilerinde her biri kendi türüne uygun **40 benzersiz görsel** ve bugünün tarihine göre **önümüzdeki 12 aya otomatik yayılan güncel etkinlik tarihleri**.
-- **Gelişmiş Arama & Filtreleme:** Metin arama, şehir, önümüzdeki 12 aya dinamik tarih filtresi, maksimum fiyat, sıralama ve trend kaydırıcı (*carousel*).
-- **Hesap Bazlı Favoriler & Bilet Alarmı:** Favoriler her kullanıcı hesabına özel saklanır; oturum kapatıldığında temizlenir. Biletleri tükenen etkinlikler için bildirim alarmı kurulabilir.
+- **Gelişmiş Arama & Filtreleme:** Üst menü hızlı arama çubuğu, şehir, önümüzdeki 12 aya dinamik tarih filtresi, maksimum fiyat, sıralama ve trend kaydırıcı (*carousel*).
+- **Hesap Bazlı Favoriler & Otomatik "TÜKENDİ" Satış Kilidi:** Favoriler her kullanıcı hesabına özel saklanır ve çıkışta temizlenir. Kontenjanı sıfırlanan etkinliklerde **`🚫 TÜKENDİ`** şeridi görünür; hem arayüzde hem arka uçta (`TicketService`) satışa tamamen kapatılır.
 
 ### 🎟️ 3D İnteraktif Koltuk Seçimi, Ödeme & Dijital Bilet
 - **Three.js 3D İnteraktif Salon & 12 Özgün Mekan Modeli:** Bilet seçimi ekranı doğrudan **360° döndürülebilen, yakınlaştırılabilen 3D salon modeliyle** açılır; istenirse tek tıkla `🧊 3D Salon` ve `🗺️ 2D Plan` görünümleri arasında geçiş yapılabilir.
 - **Canlı 3D Koltuk Tıklama & Kamera Açıları (`POV`):** 3D sahnede herhangi bir koltuğa tıklanarak doğrudan seçim yapılabilir; **`Genel Bakış`**, **`Koltuğumdan Gör`** (seçili koltuğun göz hizasından gerçek 3D görüş açısı) ve **`Sahne Yakın`** kamera modları anlık geçiş sunar.
 - **Akıllı Blok & Yan Yana Koltuk Bulucu:** VIP (`1.8x`), Saha İçi (`1.2x`) ve Tribün (`0.8x`) blokları, 3D sahneyle çift yönlü senkronize 4×10 koltuk matrisi ve tek tıkla **2 veya 3 yan yana boş koltuk** seçimi.
 - **10 Dakikalık Canlı Geri Sayım & `+3 Dk` Uzatma:** Ödeme süresince üst barda canlı sayaç.
-- **SMS Doğrulama & Yazdırılabilir QR Dijital Bilet:** Sanal kart önizlemeli ödeme ekranı, 6 haneli tek kullanımlık SMS doğrulaması, PNR kodlu taranabilir **QR bilet** ve yazdırılabilir **PDF dijital giriş belgesi**.
+- **Onaylı Kart Kaydetme, SMS Doğrulama & QR Dijital Bilet:** Sanal kart önizlemeli ödeme ekranı, kart bilgilerini **kullanıcıdan açık onay almadan asla kaydetmeyen** (ve CVV saklamayan) hesap bazlı kayıtlı kart sistemi, 6 haneli SMS doğrulama, PNR kodlu taranabilir **QR bilet** ve yazdırılabilir **PDF dijital giriş belgesi**.
 
 ### 🏟️ Etkinliğe Göre Otomatik Oluşturulan 12 Farklı 3D Mekan Modeli
 40 etkinliklik katalogdaki her etkinlik; adına, kategorisine ve mekanına göre otomatik olarak kendi türüne özel 3D mimariyle açılır ve tüm tribün koltukları sahne/saha odağına bakar:

@@ -74,6 +74,26 @@ public class TicketService {
                     .build();
         }
 
+        // 2. Etkinlik kontenjanı tükenmişse rezervasyonu ve satışı kesin olarak kapat
+        String capKey = "event:" + request.getEventId() + ":capacity";
+        String capStr = redisTemplate.opsForValue().get(capKey);
+        int currentCap = -1;
+        if (capStr != null) {
+            try { currentCap = Integer.parseInt(capStr); } catch (NumberFormatException ignored) {}
+        } else {
+            currentCap = eventRepository.findById(request.getEventId())
+                    .map(e -> e.getAvailableCapacity() != null ? e.getAvailableCapacity() : 0)
+                    .orElse(0);
+        }
+        if (currentCap <= 0) {
+            return SeatReserveResponse.builder()
+                    .success(false)
+                    .riskScore(botResult.getRiskScore())
+                    .riskLevel(botResult.getRiskLevel())
+                    .message("🚫 Bu etkinlik için tüm biletler tükendi! Etkinlik satışa kapatılmıştır.")
+                    .build();
+        }
+
         String seatLockKey = "seat_lock:event:" + request.getEventId() + ":seat:" + request.getSeatId();
         String reservationId = "RES-" + UUID.randomUUID().toString().substring(0, 8);
 
